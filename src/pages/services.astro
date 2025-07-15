@@ -1,0 +1,242 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl } from '../i18n/utils';
+import { Globe, Settings, Zap, Search, Users, BarChart3, CheckCircle, ArrowRight } from 'lucide-react';
+import ServicesCtaSection from '../components/ServicesCtaSection.astro';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+
+const detailedServices = [
+  {
+    icon: Globe,
+    title: t.services.items[0].title,
+    description: t.services.items[0].description,
+    badges: ['📱 Responsive', '⚡ Hızlı', '🔍 SEO', '🔒 Güvenli'],
+    process: [
+      'İhtiyaç analizi ve keşif toplantısı',
+      'Wireframe ve tasarım onayı', 
+      'Geliştirme ve test aşaması',
+      'İçerik entegrasyonu',
+      'Canlı yayın ve eğitim'
+    ],
+    packageDetails: [
+      '5-15 sayfa arası',
+      'İçerik yönetim sistemi',
+      'İletişim formu',
+      'Google Analytics',
+      '1 yıl teknik destek',
+      'Hosting ve domain danışmanlığı'
+    ]
+  },
+  {
+    icon: Settings,
+    title: t.services.items[1].title,
+    description: t.services.items[1].description,
+    badges: ['🎨 Tasarım', '🔗 Entegrasyon', '✅ Doğrulama', '🔔 Bildirim'],
+    process: [
+      'Form ihtiyaçlarının belirlenmesi',
+      'Tasarım ve kullanıcı deneyimi planlaması',
+      'CRM entegrasyon kurulumu',
+      'Test ve optimizasyon',
+      'Canlıya alma ve izleme'
+    ],
+    packageDetails: [
+      'Özel form tasarımı',
+      'CRM otomatik entegrasyonu',
+      'Veri doğrulama sistemleri',
+      'E-posta bildirimleri',
+      'Raporlama paneli',
+      '6 ay teknik destek'
+    ]
+  },
+  {
+    icon: Users,
+    title: t.services.items[2].title,
+    description: t.services.items[2].description,
+    badges: ['🏆 Zoho Expert', '⚙️ Özelleştirme', '📊 Raporlama', '👥 Eğitim'],
+    process: [
+      'Mevcut süreçlerin analizi',
+      'CRM seçimi ve planlama',
+      'Kurulum ve özelleştirme',
+      'Veri migrasyonu',
+      'Ekip eğitimi ve go-live'
+    ],
+    packageDetails: [
+      'Zoho CRM Professional lisans',
+      'Özel alan ve workflow kurulumu',
+      'Mevcut veri migrasyonu',
+      'Kapsamlı ekip eğitimi',
+      'Dashboard ve raporlar',
+      '1 yıl sürekli destek'
+    ]
+  },
+  {
+    icon: Zap,
+    title: t.services.items[3].title,
+    description: t.services.items[3].description,
+    badges: ['⚡ Zapier', '🔄 Otomasyon', '📈 Verimlilik', '📊 Analiz'],
+    process: [
+      'Süreç haritalama ve analiz',
+      'Otomasyon stratejisi geliştirme',
+      'Zapier/Make kurulumları',
+      'Test ve optimizasyon',
+      'Monitoring ve iyileştirme'
+    ],
+    packageDetails: [
+      '10+ uygulama entegrasyonu',
+      'Özel otomasyon senaryoları',
+      'Hata yönetimi sistemleri',
+      'Performans raporları',
+      'Sürekli optimizasyon',
+      '6 ay teknik destek'
+    ]
+  },
+  {
+    icon: Search,
+    title: t.services.items[4].title,
+    description: t.services.items[4].description,
+    badges: ['🔍 Teknik SEO', '📝 İçerik', '📊 Analytics', '🚀 Performans'],
+    process: [
+      'SEO audit ve analiz',
+      'Anahtar kelime araştırması',
+      'Teknik optimizasyonlar',
+      'İçerik stratejisi',
+      'İzleme ve raporlama'
+    ],
+    packageDetails: [
+      'Kapsamlı SEO audit',
+      'Teknik optimizasyonlar',
+      'İçerik stratejisi',
+      'Google Analytics kurulumu',
+      'Aylık performans raporları',
+      '3 ay sürekli optimizasyon'
+    ]
+  },
+  {
+    icon: BarChart3,
+    title: t.services.items[5].title,
+    description: t.services.items[5].description,
+    badges: ['🔧 Sistem Analizi', '🛡️ Güvenlik', '📈 Scalability', '💡 Strateji'],
+    process: [
+      'Mevcut altyapı değerlendirmesi',
+      'İhtiyaç analizi ve planlama',
+      'Teknoloji roadmap oluşturma',
+      'Uygulama desteği',
+      'Sürekli danışmanlık'
+    ],
+    packageDetails: [
+      'Kapsamlı sistem analizi',
+      'Teknoloji seçimi danışmanlığı',
+      'Güvenlik değerlendirmesi',
+      'Scalability planlaması',
+      'Uygulama desteği',
+      'Sürekli danışmanlık hizmeti'
+    ]
+  }
+];
+---
+
+<Layout title={`${t.nav.services} | TechCorp`}>
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.services.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.services.subtitle}
+        </p>
+      </div>
+
+      <div class="space-y-16">
+        {detailedServices.map((service, index) => {
+          const Icon = service.icon;
+          return (
+            <div class={`bg-white rounded-2xl shadow-xl overflow-hidden ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+              <div class="lg:flex">
+                <div class="lg:w-1/2 p-8 lg:p-12">
+                  <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                      <Icon className="w-8 h-8 text-primary-600" />
+                    </div>
+                    <div>
+                      <h3 class="text-2xl font-bold text-secondary-900">
+                        {service.title}
+                      </h3>
+                      <div class="flex flex-wrap gap-2 mt-2">
+                        {service.badges.map((badge) => (
+                          <span class="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p class="text-secondary-600 mb-8 leading-relaxed text-lg">
+                    {service.description}
+                  </p>
+                  
+                  <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-secondary-900 mb-4">
+                      {lang === 'en' ? 'Process' : 'Süreç'}
+                    </h4>
+                    <div class="space-y-3">
+                      {service.process.map((step, stepIndex) => (
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 flex-shrink-0">
+                            {stepIndex + 1}
+                          </div>
+                          <span class="text-secondary-700">{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <a
+                    href={lang === 'en' ? '/en/contact' : '/contact'}
+                    class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105"
+                  >
+                    {lang === 'en' ? 'Get Quote' : 'Fiyat Al'}
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </a>
+                </div>
+                
+                <div class="lg:w-1/2 bg-secondary-50 p-8 lg:p-12">
+                  <h4 class="text-xl font-semibold text-secondary-900 mb-6">
+                    {lang === 'en' ? 'Package Details' : 'Paket Detayları'}
+                  </h4>
+                  <ul class="space-y-4">
+                    {service.packageDetails.map((detail) => (
+                      <li class="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                        <span class="text-secondary-700">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <div class="mt-8 p-4 bg-primary-50 rounded-lg">
+                    <p class="text-sm text-primary-700 font-medium">
+                      {lang === 'en' 
+                        ? 'Contact us for detailed pricing and custom solutions'
+                        : 'Detaylı fiyatlandırma ve özel çözümler için iletişime geçin'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+
+  <ServicesCtaSection />
+</Layout>

@@ -1,0 +1,216 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl } from '../i18n/utils';
+import { Building2, TrendingUp, CheckCircle, Globe, Users, Zap, Calendar, Award } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+
+const serviceIcons = {
+  'Web Sitesi': Globe,
+  'Website': Globe,
+  'CRM': Users,
+  'Otomasyon': Zap,
+  'Automation': Zap,
+  'Form Entegrasyonu': CheckCircle,
+  'Form Integration': CheckCircle,
+  'SEO': TrendingUp
+};
+
+const detailedReferences = [
+  {
+    company: "TechFlow Yazılım A.Ş.",
+    type: "Teknoloji Firması",
+    description: "50+ çalışanı olan yazılım geliştirme firması için kapsamlı dijital dönüşüm projesi gerçekleştirdik. Müşteri takip süreçlerini otomatikleştirerek operasyonel verimliliği artırdık.",
+    services: ["Web Sitesi", "CRM", "Otomasyon"],
+    results: ["%40 lead artışı", "%60 süreç optimizasyonu", "%25 müşteri memnuniyeti artışı"],
+    duration: "3 ay",
+    technologies: ["Zoho CRM", "Zapier", "React", "Node.js"],
+    challenge: "Dağınık müşteri verileri ve manuel süreçler nedeniyle fırsatlar kaçıyordu.",
+    solution: "Merkezi CRM sistemi kurulumu ve otomatik lead yönlendirme sistemi geliştirdik.",
+    testimonial: "TechCorp sayesinde müşteri takip süreçlerimiz tamamen değişti. Artık hiçbir fırsat kaçmıyor."
+  },
+  {
+    company: "MediCare Özel Hastanesi",
+    type: "Özel Hastane",
+    description: "Hasta randevu sistemi ve CRM entegrasyonu ile hasta deneyimini dijitalleştirdik. Online randevu sistemi ve hasta takip süreçlerini optimize ettik.",
+    services: ["CRM", "Form Entegrasyonu", "Otomasyon"],
+    results: ["%50 randevu verimliliği", "%35 hasta memnuniyeti artışı", "%70 manuel işlem azalması"],
+    duration: "2 ay",
+    technologies: ["Zoho CRM", "Custom Forms", "Email Automation"],
+    challenge: "Manuel randevu sistemi ve hasta bilgilerinin dağınık olması.",
+    solution: "Online randevu formu ve CRM entegrasyonu ile merkezi hasta yönetim sistemi kurduk.",
+    testimonial: "Hasta randevu süreçlerimiz artık çok daha verimli ve hasta memnuniyeti arttı."
+  },
+  {
+    company: "RetailMax Mağaza Zinciri",
+    type: "Mağaza Zinciri",
+    description: "15 şubeli mağaza zinciri için merkezi CRM ve stok yönetim sistemi kurduk. Online satış kanallarını güçlendirerek omnichannel deneyim sağladık.",
+    services: ["CRM", "Web Sitesi", "SEO"],
+    results: ["%45 online satış artışı", "%30 stok optimizasyonu", "%55 müşteri takip verimliliği"],
+    duration: "4 ay",
+    technologies: ["Zoho CRM", "E-commerce Platform", "SEO Tools"],
+    challenge: "Şubeler arası koordinasyon eksikliği ve düşük online görünürlük.",
+    solution: "Merkezi CRM sistemi ve SEO optimizasyonu ile online varlığı güçlendirdik.",
+    testimonial: "Online satışlarımız katlandı ve şubelerimiz arasında mükemmel koordinasyon sağlandı."
+  }
+];
+---
+
+<Layout title={`${t.nav.references} | TechCorp`}>
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {lang === 'en' ? 'Success Stories' : 'Başarı Hikayeleri'}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {lang === 'en' 
+            ? 'Discover how we helped our clients achieve their digital transformation goals'
+            : 'Müşterilerimizin dijital dönüşüm hedeflerine nasıl ulaştığını keşfedin'
+          }
+        </p>
+      </div>
+
+      <div class="space-y-12">
+        {detailedReferences.map((reference, index) => (
+          <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div class="lg:flex">
+              <div class="lg:w-2/3 p-8 lg:p-12">
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex items-center">
+                    <div class="w-16 h-16 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                      <Building2 className="w-8 h-8 text-primary-600" />
+                    </div>
+                    <div>
+                      <h2 class="text-2xl font-bold text-secondary-900">
+                        {reference.company}
+                      </h2>
+                      <span class="text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
+                        {reference.type}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center text-secondary-600">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <span class="text-sm">{reference.duration}</span>
+                  </div>
+                </div>
+
+                <p class="text-secondary-700 mb-8 leading-relaxed text-lg">
+                  {reference.description}
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  <div>
+                    <h3 class="text-lg font-semibold text-secondary-900 mb-4">
+                      {lang === 'en' ? 'Challenge' : 'Meydan Okuma'}
+                    </h3>
+                    <p class="text-secondary-600 text-sm leading-relaxed">
+                      {reference.challenge}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-semibold text-secondary-900 mb-4">
+                      {lang === 'en' ? 'Solution' : 'Çözüm'}
+                    </h3>
+                    <p class="text-secondary-600 text-sm leading-relaxed">
+                      {reference.solution}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="bg-primary-50 p-6 rounded-lg mb-8">
+                  <div class="flex items-start">
+                    <Award className="w-6 h-6 text-primary-600 mr-3 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 class="font-semibold text-secondary-900 mb-2">
+                        {lang === 'en' ? 'Client Testimonial' : 'Müşteri Görüşü'}
+                      </h4>
+                      <p class="text-secondary-700 italic">"{reference.testimonial}"</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-6">
+                  <h4 class="text-lg font-semibold text-secondary-900 mb-4">
+                    {lang === 'en' ? 'Technologies Used' : 'Kullanılan Teknolojiler'}
+                  </h4>
+                  <div class="flex flex-wrap gap-2">
+                    {reference.technologies.map((tech) => (
+                      <span class="bg-secondary-100 text-secondary-700 px-3 py-1 rounded-full text-sm font-medium">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div class="lg:w-1/3 bg-secondary-50 p-8 lg:p-12">
+                <div class="mb-8">
+                  <h4 class="text-lg font-semibold text-secondary-900 mb-4">
+                    {lang === 'en' ? 'Services Provided' : 'Sağlanan Hizmetler'}
+                  </h4>
+                  <div class="space-y-3">
+                    {reference.services.map((service) => {
+                      const IconComponent = serviceIcons[service] || CheckCircle;
+                      return (
+                        <div class="flex items-center">
+                          <IconComponent className="w-5 h-5 text-primary-600 mr-3" />
+                          <span class="text-secondary-700 font-medium">{service}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="text-lg font-semibold text-secondary-900 mb-4 flex items-center">
+                    <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
+                    {lang === 'en' ? 'Results Achieved' : 'Elde Edilen Sonuçlar'}
+                  </h4>
+                  <div class="space-y-4">
+                    {reference.results.map((result) => (
+                      <div class="bg-green-50 p-4 rounded-lg">
+                        <div class="flex items-center">
+                          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                          <span class="text-green-800 font-semibold">{result}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-primary-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">
+        {lang === 'en' ? 'Ready to Create Your Success Story?' : 'Kendi Başarı Hikayenizi Yazmaya Hazır mısınız?'}
+      </h2>
+      <p class="text-xl text-primary-100 mb-8">
+        {lang === 'en' 
+          ? 'Let\'s discuss how we can help transform your business processes and achieve similar results.'
+          : 'İş süreçlerinizi nasıl dönüştürebileceğimizi ve benzer sonuçlara nasıl ulaşabileceğinizi konuşalım.'
+        }
+      </p>
+      <a
+        href={lang === 'en' ? '/en/contact' : '/contact'}
+        class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
+      >
+        {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}
+      </a>
+    </div>
+  </section>
+</Layout>

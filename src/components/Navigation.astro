@@ -1,0 +1,105 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+import LanguageToggle from './LanguageToggle';
+
+const lang = getLangFromUrl(Astro.url);
+const currentPath = Astro.url.pathname;
+
+// Import translations dynamically
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+
+const navigation = [
+  { name: t.nav.home, href: lang === 'en' ? '/en' : '/' },
+  { name: t.nav.about, href: lang === 'en' ? '/en/about' : '/about' },
+  { name: t.nav.services, href: lang === 'en' ? '/en/services' : '/services' },
+  { name: t.nav.references, href: lang === 'en' ? '/en/references' : '/references' },
+  { name: t.nav.faq, href: lang === 'en' ? '/en/faq' : '/faq' },
+  { name: t.nav.blog, href: lang === 'en' ? '/en/blog' : '/blog' },
+  { name: t.nav.contact, href: lang === 'en' ? '/en/contact' : '/contact' }
+];
+---
+
+<header class="bg-white shadow-sm sticky top-0 z-50">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+      <!-- Logo -->
+      <div class="flex-shrink-0">
+        <a href={lang === 'en' ? '/en' : '/'} class="text-2xl font-bold text-primary-600">
+          TechCorp
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:block">
+        <div class="ml-10 flex items-baseline space-x-4">
+          {navigation.map((item) => (
+            <a
+              href={item.href}
+              class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
+                currentPath === item.href
+                  ? 'text-primary-600 bg-primary-50'
+                  : 'text-secondary-600 hover:text-primary-600 hover:bg-secondary-50'
+              }`}
+            >
+              {item.name}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Language Toggle -->
+      <div class="flex items-center">
+        <LanguageToggle currentLang={lang} pathname={currentPath} client:load />
+      </div>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button
+          type="button"
+          class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-secondary-600 hover:text-primary-600 hover:bg-secondary-50 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500"
+        >
+          <span class="sr-only">Open main menu</span>
+          <svg class="block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile menu -->
+    <div class="mobile-menu hidden md:hidden">
+      <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+        {navigation.map((item) => (
+          <a
+            href={item.href}
+            class={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
+              currentPath === item.href
+                ? 'text-primary-600 bg-primary-50'
+                : 'text-secondary-600 hover:text-primary-600 hover:bg-secondary-50'
+            }`}
+          >
+            {item.name}
+          </a>
+        ))}
+      </div>
+    </div>
+  </nav>
+</header>
+
+<script>
+  // Mobile menu toggle
+  document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.querySelector('.mobile-menu-button');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+      mobileMenuButton.addEventListener('click', function() {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  });
+</script>

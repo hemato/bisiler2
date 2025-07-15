@@ -1,0 +1,101 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+import { Building2, TrendingUp, CheckCircle, Globe, Users, Zap } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+
+const serviceIcons = {
+  'Web Sitesi': Globe,
+  'Website': Globe,
+  'CRM': Users,
+  'Otomasyon': Zap,
+  'Automation': Zap,
+  'Form Entegrasyonu': CheckCircle,
+  'Form Integration': CheckCircle,
+  'SEO': TrendingUp
+};
+---
+
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-secondary-900 mb-4">
+        {t.references.title}
+      </h2>
+      <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+        {t.references.subtitle}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      {t.references.items.map((reference) => (
+        <div class="bg-white border border-secondary-200 rounded-xl p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
+          <div class="flex items-start justify-between mb-6">
+            <div class="w-14 h-14 bg-primary-100 rounded-lg flex items-center justify-center group-hover:bg-primary-600 transition-colors duration-300">
+              <Building2 className="w-6 h-6 text-primary-600" />
+            </div>
+            <span class="text-xs font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
+              {reference.type}
+            </span>
+          </div>
+          
+          <div class="mb-4">
+            <h3 class="text-xl font-bold text-secondary-900 mb-2">
+              {reference.company}
+            </h3>
+            <p class="text-secondary-600 text-sm leading-relaxed">
+              {reference.description}
+            </p>
+          </div>
+          
+          <div class="mb-6">
+            <h4 class="text-sm font-semibold text-secondary-700 mb-3">
+              {lang === 'en' ? 'Services Provided' : 'Sağlanan Hizmetler'}
+            </h4>
+            <div class="flex flex-wrap gap-2">
+              {reference.services.map((service) => {
+                const IconComponent = serviceIcons[service] || CheckCircle;
+                return (
+                  <div class="flex items-center bg-secondary-50 px-3 py-1 rounded-full">
+                    <IconComponent className="w-3 h-3 text-secondary-600 mr-1" />
+                    <span class="text-xs font-medium text-secondary-700">{service}</span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          
+          <div class="border-t border-secondary-100 pt-4">
+            <h4 class="text-sm font-semibold text-secondary-700 mb-3 flex items-center">
+              <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
+              {lang === 'en' ? 'Results Achieved' : 'Elde Edilen Sonuçlar'}
+            </h4>
+            <div class="space-y-2">
+              {reference.results.map((result) => (
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-green-500 rounded-full mr-3"></div>
+                  <span class="text-sm font-medium text-green-700">{result}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center mt-12">
+      <a
+        href={lang === 'en' ? '/en/references' : '/references'}
+        class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105"
+      >
+        {lang === 'en' ? 'View All Case Studies' : 'Tüm Vaka Analizlerini Gör'}
+      </a>
+    </div>
+  </div>
+</section>

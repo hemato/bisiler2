@@ -1,0 +1,293 @@
+{
+  "site": {
+    "title": "TechCorp - Teknik Danışmanlık & CRM Çözümleri",
+    "description": "Dijital süreçlerinizi güçlendiren CRM çözümleri, web sitesi geliştirme ve teknik danışmanlık hizmetleri."
+  },
+  "nav": {
+    "home": "Anasayfa",
+    "about": "Hakkımızda",
+    "services": "Hizmetlerimiz",
+    "references": "Referanslar",
+    "faq": "SSS",
+    "blog": "Blog",
+    "contact": "İletişim"
+  },
+  "hero": {
+    "title": "Dijital Süreçlerinizi Güçlendirin",
+    "subtitle": "CRM çözümleri, web geliştirme ve teknik danışmanlık hizmetleriyle işletmenizin verimliliğini artırın",
+    "cta": "Bizimle İletişime Geçin"
+  },
+  "services": {
+    "title": "Hizmetlerimiz",
+    "subtitle": "Dijital dönüşüm yolculuğunuzda yanınızdayız",
+    "items": [
+      {
+        "title": "Web Sitesi Kurulumu",
+        "description": "Modern, responsive ve SEO uyumlu web siteleri tasarlayıp geliştiriyorum. İşletmenizin online varlığını güçlendirmek için her detayı düşünüyorum.",
+        "features": [
+          "Responsive Tasarım - Tüm cihazlarda mükemmel görünüm",
+          "Hızlı Yüklenme - Optimize edilmiş performans",
+          "SEO Uyumlu - Arama motorlarında üst sıralarda",
+          "Güvenli - SSL sertifikası ve güvenlik önlemleri"
+        ]
+      },
+      {
+        "title": "Form ve CRM Entegrasyonu",
+        "description": "Web formlarınızı CRM sisteminize sorunsuz entegre ederek, lead yönetiminizi otomatikleştiriyorum.",
+        "features": [
+          "Form tasarımı - Kullanıcı dostu arayüzler",
+          "CRM entegrasyonu - Otomatik veri aktarımı",
+          "Veri doğrulama - Hatasız bilgi toplama",
+          "Otomatik bildirimler - Anlık uyarı sistemleri"
+        ]
+      },
+      {
+        "title": "CRM Seçimi ve Kurulumu",
+        "description": "Zoho odaklı CRM çözümleri ile müşteri ilişkilerinizi profesyonel düzeyde yönetin.",
+        "features": [
+          "Zoho CRM uzmanı - Sertifikalı danışmanlık",
+          "Özelleştirme - İhtiyaçlarınıza özel yapılandırma",
+          "Veri migrasyonu - Mevcut verilerinizi güvenle taşıma",
+          "Ekip eğitimi - Kapsamlı kullanım eğitimleri"
+        ]
+      },
+      {
+        "title": "Otomasyon Sistemleri",
+        "description": "Zapier ve benzeri araçlarla iş süreçlerinizi otomatikleştirerek zaman ve maliyet tasarrufu sağlayın.",
+        "features": [
+          "Zapier entegrasyonu - 5000+ uygulama bağlantısı",
+          "Süreç otomasyonu - Manuel işlemleri ortadan kaldırma",
+          "Veri senkronizasyonu - Sistemler arası otomatik aktarım",
+          "Raporlama - Detaylı performans analizleri"
+        ]
+      },
+      {
+        "title": "SEO ve Teknik İyileştirme",
+        "description": "Arama motorlarında üst sıralara çıkmak için teknik optimizasyon ve SEO stratejileri uyguluyorum.",
+        "features": [
+          "Teknik SEO - Site hızı ve yapısal optimizasyon",
+          "Anahtar kelime analizi - Hedef kitle odaklı strateji",
+          "İçerik optimizasyonu - SEO uyumlu metin yazımı",
+          "Performans takibi - Google Analytics ve Search Console"
+        ]
+      },
+      {
+        "title": "Teknik Danışmanlık",
+        "description": "Dijital altyapınızı güçlendiren kapsamlı teknik danışmanlık hizmetleri sunuyorum.",
+        "features": [
+          "Sistem analizi - Mevcut durumun değerlendirilmesi",
+          "Teknoloji seçimi - İhtiyaçlara uygun çözümler",
+          "Güvenlik denetimi - Veri koruma ve güvenlik",
+          "Scalability planlaması - Büyüme odaklı altyapı"
+        ]
+      }
+    ]
+  },
+  "whyChooseUs": {
+    "title": "Neden Bizi Tercih Etmelisiniz?",
+    "subtitle": "Dijital dönüşüm yolculuğunuzda güvenilir ortağınız",
+    "items": [
+      {
+        "title": "Uzman Ekip",
+        "description": "Sertifikalı uzmanlarımızla en güncel teknolojileri kullanıyoruz"
+      },
+      {
+        "title": "Kişiselleştirilmiş Çözümler",
+        "description": "Her işletmenin ihtiyacına özel çözümler geliştiriyoruz"
+      },
+      {
+        "title": "7/24 Destek",
+        "description": "Proje sonrası sürekli destek ve bakım hizmeti sağlıyoruz"
+      },
+      {
+        "title": "Hızlı Teslimat",
+        "description": "Projelerinizi zamanında ve kaliteli şekilde teslim ediyoruz"
+      }
+    ]
+  },
+  "references": {
+    "title": "Referanslarımız",
+    "subtitle": "Başarılı projelerimizle müşterilerimizin güvenini kazandık",
+    "items": [
+      {
+        "company": "TechFlow Yazılım A.Ş.",
+        "type": "Teknoloji Firması",
+        "description": "50+ çalışanı olan yazılım geliştirme firması için kapsamlı dijital dönüşüm projesi gerçekleştirdik.",
+        "services": ["Web Sitesi", "CRM", "Otomasyon"],
+        "results": [
+          "%40 lead artışı",
+          "%60 süreç optimizasyonu",
+          "%25 müşteri memnuniyeti artışı"
+        ]
+      },
+      {
+        "company": "MediCare Özel Hastanesi",
+        "type": "Özel Hastane",
+        "description": "Hasta randevu sistemi ve CRM entegrasyonu ile hasta deneyimini dijitalleştirdik.",
+        "services": ["CRM", "Form Entegrasyonu", "Otomasyon"],
+        "results": [
+          "%50 randevu verimliliği",
+          "%35 hasta memnuniyeti artışı",
+          "%70 manuel işlem azalması"
+        ]
+      },
+      {
+        "company": "RetailMax Mağaza Zinciri",
+        "type": "Mağaza Zinciri",
+        "description": "15 şubeli mağaza zinciri için merkezi CRM ve stok yönetim sistemi kurduk.",
+        "services": ["CRM", "Web Sitesi", "SEO"],
+        "results": [
+          "%45 online satış artışı",
+          "%30 stok optimizasyonu",
+          "%55 müşteri takip verimliliği"
+        ]
+      }
+    ]
+  },
+  "about": {
+    "title": "Hakkımızda",
+    "subtitle": "Dijital çözümlerle işletmenizi geleceğe taşıyoruz",
+    "content": "TechCorp olarak, işletmelerin dijital dönüşüm sürecinde güvenilir danışmanlık ve teknik çözümler sunuyoruz. CRM sistemleri, web geliştirme ve otomasyon alanındaki uzmanlığımızla müşterilerimizin operasyonel verimliliğini artırıyor, büyüme hedeflerine ulaşmalarını sağlıyoruz.",
+    "experience": {
+      "title": "Deneyimimiz",
+      "content": "5+ yıllık sektör deneyimimizle 100'den fazla projeyi başarıyla tamamladık. Küçük işletmelerden büyük kurumlara kadar geniş bir yelpazede hizmet veriyoruz."
+    },
+    "expertise": {
+      "title": "Uzmanlık Alanlarımız",
+      "items": [
+        "Zoho CRM Danışmanlığı",
+        "Web Geliştirme (React, Node.js, PHP)",
+        "Otomasyon Sistemleri (Zapier, Make)",
+        "SEO ve Dijital Pazarlama",
+        "Veri Analizi ve Raporlama",
+        "Sistem Entegrasyonları"
+      ]
+    },
+    "certifications": {
+      "title": "Sertifikalarımız",
+      "items": [
+        "Zoho Certified Consultant",
+        "Google Analytics Certified",
+        "Google Ads Certified",
+        "Zapier Certified Expert",
+        "AWS Cloud Practitioner"
+      ]
+    },
+    "approach": {
+      "title": "Çalışma Yaklaşımımız",
+      "steps": [
+        {
+          "title": "Keşif ve Analiz",
+          "description": "İhtiyaçlarınızı detaylı analiz ederiz"
+        },
+        {
+          "title": "Strateji Geliştirme",
+          "description": "Size özel çözüm stratejisi oluştururuz"
+        },
+        {
+          "title": "Uygulama",
+          "description": "Projeyi adım adım hayata geçiririz"
+        },
+        {
+          "title": "Test ve Optimizasyon",
+          "description": "Kapsamlı testler ve iyileştirmeler yaparız"
+        },
+        {
+          "title": "Eğitim ve Destek",
+          "description": "Ekibinizi eğitir ve sürekli destek sağlarız"
+        }
+      ]
+    }
+  },
+  "contact": {
+    "title": "İletişim",
+    "subtitle": "Proje ihtiyaçlarınızı değerlendirelim",
+    "form": {
+      "name": "Ad Soyad",
+      "email": "E-posta",
+      "company": "Kurum Adı",
+      "services": "İlgilendiğiniz Hizmetler",
+      "message": "Mesajınız",
+      "submit": "Gönder",
+      "serviceOptions": [
+        "Web Sitesi Kurulumu",
+        "Form ve CRM Entegrasyonu", 
+        "CRM Seçimi ve Kurulumu",
+        "Otomasyon Sistemleri",
+        "SEO ve Teknik İyileştirme",
+        "Teknik Danışmanlık",
+        "Diğer"
+      ]
+    }
+  },
+  "servicesCta": {
+    "title": "Hangi Hizmete İhtiyacınız Var?",
+    "subtitle": "Size özel çözüm paketi hazırlamak için ücretsiz danışmanlık görüşmesi yapabiliriz. Projelerinizi detaylı olarak konuşalım.",
+    "items": [
+      {
+        "title": "Ücretsiz Danışmanlık",
+        "description": "İhtiyaçlarınızı analiz edelim"
+      },
+      {
+        "title": "Özel Teklif Hazırlama", 
+        "description": "Size özel çözüm paketi"
+      },
+      {
+        "title": "Hızlı Başlangıç",
+        "description": "Projenize hemen başlayalım"
+      }
+    ],
+    "cta": "Ücretsiz Danışmanlık Al"
+  },
+  "faq": {
+    "title": "Sık Sorulan Sorular",
+    "subtitle": "Hizmetlerimiz hakkında merak ettiğiniz soruların cevapları",
+    "items": [
+      {
+        "question": "CRM nedir ve neden önemlidir?",
+        "answer": "CRM (Customer Relationship Management), müşteri ilişkileri yönetim sistemidir. Tüm müşteri verilerinizi tek bir yerde toplayarak satış süreçlerinizi optimize eder, müşteri memnuniyetini artırır ve iş verimliliğinizi yükseltir."
+      },
+      {
+        "question": "Zoho CRM ile neler yapabilirsiniz?",
+        "answer": "Zoho CRM ile müşteri verilerini merkezi olarak yönetebilir, satış hunisini takip edebilir, otomatik raporlar alabilir, e-posta pazarlama yapabilir ve mobil uygulamayla her yerden erişim sağlayabilirsiniz. Ayrıca 40+ Zoho uygulamasıyla entegre çalışır."
+      },
+      {
+        "question": "CRM entegrasyonu ne kadar sürer?",
+        "answer": "Proje kapsamına göre değişmekle birlikte, standart bir CRM kurulumu 2-4 hafta arasında tamamlanır. Bu süreçte veri migrasyonu, özelleştirmeler, test aşaması ve ekip eğitimi dahildir."
+      },
+      {
+        "question": "Web sitesi SEO uyumlu hale nasıl gelir?",
+        "answer": "Teknik SEO optimizasyonu, anahtar kelime araştırması, içerik optimizasyonu, site hızı iyileştirmeleri ve Google Analytics kurulumu ile web sitenizi arama motorlarında üst sıralara taşıyoruz."
+      },
+      {
+        "question": "Proje sonrası destek sağlıyor musunuz?",
+        "answer": "Evet, tüm projelerimizde 6 ay ile 1 yıl arası ücretsiz teknik destek sağlıyoruz. Bu süreçte sistem güncellemeleri, küçük değişiklikler ve teknik sorunlar için destek alabilirsiniz."
+      },
+      {
+        "question": "Fiyatlandırma modeliniz nasıl?",
+        "answer": "Proje bazlı sabit fiyat modeliyle çalışıyoruz. İhtiyaç analizi sonrası size özel teklif hazırlıyoruz. Ödeme planları esnek olup, proje aşamalarına göre taksitlendirme imkanı sunuyoruz."
+      },
+      {
+        "question": "Hangi sektörlerde hizmet veriyorsunuz?",
+        "answer": "Teknoloji, sağlık, eğitim, perakende, danışmanlık ve hizmet sektörlerinde deneyimimiz bulunmaktadır. Her sektörün kendine özgü ihtiyaçlarına uygun çözümler geliştiriyoruz."
+      },
+      {
+        "question": "Uzaktan çalışma imkanınız var mı?",
+        "answer": "Evet, tüm hizmetlerimizi uzaktan sunabiliyoruz. Online toplantılar, ekran paylaşımı ve uzaktan erişim araçlarıyla projelerinizi başarıyla yönetiyoruz. Gerektiğinde yerinde destek de sağlayabiliriz."
+      }
+    ]
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "CRM, otomasyon ve dijital dönüşüm hakkında güncel içerikler",
+    "readMore": "Devamını Oku",
+    "backToBlog": "Blog'a Dön",
+    "recentPosts": "Son Yazılar",
+    "categories": "Kategoriler",
+    "tags": "Etiketler"
+  },
+  "footer": {
+    "description": "Dijital süreçlerinizi güçlendiren CRM çözümleri ve teknik danışmanlık hizmetleri.",
+    "rights": "Tüm hakları saklıdır."
+  }
+}

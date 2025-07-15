@@ -1,0 +1,71 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+import { ArrowRight } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+---
+
+<section class="relative bg-gradient-to-br from-primary-50 to-secondary-50 overflow-hidden">
+  <!-- Background Elements -->
+  <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
+  <div class="absolute top-0 right-0 w-96 h-96 bg-primary-200 rounded-full opacity-20 animate-float"></div>
+  <div class="absolute bottom-0 left-0 w-64 h-64 bg-secondary-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Content -->
+      <div class="animate-fade-in">
+        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight">
+          {t.hero.title}
+        </h1>
+        <p class="text-xl text-secondary-600 mb-8 leading-relaxed">
+          {t.hero.subtitle}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4">
+          <a
+            href={lang === 'en' ? '/en/contact' : '/contact'}
+            class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+          >
+            {t.hero.cta}
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </a>
+          <a
+            href={lang === 'en' ? '/en/services' : '/services'}
+            class="inline-flex items-center px-8 py-4 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200"
+          >
+            {t.nav.services}
+          </a>
+        </div>
+      </div>
+
+      <!-- Hero Image -->
+      <div class="relative animate-slide-up">
+        <div class="relative z-10">
+          <img
+            src="https://images.pexels.com/photos/3183197/pexels-photo-3183197.jpeg?auto=compress&cs=tinysrgb&w=800"
+            alt="Tech consulting team"
+            class="rounded-2xl shadow-2xl w-full"
+            loading="eager"
+          />
+          <div class="absolute inset-0 bg-gradient-to-t from-primary-600/20 to-transparent rounded-2xl"></div>
+        </div>
+        
+        <!-- Floating Elements -->
+        <div class="absolute -top-6 -right-6 w-24 h-24 bg-primary-600 rounded-full opacity-20 animate-float"></div>
+        <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-secondary-600 rounded-full opacity-20 animate-float" style="animation-delay: 0.5s;"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .bg-grid-secondary-100 {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+</style>

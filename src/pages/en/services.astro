@@ -1,0 +1,233 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Globe, Settings, Zap, Search, Users, BarChart3, CheckCircle, ArrowRight } from 'lucide-react';
+import ServicesCtaSection from '../../components/ServicesCtaSection.astro';
+
+const translations = await import('../../i18n/en.json');
+const t = translations.default;
+
+const detailedServices = [
+  {
+    icon: Globe,
+    title: t.services.items[0].title,
+    description: t.services.items[0].description,
+    badges: ['📱 Responsive', '⚡ Fast', '🔍 SEO', '🔒 Secure'],
+    process: [
+      'Needs analysis and discovery meeting',
+      'Wireframe and design approval',
+      'Development and testing phase',
+      'Content integration',
+      'Go-live and training'
+    ],
+    packageDetails: [
+      '5-15 pages',
+      'Content management system',
+      'Contact form',
+      'Google Analytics',
+      '1 year technical support',
+      'Hosting and domain consulting'
+    ]
+  },
+  {
+    icon: Settings,
+    title: t.services.items[1].title,
+    description: t.services.items[1].description,
+    badges: ['🎨 Design', '🔗 Integration', '✅ Validation', '🔔 Notifications'],
+    process: [
+      'Form requirements determination',
+      'Design and user experience planning',
+      'CRM integration setup',
+      'Testing and optimization',
+      'Go-live and monitoring'
+    ],
+    packageDetails: [
+      'Custom form design',
+      'Automatic CRM integration',
+      'Data validation systems',
+      'Email notifications',
+      'Reporting dashboard',
+      '6 months technical support'
+    ]
+  },
+  {
+    icon: Users,
+    title: t.services.items[2].title,
+    description: t.services.items[2].description,
+    badges: ['🏆 Zoho Expert', '⚙️ Customization', '📊 Reporting', '👥 Training'],
+    process: [
+      'Analysis of existing processes',
+      'CRM selection and planning',
+      'Setup and customization',
+      'Data migration',
+      'Team training and go-live'
+    ],
+    packageDetails: [
+      'Zoho CRM Professional license',
+      'Custom fields and workflow setup',
+      'Existing data migration',
+      'Comprehensive team training',
+      'Dashboards and reports',
+      '1 year continuous support'
+    ]
+  },
+  {
+    icon: Zap,
+    title: t.services.items[3].title,
+    description: t.services.items[3].description,
+    badges: ['⚡ Zapier', '🔄 Automation', '📈 Efficiency', '📊 Analytics'],
+    process: [
+      'Process mapping and analysis',
+      'Automation strategy development',
+      'Zapier/Make setups',
+      'Testing and optimization',
+      'Monitoring and improvement'
+    ],
+    packageDetails: [
+      '10+ application integrations',
+      'Custom automation scenarios',
+      'Error management systems',
+      'Performance reports',
+      'Continuous optimization',
+      '6 months technical support'
+    ]
+  },
+  {
+    icon: Search,
+    title: t.services.items[4].title,
+    description: t.services.items[4].description,
+    badges: ['🔍 Technical SEO', '📝 Content', '📊 Analytics', '🚀 Performance'],
+    process: [
+      'SEO audit and analysis',
+      'Keyword research',
+      'Technical optimizations',
+      'Content strategy',
+      'Monitoring and reporting'
+    ],
+    packageDetails: [
+      'Comprehensive SEO audit',
+      'Technical optimizations',
+      'Content strategy',
+      'Google Analytics setup',
+      'Monthly performance reports',
+      '3 months continuous optimization'
+    ]
+  },
+  {
+    icon: BarChart3,
+    title: t.services.items[5].title,
+    description: t.services.items[5].description,
+    badges: ['🔧 System Analysis', '🛡️ Security', '📈 Scalability', '💡 Strategy'],
+    process: [
+      'Current infrastructure assessment',
+      'Needs analysis and planning',
+      'Technology roadmap creation',
+      'Implementation support',
+      'Continuous consulting'
+    ],
+    packageDetails: [
+      'Comprehensive system analysis',
+      'Technology selection consulting',
+      'Security assessment',
+      'Scalability planning',
+      'Implementation support',
+      'Continuous consulting service'
+    ]
+  }
+];
+---
+
+<Layout title={`${t.nav.services} | TechCorp`}>
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.services.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.services.subtitle}
+        </p>
+      </div>
+
+      <div class="space-y-16">
+        {detailedServices.map((service, index) => {
+          const Icon = service.icon;
+          return (
+            <div class={`bg-white rounded-2xl shadow-xl overflow-hidden ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+              <div class="lg:flex">
+                <div class="lg:w-1/2 p-8 lg:p-12">
+                  <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                      <Icon className="w-8 h-8 text-primary-600" />
+                    </div>
+                    <div>
+                      <h3 class="text-2xl font-bold text-secondary-900">
+                        {service.title}
+                      </h3>
+                      <div class="flex flex-wrap gap-2 mt-2">
+                        {service.badges.map((badge) => (
+                          <span class="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p class="text-secondary-600 mb-8 leading-relaxed text-lg">
+                    {service.description}
+                  </p>
+                  
+                  <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-secondary-900 mb-4">
+                      Process
+                    </h4>
+                    <div class="space-y-3">
+                      {service.process.map((step, stepIndex) => (
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 flex-shrink-0">
+                            {stepIndex + 1}
+                          </div>
+                          <span class="text-secondary-700">{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <a
+                    href="/en/contact"
+                    class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105"
+                  >
+                    Get Quote
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </a>
+                </div>
+                
+                <div class="lg:w-1/2 bg-secondary-50 p-8 lg:p-12">
+                  <h4 class="text-xl font-semibold text-secondary-900 mb-6">
+                    Package Details
+                  </h4>
+                  <ul class="space-y-4">
+                    {service.packageDetails.map((detail) => (
+                      <li class="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                        <span class="text-secondary-700">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <div class="mt-8 p-4 bg-primary-50 rounded-lg">
+                    <p class="text-sm text-primary-700 font-medium">
+                      Contact us for detailed pricing and custom solutions
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+
+  <ServicesCtaSection />
+</Layout>

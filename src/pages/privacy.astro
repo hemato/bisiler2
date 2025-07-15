@@ -1,0 +1,247 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl } from '../i18n/utils';
+import { Shield, Lock, Eye, FileText, AlertCircle } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+---
+
+<Layout title={`${lang === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'} | TechCorp`}>
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <div class="flex items-center justify-center mb-6">
+          <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+            <Shield className="w-8 h-8 text-primary-600" />
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {lang === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {lang === 'en' 
+            ? 'How we collect, use and protect your personal data'
+            : 'Kişisel verilerinizi nasıl topladığımız, kullandığımız ve koruduğumuz'
+          }
+        </p>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-lg p-8 space-y-8">
+        {lang === 'en' ? (
+          <>
+            <section>
+              <div class="flex items-center mb-4">
+                <FileText className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">1. Data Controller</h2>
+              </div>
+              <p class="text-secondary-700 leading-relaxed">
+                TechCorp is the data controller for the personal data we collect and process. 
+                You can contact us at info@techcorp.com for any questions regarding your personal data.
+              </p>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <Eye className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">2. What Data We Collect</h2>
+              </div>
+              <div class="space-y-4">
+                <div class="bg-secondary-50 p-4 rounded-lg">
+                  <h3 class="font-semibold text-secondary-900 mb-2">Contact Information:</h3>
+                  <ul class="list-disc list-inside text-secondary-700 space-y-1">
+                    <li>Name and surname</li>
+                    <li>Email address</li>
+                    <li>Company name (optional)</li>
+                    <li>Phone number (if provided)</li>
+                  </ul>
+                </div>
+                <div class="bg-secondary-50 p-4 rounded-lg">
+                  <h3 class="font-semibold text-secondary-900 mb-2">Technical Information:</h3>
+                  <ul class="list-disc list-inside text-secondary-700 space-y-1">
+                    <li>IP address</li>
+                    <li>Browser type and version</li>
+                    <li>Operating system</li>
+                    <li>Pages visited and time spent</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <Lock className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">3. How We Use Your Data</h2>
+              </div>
+              <ul class="list-disc list-inside text-secondary-700 space-y-2">
+                <li>To respond to your inquiries and provide requested services</li>
+                <li>To send you information about our services (with your consent)</li>
+                <li>To improve our website and services</li>
+                <li>To comply with legal obligations</li>
+                <li>To analyze website usage and performance</li>
+              </ul>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <Shield className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">4. Data Security</h2>
+              </div>
+              <p class="text-secondary-700 leading-relaxed">
+                We implement appropriate technical and organizational measures to protect your personal data 
+                against unauthorized access, alteration, disclosure, or destruction. All data is encrypted 
+                during transmission and storage.
+              </p>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <AlertCircle className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">5. Your Rights</h2>
+              </div>
+              <ul class="list-disc list-inside text-secondary-700 space-y-2">
+                <li>Right to access your personal data</li>
+                <li>Right to rectification of inaccurate data</li>
+                <li>Right to erasure ("right to be forgotten")</li>
+                <li>Right to restrict processing</li>
+                <li>Right to data portability</li>
+                <li>Right to object to processing</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 class="text-2xl font-bold text-secondary-900 mb-4">6. Cookies</h2>
+              <p class="text-secondary-700 leading-relaxed">
+                We use cookies to improve your browsing experience and analyze website traffic. 
+                You can control cookie settings through your browser preferences.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-2xl font-bold text-secondary-900 mb-4">7. Contact</h2>
+              <p class="text-secondary-700 leading-relaxed">
+                For any questions about this privacy policy or your personal data, 
+                please contact us at: <a href="mailto:privacy@techcorp.com" class="text-primary-600 hover:underline">privacy@techcorp.com</a>
+              </p>
+            </section>
+
+            <div class="bg-primary-50 p-6 rounded-lg">
+              <p class="text-sm text-primary-700">
+                <strong>Last updated:</strong> January 2024<br>
+                This privacy policy may be updated from time to time. We will notify you of any significant changes.
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <section>
+              <div class="flex items-center mb-4">
+                <FileText className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">1. Veri Sorumlusu</h2>
+              </div>
+              <p class="text-secondary-700 leading-relaxed">
+                TechCorp, topladığımız ve işlediğimiz kişisel veriler için veri sorumlusudur. 
+                Kişisel verilerinizle ilgili her türlü soru için info@techcorp.com adresinden bize ulaşabilirsiniz.
+              </p>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <Eye className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">2. Topladığımız Veriler</h2>
+              </div>
+              <div class="space-y-4">
+                <div class="bg-secondary-50 p-4 rounded-lg">
+                  <h3 class="font-semibold text-secondary-900 mb-2">İletişim Bilgileri:</h3>
+                  <ul class="list-disc list-inside text-secondary-700 space-y-1">
+                    <li>Ad ve soyad</li>
+                    <li>E-posta adresi</li>
+                    <li>Şirket adı (isteğe bağlı)</li>
+                    <li>Telefon numarası (verilmişse)</li>
+                  </ul>
+                </div>
+                <div class="bg-secondary-50 p-4 rounded-lg">
+                  <h3 class="font-semibold text-secondary-900 mb-2">Teknik Bilgiler:</h3>
+                  <ul class="list-disc list-inside text-secondary-700 space-y-1">
+                    <li>IP adresi</li>
+                    <li>Tarayıcı türü ve versiyonu</li>
+                    <li>İşletim sistemi</li>
+                    <li>Ziyaret edilen sayfalar ve geçirilen süre</li>
+                  </ul>
+                </div>
+              </div>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <Lock className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">3. Verilerinizi Nasıl Kullanıyoruz</h2>
+              </div>
+              <ul class="list-disc list-inside text-secondary-700 space-y-2">
+                <li>Sorularınızı yanıtlamak ve talep edilen hizmetleri sağlamak için</li>
+                <li>Size hizmetlerimiz hakkında bilgi göndermek için (onayınızla)</li>
+                <li>Web sitemizi ve hizmetlerimizi geliştirmek için</li>
+                <li>Yasal yükümlülükleri yerine getirmek için</li>
+                <li>Web sitesi kullanımını ve performansını analiz etmek için</li>
+              </ul>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <Shield className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">4. Veri Güvenliği</h2>
+              </div>
+              <p class="text-secondary-700 leading-relaxed">
+                Kişisel verilerinizi yetkisiz erişim, değiştirme, ifşa etme veya imha etmeye karşı korumak için 
+                uygun teknik ve organizasyonel önlemler alıyoruz. Tüm veriler iletim ve depolama sırasında şifrelenir.
+              </p>
+            </section>
+
+            <section>
+              <div class="flex items-center mb-4">
+                <AlertCircle className="w-6 h-6 text-primary-600 mr-3" />
+                <h2 class="text-2xl font-bold text-secondary-900">5. Haklarınız</h2>
+              </div>
+              <ul class="list-disc list-inside text-secondary-700 space-y-2">
+                <li>Kişisel verilerinize erişim hakkı</li>
+                <li>Yanlış verilerin düzeltilmesi hakkı</li>
+                <li>Verilerin silinmesi hakkı ("unutulma hakkı")</li>
+                <li>İşlemenin kısıtlanması hakkı</li>
+                <li>Veri taşınabilirliği hakkı</li>
+                <li>İşlemeye itiraz etme hakkı</li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 class="text-2xl font-bold text-secondary-900 mb-4">6. Çerezler</h2>
+              <p class="text-secondary-700 leading-relaxed">
+                Tarama deneyiminizi geliştirmek ve web sitesi trafiğini analiz etmek için çerezler kullanıyoruz. 
+                Çerez ayarlarını tarayıcı tercihleriniz aracılığıyla kontrol edebilirsiniz.
+              </p>
+            </section>
+
+            <section>
+              <h2 class="text-2xl font-bold text-secondary-900 mb-4">7. İletişim</h2>
+              <p class="text-secondary-700 leading-relaxed">
+                Bu gizlilik politikası veya kişisel verileriniz hakkında sorularınız için 
+                lütfen bizimle iletişime geçin: <a href="mailto:privacy@techcorp.com" class="text-primary-600 hover:underline">privacy@techcorp.com</a>
+              </p>
+            </section>
+
+            <div class="bg-primary-50 p-6 rounded-lg">
+              <p class="text-sm text-primary-700">
+                <strong>Son güncelleme:</strong> Ocak 2024<br>
+                Bu gizlilik politikası zaman zaman güncellenebilir. Önemli değişiklikler hakkında sizi bilgilendireceğiz.
+              </p>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,220 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
+
+const translations = await import('../../i18n/en.json');
+const t = translations.default;
+
+const blogPosts = [
+  {
+    id: 1,
+    title: 'CRM Selection Guide for SMEs',
+    excerpt: 'Learn how to choose the right CRM system for your small or medium business. Key features, pricing models and implementation tips.',
+    date: '2024-01-15',
+    author: 'TechCorp Team',
+    category: 'CRM',
+    readTime: '5 min',
+    image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['CRM', 'SME', 'Digital Transformation']
+  },
+  {
+    id: 2,
+    title: 'Sales Process Automation with Zapier',
+    excerpt: 'Discover how to automate your sales processes using Zapier. From lead capture to customer follow-up, streamline everything.',
+    date: '2024-01-10',
+    author: 'TechCorp Team',
+    category: 'Automation',
+    readTime: '7 min',
+    image: 'https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Zapier', 'Automation', 'Sales']
+  },
+  {
+    id: 3,
+    title: 'SEO Fundamentals for Corporate Websites',
+    excerpt: 'Essential SEO strategies for corporate websites. Technical optimization, content strategy and performance measurement.',
+    date: '2024-01-05',
+    author: 'TechCorp Team',
+    category: 'SEO',
+    readTime: '6 min',
+    image: 'https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['SEO', 'Website', 'Digital Marketing']
+  },
+  {
+    id: 4,
+    title: 'Digital Transformation Success Stories',
+    excerpt: 'Real success stories from our clients\' digital transformation journeys. Challenges, solutions and results.',
+    date: '2023-12-28',
+    author: 'TechCorp Team',
+    category: 'Case Study',
+    readTime: '8 min',
+    image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Digital Transformation', 'Success Stories', 'CRM']
+  },
+  {
+    id: 5,
+    title: 'Form Integration Best Practices',
+    excerpt: 'Learn how to integrate web forms with CRM systems effectively. Data validation, automation and user experience tips.',
+    date: '2023-12-20',
+    author: 'TechCorp Team',
+    category: 'Integration',
+    readTime: '4 min',
+    image: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Forms', 'Integration', 'CRM']
+  },
+  {
+    id: 6,
+    title: 'Customer Data Management Strategies',
+    excerpt: 'Effective strategies for managing customer data. GDPR compliance, data security and analytics insights.',
+    date: '2023-12-15',
+    author: 'TechCorp Team',
+    category: 'Data Management',
+    readTime: '6 min',
+    image: 'https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Data Management', 'GDPR', 'Security']
+  }
+];
+
+const categories = [...new Set(blogPosts.map(post => post.category))];
+const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
+---
+
+<Layout title={`${t.nav.blog} | TechCorp`}>
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <div class="flex items-center justify-center mb-6">
+          <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+            <BookOpen className="w-8 h-8 text-primary-600" />
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.blog.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.blog.subtitle}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {blogPosts.map((post) => (
+              <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
+                <div class="relative overflow-hidden">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
+                  <div class="absolute top-4 left-4">
+                    <span class="bg-primary-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                      {post.category}
+                    </span>
+                  </div>
+                </div>
+                
+                <div class="p-6">
+                  <div class="flex items-center text-sm text-secondary-500 mb-3">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <span>{new Date(post.date).toLocaleDateString('en-US')}</span>
+                    <span class="mx-2">•</span>
+                    <User className="w-4 h-4 mr-1" />
+                    <span>{post.author}</span>
+                    <span class="mx-2">•</span>
+                    <span>{post.readTime}</span>
+                  </div>
+                  
+                  <h2 class="text-xl font-bold text-secondary-900 mb-3 group-hover:text-primary-600 transition-colors">
+                    {post.title}
+                  </h2>
+                  
+                  <p class="text-secondary-600 mb-4 leading-relaxed">
+                    {post.excerpt}
+                  </p>
+                  
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    {post.tags.slice(0, 3).map((tag) => (
+                      <span class="bg-secondary-100 text-secondary-700 px-2 py-1 rounded text-xs">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <a
+                    href={`/en/blog/${post.id}`}
+                    class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors group-hover:text-primary-700"
+                  >
+                    {t.blog.readMore}
+                    <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="space-y-8">
+            <!-- Categories -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {t.blog.categories}
+              </h3>
+              <div class="space-y-2">
+                {categories.map((category) => (
+                  <a
+                    href="#"
+                    class="block text-secondary-600 hover:text-primary-600 transition-colors py-1"
+                  >
+                    {category}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {t.blog.tags}
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {allTags.map((tag) => (
+                  <a
+                    href="#"
+                    class="bg-secondary-100 hover:bg-primary-100 text-secondary-700 hover:text-primary-700 px-3 py-1 rounded-full text-sm transition-colors"
+                  >
+                    {tag}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {t.blog.recentPosts}
+              </h3>
+              <div class="space-y-4">
+                {blogPosts.slice(0, 3).map((post) => (
+                  <a
+                    href={`/en/blog/${post.id}`}
+                    class="block group"
+                  >
+                    <h4 class="text-sm font-medium text-secondary-900 group-hover:text-primary-600 transition-colors mb-1">
+                      {post.title}
+                    </h4>
+                    <p class="text-xs text-secondary-500">
+                      {new Date(post.date).toLocaleDateString('en-US')}
+                    </p>
+                  </a>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>

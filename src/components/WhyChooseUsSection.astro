@@ -1,0 +1,46 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+import { Award, Users, Clock, Zap } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+
+const icons = [Award, Users, Clock, Zap];
+---
+
+<section class="py-20 bg-secondary-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-secondary-900 mb-4">
+        {t.whyChooseUs.title}
+      </h2>
+      <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+        {t.whyChooseUs.subtitle}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      {t.whyChooseUs.items.map((item, index) => {
+        const Icon = icons[index];
+        return (
+          <div class="text-center group">
+            <div class="flex items-center justify-center w-20 h-20 bg-primary-100 rounded-full mx-auto mb-6 group-hover:bg-primary-600 transition-colors duration-300">
+              <Icon className="w-10 h-10 text-primary-600 group-hover:text-white transition-colors duration-300" />
+            </div>
+            <h3 class="text-xl font-semibold text-secondary-900 mb-4">
+              {item.title}
+            </h3>
+            <p class="text-secondary-600 leading-relaxed">
+              {item.description}
+            </p>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

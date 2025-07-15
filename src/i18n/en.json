@@ -1,0 +1,293 @@
+{
+  "site": {
+    "title": "TechCorp - Technical Consulting & CRM Solutions",
+    "description": "CRM solutions, web development, and technical consulting services to enhance your digital processes."
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "references": "References",
+    "faq": "FAQ",
+    "blog": "Blog",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Enhance Your Digital Processes",
+    "subtitle": "Increase your business efficiency with CRM solutions, web development, and technical consulting services",
+    "cta": "Get in Touch"
+  },
+  "services": {
+    "title": "Our Services",
+    "subtitle": "We're with you on your digital transformation journey",
+    "items": [
+      {
+        "title": "Website Setup",
+        "description": "I design and develop modern, responsive, and SEO-friendly websites. I consider every detail to strengthen your business's online presence.",
+        "features": [
+          "Responsive Design - Perfect appearance on all devices",
+          "Fast Loading - Optimized performance",
+          "SEO Friendly - Top rankings in search engines",
+          "Secure - SSL certificate and security measures"
+        ]
+      },
+      {
+        "title": "Form and CRM Integration",
+        "description": "I seamlessly integrate your web forms with your CRM system, automating your lead management.",
+        "features": [
+          "Form design - User-friendly interfaces",
+          "CRM integration - Automatic data transfer",
+          "Data validation - Error-free information collection",
+          "Automatic notifications - Instant alert systems"
+        ]
+      },
+      {
+        "title": "CRM Selection & Setup",
+        "description": "Manage your customer relationships professionally with Zoho-focused CRM solutions.",
+        "features": [
+          "Zoho CRM expert - Certified consulting",
+          "Customization - Configuration tailored to your needs",
+          "Data migration - Safely transfer your existing data",
+          "Team training - Comprehensive usage training"
+        ]
+      },
+      {
+        "title": "Automation Systems",
+        "description": "Save time and costs by automating your business processes with Zapier and similar tools.",
+        "features": [
+          "Zapier integration - 5000+ app connections",
+          "Process automation - Eliminate manual operations",
+          "Data synchronization - Automatic transfer between systems",
+          "Reporting - Detailed performance analysis"
+        ]
+      },
+      {
+        "title": "SEO & Technical Optimization",
+        "description": "I apply technical optimization and SEO strategies to reach top rankings in search engines.",
+        "features": [
+          "Technical SEO - Site speed and structural optimization",
+          "Keyword analysis - Target audience-focused strategy",
+          "Content optimization - SEO-friendly text writing",
+          "Performance tracking - Google Analytics and Search Console"
+        ]
+      },
+      {
+        "title": "Technical Consulting",
+        "description": "I provide comprehensive technical consulting services to strengthen your digital infrastructure.",
+        "features": [
+          "System analysis - Assessment of current situation",
+          "Technology selection - Solutions suitable for needs",
+          "Security audit - Data protection and security",
+          "Scalability planning - Growth-oriented infrastructure"
+        ]
+      }
+    ]
+  },
+  "whyChooseUs": {
+    "title": "Why Choose Us?",
+    "subtitle": "Your trusted partner in digital transformation journey",
+    "items": [
+      {
+        "title": "Expert Team",
+        "description": "We use the latest technologies with our certified experts"
+      },
+      {
+        "title": "Personalized Solutions",
+        "description": "We develop solutions tailored to each business's needs"
+      },
+      {
+        "title": "24/7 Support",
+        "description": "We provide continuous support and maintenance after the project"
+      },
+      {
+        "title": "Fast Delivery",
+        "description": "We deliver your projects on time and with quality"
+      }
+    ]
+  },
+  "references": {
+    "title": "Our References",
+    "subtitle": "We earned our customers' trust with our successful projects",
+    "items": [
+      {
+        "company": "TechFlow Software Inc.",
+        "type": "Technology Company",
+        "description": "We implemented a comprehensive digital transformation project for a software development company with 50+ employees.",
+        "services": ["Website", "CRM", "Automation"],
+        "results": [
+          "40% lead increase",
+          "60% process optimization",
+          "25% customer satisfaction increase"
+        ]
+      },
+      {
+        "company": "MediCare Private Hospital",
+        "type": "Private Hospital",
+        "description": "We digitized the patient experience with patient appointment system and CRM integration.",
+        "services": ["CRM", "Form Integration", "Automation"],
+        "results": [
+          "50% appointment efficiency",
+          "35% patient satisfaction increase",
+          "70% manual process reduction"
+        ]
+      },
+      {
+        "company": "RetailMax Store Chain",
+        "type": "Store Chain",
+        "description": "We established a central CRM and inventory management system for a 15-branch store chain.",
+        "services": ["CRM", "Website", "SEO"],
+        "results": [
+          "45% online sales increase",
+          "30% inventory optimization",
+          "55% customer tracking efficiency"
+        ]
+      }
+    ]
+  },
+  "about": {
+    "title": "About Us",
+    "subtitle": "Taking your business to the future with digital solutions",
+    "content": "As TechCorp, we provide reliable consulting and technical solutions for businesses in their digital transformation process. With our expertise in CRM systems, web development, and automation, we increase our clients' operational efficiency and help them achieve their growth goals.",
+    "experience": {
+      "title": "Our Experience",
+      "content": "With 5+ years of industry experience, we have successfully completed over 100 projects. We serve a wide range from small businesses to large corporations."
+    },
+    "expertise": {
+      "title": "Our Areas of Expertise",
+      "items": [
+        "Zoho CRM Consulting",
+        "Web Development (React, Node.js, PHP)",
+        "Automation Systems (Zapier, Make)",
+        "SEO and Digital Marketing",
+        "Data Analysis and Reporting",
+        "System Integrations"
+      ]
+    },
+    "certifications": {
+      "title": "Our Certifications",
+      "items": [
+        "Zoho Certified Consultant",
+        "Google Analytics Certified",
+        "Google Ads Certified",
+        "Zapier Certified Expert",
+        "AWS Cloud Practitioner"
+      ]
+    },
+    "approach": {
+      "title": "Our Working Approach",
+      "steps": [
+        {
+          "title": "Discovery and Analysis",
+          "description": "We analyze your needs in detail"
+        },
+        {
+          "title": "Strategy Development",
+          "description": "We create a solution strategy tailored to you"
+        },
+        {
+          "title": "Implementation",
+          "description": "We bring the project to life step by step"
+        },
+        {
+          "title": "Testing and Optimization",
+          "description": "We conduct comprehensive tests and improvements"
+        },
+        {
+          "title": "Training and Support",
+          "description": "We train your team and provide continuous support"
+        }
+      ]
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Let's evaluate your project needs",
+    "form": {
+      "name": "Full Name",
+      "email": "Email",
+      "company": "Company Name",
+      "services": "Services of Interest",
+      "message": "Your Message",
+      "submit": "Send",
+      "serviceOptions": [
+        "Website Setup",
+        "Form and CRM Integration",
+        "CRM Selection & Setup", 
+        "Automation Systems",
+        "SEO & Technical Optimization",
+        "Technical Consulting",
+        "Other"
+      ]
+    }
+  },
+  "servicesCta": {
+    "title": "Which Service Do You Need?",
+    "subtitle": "We can have a free consultation meeting to prepare a custom solution package for you. Let's discuss your projects in detail.",
+    "items": [
+      {
+        "title": "Free Consultation",
+        "description": "Let's analyze your needs"
+      },
+      {
+        "title": "Custom Proposal Preparation",
+        "description": "Custom solution package for you"
+      },
+      {
+        "title": "Quick Start",
+        "description": "Let's start your project right away"
+      }
+    ],
+    "cta": "Get Free Consultation"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Answers to your questions about our services",
+    "items": [
+      {
+        "question": "What is CRM and why is it important?",
+        "answer": "CRM (Customer Relationship Management) is a system for managing customer relationships. It optimizes your sales processes by collecting all customer data in one place, increases customer satisfaction and enhances business efficiency."
+      },
+      {
+        "question": "What can you do with Zoho CRM?",
+        "answer": "With Zoho CRM, you can centrally manage customer data, track sales funnel, get automatic reports, do email marketing, and access from anywhere with mobile app. It also integrates with 40+ Zoho applications."
+      },
+      {
+        "question": "How long does CRM integration take?",
+        "answer": "While it varies according to project scope, a standard CRM setup is completed in 2-4 weeks. This process includes data migration, customizations, testing phase and team training."
+      },
+      {
+        "question": "How does a website become SEO compatible?",
+        "answer": "We bring your website to the top rankings in search engines with technical SEO optimization, keyword research, content optimization, site speed improvements and Google Analytics setup."
+      },
+      {
+        "question": "Do you provide post-project support?",
+        "answer": "Yes, we provide free technical support for 6 months to 1 year in all our projects. During this process, you can get support for system updates, minor changes and technical issues."
+      },
+      {
+        "question": "What is your pricing model?",
+        "answer": "We work with a project-based fixed price model. We prepare a customized offer for you after needs analysis. Payment plans are flexible and we offer installment options according to project phases."
+      },
+      {
+        "question": "Which sectors do you serve?",
+        "answer": "We have experience in technology, healthcare, education, retail, consulting and service sectors. We develop solutions suitable for the specific needs of each sector."
+      },
+      {
+        "question": "Do you have remote working capability?",
+        "answer": "Yes, we can provide all our services remotely. We successfully manage your projects with online meetings, screen sharing and remote access tools. We can also provide on-site support when necessary."
+      }
+    ]
+  },
+  "blog": {
+    "title": "Blog",
+    "subtitle": "Current content about CRM, automation and digital transformation",
+    "readMore": "Read More",
+    "backToBlog": "Back to Blog",
+    "recentPosts": "Recent Posts",
+    "categories": "Categories",
+    "tags": "Tags"
+  },
+  "footer": {
+    "description": "CRM solutions and technical consulting services to enhance your digital processes.",
+    "rights": "All rights reserved."
+  }
+}

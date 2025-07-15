@@ -1,0 +1,77 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+import { Globe, Settings, Zap, Search, Users, BarChart3 } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+
+const serviceIcons = [Globe, Settings, Users, Zap, Search, BarChart3];
+---
+
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-4xl font-bold text-secondary-900 mb-4">
+        {t.services.title}
+      </h2>
+      <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+        {t.services.subtitle}
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {t.services.items.map((service, index) => {
+        const Icon = serviceIcons[index];
+        return (
+          <div class="group bg-white rounded-xl p-8 shadow-lg border border-secondary-100 hover:shadow-2xl hover:border-primary-200 transition-all duration-300 hover:-translate-y-2">
+            <div class="flex items-center justify-center w-16 h-16 bg-primary-100 rounded-lg mb-6 group-hover:bg-primary-600 transition-colors duration-300">
+              <Icon className="w-8 h-8 text-primary-600 group-hover:text-white transition-colors duration-300" />
+            </div>
+            
+            <h3 class="text-xl font-semibold text-secondary-900 mb-4">
+              {service.title}
+            </h3>
+            
+            <p class="text-secondary-600 mb-6 leading-relaxed">
+              {service.description}
+            </p>
+            
+            <ul class="space-y-3 mb-8">
+              {service.features.map((feature) => {
+                const [title, description] = feature.split(' - ');
+                return (
+                  <li class="flex items-start">
+                    <div class="flex-shrink-0 w-2 h-2 bg-primary-600 rounded-full mt-2 mr-3"></div>
+                    <div class="text-sm">
+                      <span class="font-medium text-secondary-900">{title}</span>
+                      {description && (
+                        <span class="text-secondary-600"> - {description}</span>
+                      )}
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            
+            <div class="pt-6 border-t border-secondary-100">
+              <a
+                href={lang === 'en' ? '/en/contact' : '/contact'}
+                class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors group-hover:text-primary-700"
+              >
+                {lang === 'en' ? 'Get Quote' : 'Fiyat Al'}
+                <svg class="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                </svg>
+              </a>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

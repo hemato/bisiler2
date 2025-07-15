@@ -1,0 +1,72 @@
+---
+import { getLangFromUrl } from '../i18n/utils';
+import { Linkedin, Mail, Phone } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+
+const translations = lang === 'en' 
+  ? await import('../i18n/en.json')
+  : await import('../i18n/tr.json');
+
+const t = translations.default;
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-secondary-900 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+      <!-- Company Info -->
+      <div class="md:col-span-2">
+        <h3 class="text-2xl font-bold text-white mb-4">TechCorp</h3>
+        <p class="text-secondary-300 mb-6 max-w-md">
+          {t.footer.description}
+        </p>
+        <div class="flex space-x-4">
+          <a href="#" class="text-secondary-400 hover:text-white transition-colors">
+            <Linkedin className="w-5 h-5" />
+          </a>
+          <a href="mailto:info@techcorp.com" class="text-secondary-400 hover:text-white transition-colors">
+            <Mail className="w-5 h-5" />
+          </a>
+          <a href="tel:+902121234567" class="text-secondary-400 hover:text-white transition-colors">
+            <Phone className="w-5 h-5" />
+          </a>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h4 class="text-lg font-semibold text-white mb-4">Hızlı Bağlantılar</h4>
+        <ul class="space-y-2">
+          <li><a href={lang === 'en' ? '/en/services' : '/services'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.services}</a></li>
+          <li><a href={lang === 'en' ? '/en/about' : '/about'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.about}</a></li>
+          <li><a href={lang === 'en' ? '/en/references' : '/references'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.references}</a></li>
+          <li><a href={lang === 'en' ? '/en/contact' : '/contact'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.contact}</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div>
+        <h4 class="text-lg font-semibold text-white mb-4">İletişim</h4>
+        <div class="space-y-2 text-secondary-300">
+          <p>info@techcorp.com</p>
+          <p>+90 212 123 45 67</p>
+          <p>İstanbul, Türkiye</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-secondary-800 mt-12 pt-8">
+      <div class="flex flex-col md:flex-row justify-between items-center">
+        <p class="text-secondary-400 text-sm">
+          © {currentYear} TechCorp. {t.footer.rights}
+        </p>
+        <div class="flex space-x-6 mt-4 md:mt-0">
+          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Gizlilik Politikası</a>
+          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Çerez Politikası</a>
+          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Kullanım Şartları</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
