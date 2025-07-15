@@ -1,7 +1,8 @@
 {
   "site": {
     "title": "TechCorp - Teknik Danışmanlık & CRM Çözümleri",
-    "description": "Dijital süreçlerinizi güçlendiren CRM çözümleri, web sitesi geliştirme ve teknik danışmanlık hizmetleri."
+    "description": "Dijital süreçlerinizi güçlendiren CRM çözümleri, web sitesi geliştirme ve teknik danışmanlık hizmetleri.",
+    "metaDescription": "Profesyonel CRM danışmanlığı, web geliştirme ve iş otomasyonu hizmetleri. Zoho CRM uzmanları ile dijital süreçlerinizi optimize edin ve verimliliğinizi artırın."
   },
   "nav": {
     "home": "Anasayfa",
@@ -20,6 +21,7 @@
   "services": {
     "title": "Hizmetlerimiz",
     "subtitle": "Dijital dönüşüm yolculuğunuzda yanınızdayız",
+    "metaDescription": "Web sitesi kurulumu, CRM entegrasyonu, otomasyon sistemleri, SEO ve teknik danışmanlık hizmetlerimizi keşfedin. Zoho CRM uzmanı ekibimizle dijital dönüşümünüzü gerçekleştirin.",
     "items": [
       {
         "title": "Web Sitesi Kurulumu",
@@ -108,6 +110,7 @@
   "references": {
     "title": "Referanslarımız",
     "subtitle": "Başarılı projelerimizle müşterilerimizin güvenini kazandık",
+    "metaDescription": "TechFlow, MediCare ve RetailMax gibi başarılı projelerimizi inceleyin. CRM ve dijital dönüşüm projelerindeki deneyimimizi keşfedin.",
     "items": [
       {
         "company": "TechFlow Yazılım A.Ş.",
@@ -147,6 +150,7 @@
   "about": {
     "title": "Hakkımızda",
     "subtitle": "Dijital çözümlerle işletmenizi geleceğe taşıyoruz",
+    "metaDescription": "TechCorp olarak 5+ yıllık deneyimimizle CRM danışmanlığı, web geliştirme ve dijital dönüşüm hizmetleri sunuyoruz. Zoho CRM uzmanı ekibimizle tanışın.",
     "content": "TechCorp olarak, işletmelerin dijital dönüşüm sürecinde güvenilir danışmanlık ve teknik çözümler sunuyoruz. CRM sistemleri, web geliştirme ve otomasyon alanındaki uzmanlığımızla müşterilerimizin operasyonel verimliliğini artırıyor, büyüme hedeflerine ulaşmalarını sağlıyoruz.",
     "experience": {
       "title": "Deneyimimiz",
@@ -202,6 +206,7 @@
   "contact": {
     "title": "İletişim",
     "subtitle": "Proje ihtiyaçlarınızı değerlendirelim",
+    "metaDescription": "CRM danışmanlığı ve web geliştirme projeleriniz için bizimle iletişime geçin. Ücretsiz danışmanlık ve özel çözüm teklifleri alın.",
     "form": {
       "name": "Ad Soyad",
       "email": "E-posta",
@@ -242,6 +247,7 @@
   "faq": {
     "title": "Sık Sorulan Sorular",
     "subtitle": "Hizmetlerimiz hakkında merak ettiğiniz soruların cevapları",
+    "metaDescription": "CRM, Zoho, web geliştirme ve teknik danışmanlık hizmetlerimiz hakkında sık sorulan soruların cevaplarını bulun. Uzman ekibimizden detaylı bilgiler.",
     "items": [
       {
         "question": "CRM nedir ve neden önemlidir?",
@@ -280,6 +286,7 @@
   "blog": {
     "title": "Blog",
     "subtitle": "CRM, otomasyon ve dijital dönüşüm hakkında güncel içerikler",
+    "metaDescription": "CRM stratejileri, otomasyon ipuçları, SEO rehberleri ve dijital dönüşüm hakkında uzman yazılarımızı okuyun. TechCorp blog sayfası.",
     "readMore": "Devamını Oku",
     "backToBlog": "Blog'a Dön",
     "recentPosts": "Son Yazılar",

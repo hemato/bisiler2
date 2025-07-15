@@ -30,7 +30,7 @@ export default function CookieBanner() {
           <Cookie className="w-6 h-6 text-primary-600 flex-shrink-0" />
           <p className="text-secondary-700 text-sm">
             Bu web sitesi, deneyiminizi geliştirmek için çerezler kullanır. 
-            Detaylar için <a href="/privacy" className="text-primary-600 hover:underline">gizlilik politikamızı</a> inceleyin.
+            Detaylar için <a href="/gizlilik-politikasi" className="text-primary-600 hover:underline">gizlilik politikamızı</a> inceleyin.
           </p>
         </div>
         

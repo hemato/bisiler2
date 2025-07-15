@@ -253,7 +253,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
             </>
           ) : (
             <>
-              <a href="/privacy" target="_blank" className="text-primary-600 hover:underline">
+              <a href="/gizlilik-politikasi" target="_blank" className="text-primary-600 hover:underline">
                 Gizlilik Politikası
               </a>
               'nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum. *

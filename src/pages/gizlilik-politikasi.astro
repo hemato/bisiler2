@@ -1,15 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl } from '../i18n/utils';
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Shield, Lock, Eye, FileText, AlertCircle } from 'lucide-react';
 
 const lang = getLangFromUrl(Astro.url);
-
-const translations = lang === 'en' 
-  ? await import('../i18n/en.json')
-  : await import('../i18n/tr.json');
-
-const t = translations.default;
+const t = await getTranslations(lang);
 ---
 
 <Layout title={`${lang === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'} | TechCorp`}>

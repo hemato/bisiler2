@@ -1,18 +1,16 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl } from '../i18n/utils';
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Award, Users, CheckCircle, ArrowRight } from 'lucide-react';
 
 const lang = getLangFromUrl(Astro.url);
-
-const translations = lang === 'en' 
-  ? await import('../i18n/en.json')
-  : await import('../i18n/tr.json');
-
-const t = translations.default;
+const t = await getTranslations(lang);
 ---
 
-<Layout title={`${t.nav.about} | TechCorp`}>
+<Layout 
+  title={`${t.nav.about} | TechCorp`}
+  description={t.about.metaDescription}
+>
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
@@ -42,19 +40,27 @@ const t = translations.default;
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="text-3xl font-bold text-primary-600 mb-2">5+</div>
-              <div class="text-secondary-700">Yıl Deneyim</div>
+              <div class="text-secondary-700">
+                {lang === 'en' ? 'Years Experience' : 'Yıl Deneyim'}
+              </div>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="text-3xl font-bold text-primary-600 mb-2">50+</div>
-              <div class="text-secondary-700">Mutlu Müşteri</div>
+              <div class="text-secondary-700">
+                {lang === 'en' ? 'Happy Clients' : 'Mutlu Müşteri'}
+              </div>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="text-3xl font-bold text-primary-600 mb-2">100+</div>
-              <div class="text-secondary-700">Proje Tamamlandı</div>
+              <div class="text-secondary-700">
+                {lang === 'en' ? 'Projects Completed' : 'Proje Tamamlandı'}
+              </div>
             </div>
             <div class="bg-white p-6 rounded-lg shadow-sm">
               <div class="text-3xl font-bold text-primary-600 mb-2">24/7</div>
-              <div class="text-secondary-700">Destek</div>
+              <div class="text-secondary-700">
+                {lang === 'en' ? 'Support' : 'Destek'}
+              </div>
             </div>
           </div>
         </div>
@@ -135,35 +141,29 @@ const t = translations.default;
     </div>
   </section>
 
-  <!-- CTA Section -->
-  <section class="py-20 bg-primary-600">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl font-bold text-white mb-6">
-        {lang === 'en' ? 'Ready to Work With Us?' : 'Bizimle Çalışmaya Hazır mısınız?'}
-      </h2>
-      <p class="text-xl text-primary-100 mb-8">
-        {lang === 'en' 
-          ? 'Let\'s discuss your project and create a customized solution for your business.'
-          : 'Projenizi konuşalım ve işletmeniz için özelleştirilmiş bir çözüm oluşturalım.'
-        }
-      </p>
-      <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a
-          href={lang === 'en' ? '/en/contact' : '/contact'}
-          class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
-        >
-          {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}
-        </a>
-        <a
-          href={lang === 'en' ? '/en/services' : '/services'}
-          class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary-600 transition-all duration-200"
-        >
-          {lang === 'en' ? 'View Services' : 'Hizmetleri Görüntüle'}
-        </a>
+  <!-- Values Section -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {lang === 'en' ? 'Our Values' : 'Değerlerimiz'}
+        </h2>
       </div>
-    </div>
-  </section>
-</Layout>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center">
+          <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div class="w-8 h-8 bg-primary-600 rounded-full"></div>
+          </div>
+          <h3 class="text-xl font-semibold text-secondary-900 mb-4">
+            {lang === 'en' ? 'Innovation' : 'İnovasyon'}
+          </h3>
+          <p class="text-secondary-600">
+            {lang === 'en' 
+              ? 'We constantly explore new technologies and methods to provide the best solutions for our clients.'
+              : 'Müşterilerimize en iyi çözümleri sunmak için sürekli yeni teknolojiler ve yöntemler keşfediyoruz.'
+            }
+          </p>
         </div>
 
         <div class="text-center">
@@ -195,6 +195,35 @@ const t = translations.default;
             }
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-primary-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">
+        {lang === 'en' ? 'Ready to Work With Us?' : 'Bizimle Çalışmaya Hazır mısınız?'}
+      </h2>
+      <p class="text-xl text-primary-100 mb-8">
+        {lang === 'en' 
+          ? 'Let\'s discuss your project and create a customized solution for your business.'
+          : 'Projenizi konuşalım ve işletmeniz için özelleştirilmiş bir çözüm oluşturalım.'
+        }
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href={lang === 'en' ? '/en/contact' : '/iletisim'}
+          class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
+        >
+          {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}
+        </a>
+        <a
+          href={lang === 'en' ? '/en/services' : '/hizmetlerimiz'}
+          class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary-600 transition-all duration-200"
+        >
+          {lang === 'en' ? 'View Services' : 'Hizmetleri Görüntüle'}
+        </a>
       </div>
     </div>
   </section>

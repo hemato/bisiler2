@@ -1,15 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl } from '../i18n/utils';
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Building2, TrendingUp, CheckCircle, Globe, Users, Zap, Calendar, Award } from 'lucide-react';
+import { generateReviewSchema } from '../utils/structured-data';
 
 const lang = getLangFromUrl(Astro.url);
-
-const translations = lang === 'en' 
-  ? await import('../i18n/en.json')
-  : await import('../i18n/tr.json');
-
-const t = translations.default;
+const t = await getTranslations(lang);
 
 const serviceIcons = {
   'Web Sitesi': Globe,
@@ -22,7 +18,44 @@ const serviceIcons = {
   'SEO': TrendingUp
 };
 
-const detailedReferences = [
+const detailedReferences = lang === 'en' ? [
+  {
+    company: "TechFlow Software Inc.",
+    type: "Technology Company",
+    description: "We implemented a comprehensive digital transformation project for a software development company with 50+ employees. We increased operational efficiency by automating customer tracking processes.",
+    services: ["Website", "CRM", "Automation"],
+    results: ["40% lead increase", "60% process optimization", "25% customer satisfaction increase"],
+    duration: "3 months",
+    technologies: ["Zoho CRM", "Zapier", "React", "Node.js"],
+    challenge: "Opportunities were being missed due to scattered customer data and manual processes.",
+    solution: "We established a central CRM system and developed an automatic lead routing system.",
+    testimonial: "Thanks to TechCorp, our customer tracking processes have completely changed. We no longer miss any opportunities."
+  },
+  {
+    company: "MediCare Private Hospital",
+    type: "Private Hospital",
+    description: "We digitized the patient experience with patient appointment system and CRM integration. We optimized online appointment system and patient tracking processes.",
+    services: ["CRM", "Form Integration", "Automation"],
+    results: ["50% appointment efficiency", "35% patient satisfaction increase", "70% manual process reduction"],
+    duration: "2 months",
+    technologies: ["Zoho CRM", "Custom Forms", "Email Automation"],
+    challenge: "Manual appointment system and scattered patient information.",
+    solution: "We established a central patient management system with online appointment form and CRM integration.",
+    testimonial: "Our patient appointment processes are now much more efficient and patient satisfaction has increased."
+  },
+  {
+    company: "RetailMax Store Chain",
+    type: "Store Chain",
+    description: "We established a central CRM and inventory management system for a 15-branch store chain. We strengthened online sales channels and provided omnichannel experience.",
+    services: ["CRM", "Website", "SEO"],
+    results: ["45% online sales increase", "30% inventory optimization", "55% customer tracking efficiency"],
+    duration: "4 months",
+    technologies: ["Zoho CRM", "E-commerce Platform", "SEO Tools"],
+    challenge: "Lack of coordination between branches and low online visibility.",
+    solution: "We strengthened online presence with central CRM system and SEO optimization.",
+    testimonial: "Our online sales have multiplied and perfect coordination has been achieved between our branches."
+  }
+] : [
   {
     company: "TechFlow Yazılım A.Ş.",
     type: "Teknoloji Firması",
@@ -60,9 +93,29 @@ const detailedReferences = [
     testimonial: "Online satışlarımız katlandı ve şubelerimiz arasında mükemmel koordinasyon sağlandı."
   }
 ];
+
+// Generate review schemas for each testimonial
+const reviewSchemas = detailedReferences.map((reference, index) =>
+  generateReviewSchema(
+    'TechCorp',
+    '5', // 5-star rating
+    reference.testimonial,
+    reference.company,
+    '2024-01-01', // You can use actual dates if available
+    lang
+  )
+);
 ---
 
-<Layout title={`${t.nav.references} | TechCorp`}>
+<Layout 
+  title={`${t.nav.references} | TechCorp`}
+  description={t.references.metaDescription}
+>
+  <!-- Review Schemas -->
+  {reviewSchemas.map((schema) => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />
+  ))}
+  
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
@@ -206,7 +259,7 @@ const detailedReferences = [
         }
       </p>
       <a
-        href={lang === 'en' ? '/en/contact' : '/contact'}
+        href={lang === 'en' ? '/en/contact' : '/iletisim'}
         class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
       >
         {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}

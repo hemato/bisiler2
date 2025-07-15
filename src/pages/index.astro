@@ -6,18 +6,17 @@ import WhyChooseUsSection from '../components/WhyChooseUsSection.astro';
 import ReferencesSection from '../components/ReferencesSection.astro';
 import HomeContactForm from '../components/HomeContactForm.astro';
 import ServicesCtaSection from '../components/ServicesCtaSection.astro';
-import { getLangFromUrl } from '../i18n/utils';
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
-
-const translations = lang === 'en' 
-  ? await import('../i18n/en.json')
-  : await import('../i18n/tr.json');
-
-const t = translations.default;
+const t = await getTranslations(lang);
 ---
 
-<Layout title={t.site.title} description={t.site.description}>
+<Layout
+  title={t.site.title}
+  description={t.site.metaDescription}
+  isHomepage={true}
+>
   <Hero />
   <DetailedServicesSection />
   <WhyChooseUsSection />

@@ -1,0 +1,205 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ContactForm from '../components/ContactForm';
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
+import { Mail, Phone, MapPin } from 'lucide-react';
+import { generateContactPageSchema, generateLocalBusinessSchema } from '../utils/structured-data';
+
+const lang = getLangFromUrl(Astro.url);
+const t = await getTranslations(lang);
+
+// Generate contact page and local business schemas
+const contactPageSchema = generateContactPageSchema(lang);
+const localBusinessSchema = generateLocalBusinessSchema(lang);
+---
+
+<Layout 
+  title={`${t.nav.contact} | TechCorp`}
+  description={t.contact.metaDescription}
+>
+  <!-- Contact Page Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(contactPageSchema, null, 2)} />
+  
+  <!-- Local Business Schema -->
+  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema, null, 2)} />
+  
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.contact.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.contact.subtitle}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Contact Information -->
+        <div>
+          <h2 class="text-2xl font-semibold text-secondary-900 mb-8">
+            {lang === 'en' ? 'Get in Touch' : 'Bize Ulaşın'}
+          </h2>
+          
+          <div class="space-y-6">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                <Mail className="w-6 h-6 text-primary-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-secondary-900">
+                  {lang === 'en' ? 'Email' : 'E-posta'}
+                </h3>
+                <p class="text-secondary-600">info@techcorp.com</p>
+                <p class="text-secondary-600">support@techcorp.com</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                <Phone className="w-6 h-6 text-primary-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-secondary-900">
+                  {lang === 'en' ? 'Phone' : 'Telefon'}
+                </h3>
+                <p class="text-secondary-600">+90 212 123 45 67</p>
+                <p class="text-secondary-600">+90 533 123 45 67</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-primary-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-secondary-900">
+                  {lang === 'en' ? 'Address' : 'Adres'}
+                </h3>
+                <p class="text-secondary-600">
+                  Maslak Mahallesi<br>
+                  Büyükdere Caddesi No: 123<br>
+                  34485 Sarıyer/İstanbul
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map placeholder -->
+          <div class="mt-8 bg-secondary-200 rounded-lg h-64 flex items-center justify-center">
+            <p class="text-secondary-600">
+              {lang === 'en' ? 'Map Area' : 'Harita Alanı'}
+            </p>
+          </div>
+
+          <!-- Office Hours -->
+          <div class="mt-8 bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-lg font-semibold text-secondary-900 mb-4">
+              {lang === 'en' ? 'Office Hours' : 'Çalışma Saatleri'}
+            </h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-secondary-600">
+                  {lang === 'en' ? 'Monday - Friday' : 'Pazartesi - Cuma'}
+                </span>
+                <span class="text-secondary-900 font-medium">09:00 - 18:00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-secondary-600">
+                  {lang === 'en' ? 'Saturday' : 'Cumartesi'}
+                </span>
+                <span class="text-secondary-900 font-medium">10:00 - 16:00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-secondary-600">
+                  {lang === 'en' ? 'Sunday' : 'Pazar'}
+                </span>
+                <span class="text-secondary-900 font-medium">
+                  {lang === 'en' ? 'Closed' : 'Kapalı'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+          <ContactForm translations={t} client:load />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {lang === 'en' ? 'Frequently Asked Questions' : 'Sık Sorulan Sorular'}
+        </h2>
+        <p class="text-xl text-secondary-600">
+          {lang === 'en' 
+            ? 'Quick answers to common questions about our services'
+            : 'Hizmetlerimiz hakkında sık sorulan sorulara hızlı cevaplar'
+          }
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-secondary-50 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-secondary-900 mb-2">
+            {lang === 'en' 
+              ? 'How long does a typical project take?'
+              : 'Tipik bir proje ne kadar sürer?'
+            }
+          </h3>
+          <p class="text-secondary-700">
+            {lang === 'en'
+              ? 'Project timelines vary depending on complexity. A simple website takes 2-4 weeks, while CRM implementations can take 4-8 weeks.'
+              : 'Proje süreleri karmaşıklığa göre değişir. Basit bir web sitesi 2-4 hafta, CRM uygulamaları ise 4-8 hafta sürebilir.'
+            }
+          </p>
+        </div>
+
+        <div class="bg-secondary-50 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-secondary-900 mb-2">
+            {lang === 'en' 
+              ? 'Do you provide ongoing support?'
+              : 'Sürekli destek sağlıyor musunuz?'
+            }
+          </h3>
+          <p class="text-secondary-700">
+            {lang === 'en'
+              ? 'Yes, we offer various support packages including technical support, maintenance, and system updates.'
+              : 'Evet, teknik destek, bakım ve sistem güncellemeleri dahil çeşitli destek paketleri sunuyoruz.'
+            }
+          </p>
+        </div>
+
+        <div class="bg-secondary-50 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-secondary-900 mb-2">
+            {lang === 'en' 
+              ? 'What is your pricing structure?'
+              : 'Fiyatlandırma yapınız nasıl?'
+            }
+          </h3>
+          <p class="text-secondary-700">
+            {lang === 'en'
+              ? 'We offer both fixed-price packages and custom pricing based on project requirements. Contact us for a detailed quote.'
+              : 'Hem sabit fiyatlı paketler hem de proje gereksinimlerine göre özel fiyatlandırma sunuyoruz. Detaylı teklif için bizimle iletişime geçin.'
+            }
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center mt-12">
+        <a
+          href={lang === 'en' ? '/en/faq' : '/sss'}
+          class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200"
+        >
+          {lang === 'en' ? 'View All FAQs' : 'Tüm SSS\'leri Görüntüle'}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,15 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl } from '../i18n/utils';
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
 
 const lang = getLangFromUrl(Astro.url);
-
-const translations = lang === 'en' 
-  ? await import('../i18n/en.json')
-  : await import('../i18n/tr.json');
-
-const t = translations.default;
+const t = await getTranslations(lang);
 
 const blogPosts = [
   {
@@ -21,9 +16,9 @@ const blogPosts = [
     date: '2024-01-15',
     author: 'TechCorp Team',
     category: 'CRM',
-    readTime: '5 dk',
+    readTime: lang === 'en' ? '5 min' : '5 dk',
     image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800',
-    tags: ['CRM', 'KOBİ', 'Dijital Dönüşüm']
+    tags: lang === 'en' ? ['CRM', 'SME', 'Digital Transformation'] : ['CRM', 'KOBİ', 'Dijital Dönüşüm']
   },
   {
     id: 2,
@@ -33,10 +28,10 @@ const blogPosts = [
       : 'Zapier kullanarak satış süreçlerinizi nasıl otomatikleştireceğinizi keşfedin. Lead yakalamadan müşteri takibine kadar her şeyi kolaylaştırın.',
     date: '2024-01-10',
     author: 'TechCorp Team',
-    category: 'Otomasyon',
-    readTime: '7 dk',
+    category: lang === 'en' ? 'Automation' : 'Otomasyon',
+    readTime: lang === 'en' ? '7 min' : '7 dk',
     image: 'https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800',
-    tags: ['Zapier', 'Otomasyon', 'Satış']
+    tags: lang === 'en' ? ['Zapier', 'Automation', 'Sales'] : ['Zapier', 'Otomasyon', 'Satış']
   },
   {
     id: 3,
@@ -47,9 +42,9 @@ const blogPosts = [
     date: '2024-01-05',
     author: 'TechCorp Team',
     category: 'SEO',
-    readTime: '6 dk',
+    readTime: lang === 'en' ? '6 min' : '6 dk',
     image: 'https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?auto=compress&cs=tinysrgb&w=800',
-    tags: ['SEO', 'Web Sitesi', 'Dijital Pazarlama']
+    tags: lang === 'en' ? ['SEO', 'Website', 'Digital Marketing'] : ['SEO', 'Web Sitesi', 'Dijital Pazarlama']
   },
   {
     id: 4,
@@ -59,10 +54,10 @@ const blogPosts = [
       : 'Müşterilerimizin dijital dönüşüm yolculuklarından gerçek başarı hikayeleri. Zorluklar, çözümler ve sonuçlar.',
     date: '2023-12-28',
     author: 'TechCorp Team',
-    category: 'Vaka Analizi',
-    readTime: '8 dk',
+    category: lang === 'en' ? 'Case Study' : 'Vaka Analizi',
+    readTime: lang === 'en' ? '8 min' : '8 dk',
     image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
-    tags: ['Dijital Dönüşüm', 'Başarı Hikayeleri', 'CRM']
+    tags: lang === 'en' ? ['Digital Transformation', 'Success Stories', 'CRM'] : ['Dijital Dönüşüm', 'Başarı Hikayeleri', 'CRM']
   },
   {
     id: 5,
@@ -72,10 +67,10 @@ const blogPosts = [
       : 'Web formlarını CRM sistemleriyle etkili şekilde nasıl entegre edeceğinizi öğrenin. Veri doğrulama, otomasyon ve kullanıcı deneyimi ipuçları.',
     date: '2023-12-20',
     author: 'TechCorp Team',
-    category: 'Entegrasyon',
-    readTime: '4 dk',
+    category: lang === 'en' ? 'Integration' : 'Entegrasyon',
+    readTime: lang === 'en' ? '4 min' : '4 dk',
     image: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=800',
-    tags: ['Form', 'Entegrasyon', 'CRM']
+    tags: lang === 'en' ? ['Forms', 'Integration', 'CRM'] : ['Form', 'Entegrasyon', 'CRM']
   },
   {
     id: 6,
@@ -85,10 +80,10 @@ const blogPosts = [
       : 'Müşteri verilerini yönetmek için etkili stratejiler. GDPR uyumluluğu, veri güvenliği ve analitik içgörüler.',
     date: '2023-12-15',
     author: 'TechCorp Team',
-    category: 'Veri Yönetimi',
-    readTime: '6 dk',
+    category: lang === 'en' ? 'Data Management' : 'Veri Yönetimi',
+    readTime: lang === 'en' ? '6 min' : '6 dk',
     image: 'https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=800',
-    tags: ['Veri Yönetimi', 'GDPR', 'Güvenlik']
+    tags: lang === 'en' ? ['Data Management', 'GDPR', 'Security'] : ['Veri Yönetimi', 'GDPR', 'Güvenlik']
   }
 ];
 
@@ -96,7 +91,10 @@ const categories = [...new Set(blogPosts.map(post => post.category))];
 const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
 ---
 
-<Layout title={`${t.nav.blog} | TechCorp`}>
+<Layout 
+  title={`${t.nav.blog} | TechCorp`}
+  description={t.blog.metaDescription}
+>
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
@@ -170,11 +168,51 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
               </article>
             ))}
           </div>
+
+          <!-- Pagination -->
+          <div class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2">
+              <button class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
+                {lang === 'en' ? 'Previous' : 'Önceki'}
+              </button>
+              <button class="px-3 py-2 text-sm font-medium text-white bg-primary-600 border border-primary-600 rounded-md">
+                1
+              </button>
+              <button class="px-3 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
+                2
+              </button>
+              <button class="px-3 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
+                3
+              </button>
+              <button class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
+                {lang === 'en' ? 'Next' : 'Sonraki'}
+              </button>
+            </nav>
+          </div>
         </div>
 
         <!-- Sidebar -->
         <div class="lg:col-span-1">
           <div class="space-y-8">
+            <!-- Search -->
+            <div class="bg-white rounded-xl p-6 shadow-lg">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {lang === 'en' ? 'Search' : 'Arama'}
+              </h3>
+              <div class="relative">
+                <input
+                  type="text"
+                  placeholder={lang === 'en' ? 'Search articles...' : 'Makale ara...'}
+                  class="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+                <button class="absolute right-2 top-2 p-1 text-secondary-400 hover:text-primary-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+              </div>
+            </div>
+
             <!-- Categories -->
             <div class="bg-white rounded-xl p-6 shadow-lg">
               <h3 class="text-lg font-bold text-secondary-900 mb-4">
@@ -228,6 +266,29 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
                     </p>
                   </a>
                 ))}
+              </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="bg-primary-50 rounded-xl p-6">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {lang === 'en' ? 'Newsletter' : 'Bülten'}
+              </h3>
+              <p class="text-sm text-secondary-600 mb-4">
+                {lang === 'en' 
+                  ? 'Subscribe to get the latest articles and updates.'
+                  : 'En son makaleler ve güncellemeler için abone olun.'
+                }
+              </p>
+              <div class="space-y-3">
+                <input
+                  type="email"
+                  placeholder={lang === 'en' ? 'Your email address' : 'E-posta adresiniz'}
+                  class="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                />
+                <button class="w-full px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors text-sm">
+                  {lang === 'en' ? 'Subscribe' : 'Abone Ol'}
+                </button>
               </div>
             </div>
           </div>

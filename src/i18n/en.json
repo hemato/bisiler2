@@ -1,7 +1,8 @@
 {
   "site": {
     "title": "TechCorp - Technical Consulting & CRM Solutions",
-    "description": "CRM solutions, web development, and technical consulting services to enhance your digital processes."
+    "description": "CRM solutions, web development, and technical consulting services to enhance your digital processes.",
+    "metaDescription": "Professional CRM consulting, web development, and business automation services. Zoho CRM experts helping businesses optimize their digital processes and increase efficiency."
   },
   "nav": {
     "home": "Home",
@@ -20,6 +21,7 @@
   "services": {
     "title": "Our Services",
     "subtitle": "We're with you on your digital transformation journey",
+    "metaDescription": "Discover our website setup, CRM integration, automation systems, SEO and technical consulting services. Transform your business with our Zoho CRM expert team.",
     "items": [
       {
         "title": "Website Setup",
@@ -108,6 +110,7 @@
   "references": {
     "title": "Our References",
     "subtitle": "We earned our customers' trust with our successful projects",
+    "metaDescription": "Explore our successful projects with TechFlow, MediCare and RetailMax. Discover our experience in CRM and digital transformation projects.",
     "items": [
       {
         "company": "TechFlow Software Inc.",
@@ -147,6 +150,7 @@
   "about": {
     "title": "About Us",
     "subtitle": "Taking your business to the future with digital solutions",
+    "metaDescription": "Learn about TechCorp's 5+ years of experience in CRM consulting, web development and digital transformation services. Meet our Zoho CRM expert team.",
     "content": "As TechCorp, we provide reliable consulting and technical solutions for businesses in their digital transformation process. With our expertise in CRM systems, web development, and automation, we increase our clients' operational efficiency and help them achieve their growth goals.",
     "experience": {
       "title": "Our Experience",
@@ -202,6 +206,7 @@
   "contact": {
     "title": "Contact",
     "subtitle": "Let's evaluate your project needs",
+    "metaDescription": "Contact us for your CRM consulting and web development projects. Get free consultation and custom solution proposals.",
     "form": {
       "name": "Full Name",
       "email": "Email",
@@ -242,6 +247,7 @@
   "faq": {
     "title": "Frequently Asked Questions",
     "subtitle": "Answers to your questions about our services",
+    "metaDescription": "Find answers to frequently asked questions about our CRM, Zoho, web development and technical consulting services. Detailed information from our expert team.",
     "items": [
       {
         "question": "What is CRM and why is it important?",
@@ -280,6 +286,7 @@
   "blog": {
     "title": "Blog",
     "subtitle": "Current content about CRM, automation and digital transformation",
+    "metaDescription": "Read our expert articles about CRM strategies, automation tips, SEO guides and digital transformation. TechCorp blog page.",
     "readMore": "Read More",
     "backToBlog": "Back to Blog",
     "recentPosts": "Recent Posts",

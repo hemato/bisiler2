@@ -6,6 +6,17 @@ export function getLangFromUrl(url: URL) {
   return defaultLang;
 }
 
+export async function getTranslations(lang: keyof typeof languages) {
+  switch (lang) {
+    case 'tr':
+      return (await import('./tr.json')).default;
+    case 'en':
+      return (await import('./en.json')).default;
+    default:
+      return (await import('./tr.json')).default;
+  }
+}
+
 export function useTranslations(lang: keyof typeof languages) {
   return function t(key: string) {
     const keys = key.split('.');
@@ -18,17 +29,6 @@ export function useTranslations(lang: keyof typeof languages) {
     
     return value || key;
   };
-}
-
-function getTranslations(lang: keyof typeof languages) {
-  switch (lang) {
-    case 'tr':
-      return import('./tr.json').then(module => module.default);
-    case 'en':
-      return import('./en.json').then(module => module.default);
-    default:
-      return import('./tr.json').then(module => module.default);
-  }
 }
 
 export async function getStaticPaths() {

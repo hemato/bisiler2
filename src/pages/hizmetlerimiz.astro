@@ -1,32 +1,65 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl } from '../i18n/utils';
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Globe, Settings, Zap, Search, Users, BarChart3, CheckCircle, ArrowRight } from 'lucide-react';
 import ServicesCtaSection from '../components/ServicesCtaSection.astro';
+import { generateServiceSchema, generateBreadcrumbSchema } from '../utils/structured-data';
 
 const lang = getLangFromUrl(Astro.url);
+const t = await getTranslations(lang);
 
-const translations = lang === 'en' 
-  ? await import('../i18n/en.json')
-  : await import('../i18n/tr.json');
+// Generate breadcrumb structured data
+const breadcrumbs = [
+  { name: lang === 'en' ? 'Home' : 'Anasayfa', url: lang === 'en' ? '/en' : '/' },
+  { name: t.nav.services, url: lang === 'en' ? '/en/services' : '/services' }
+];
 
-const t = translations.default;
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+// Generate service structured data for main services
+const servicesSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  itemListElement: t.services.items.map((service, index) => ({
+    '@type': 'Service',
+    position: index + 1,
+    name: service.title,
+    description: service.description,
+    provider: {
+      '@type': 'Organization',
+      name: 'TechCorp'
+    }
+  }))
+};
 
 const detailedServices = [
   {
     icon: Globe,
     title: t.services.items[0].title,
     description: t.services.items[0].description,
-    badges: ['📱 Responsive', '⚡ Hızlı', '🔍 SEO', '🔒 Güvenli'],
-    process: [
+    badges: ['📱 Responsive', '⚡ Fast', '🔍 SEO', '🔒 Secure'],
+    process: lang === 'en' ? [
+      'Needs analysis and discovery meeting',
+      'Wireframe and design approval',
+      'Development and testing phase',
+      'Content integration',
+      'Go-live and training'
+    ] : [
       'İhtiyaç analizi ve keşif toplantısı',
-      'Wireframe ve tasarım onayı', 
+      'Wireframe ve tasarım onayı',
       'Geliştirme ve test aşaması',
       'İçerik entegrasyonu',
-      'Canlı yayın ve eğitim'
+      'Yayına alma ve eğitim'
     ],
-    packageDetails: [
-      '5-15 sayfa arası',
+    packageDetails: lang === 'en' ? [
+      '5-15 pages',
+      'Content management system',
+      'Contact form',
+      'Google Analytics',
+      '1 year technical support',
+      'Hosting and domain consulting'
+    ] : [
+      '5-15 sayfa',
       'İçerik yönetim sistemi',
       'İletişim formu',
       'Google Analytics',
@@ -38,20 +71,33 @@ const detailedServices = [
     icon: Settings,
     title: t.services.items[1].title,
     description: t.services.items[1].description,
-    badges: ['🎨 Tasarım', '🔗 Entegrasyon', '✅ Doğrulama', '🔔 Bildirim'],
-    process: [
-      'Form ihtiyaçlarının belirlenmesi',
+    badges: ['🎨 Design', '🔗 Integration', '✅ Validation', '🔔 Notifications'],
+    process: lang === 'en' ? [
+      'Form requirements determination',
+      'Design and user experience planning',
+      'CRM integration setup',
+      'Testing and optimization',
+      'Go-live and monitoring'
+    ] : [
+      'Form gereksinimlerinin belirlenmesi',
       'Tasarım ve kullanıcı deneyimi planlaması',
       'CRM entegrasyon kurulumu',
       'Test ve optimizasyon',
-      'Canlıya alma ve izleme'
+      'Yayına alma ve izleme'
     ],
-    packageDetails: [
+    packageDetails: lang === 'en' ? [
+      'Custom form design',
+      'Automatic CRM integration',
+      'Data validation systems',
+      'Email notifications',
+      'Reporting dashboard',
+      '6 months technical support'
+    ] : [
       'Özel form tasarımı',
-      'CRM otomatik entegrasyonu',
+      'Otomatik CRM entegrasyonu',
       'Veri doğrulama sistemleri',
       'E-posta bildirimleri',
-      'Raporlama paneli',
+      'Raporlama panosu',
       '6 ay teknik destek'
     ]
   },
@@ -59,20 +105,33 @@ const detailedServices = [
     icon: Users,
     title: t.services.items[2].title,
     description: t.services.items[2].description,
-    badges: ['🏆 Zoho Expert', '⚙️ Özelleştirme', '📊 Raporlama', '👥 Eğitim'],
-    process: [
+    badges: ['🏆 Zoho Expert', '⚙️ Customization', '📊 Reporting', '👥 Training'],
+    process: lang === 'en' ? [
+      'Analysis of existing processes',
+      'CRM selection and planning',
+      'Setup and customization',
+      'Data migration',
+      'Team training and go-live'
+    ] : [
       'Mevcut süreçlerin analizi',
-      'CRM seçimi ve planlama',
+      'CRM seçimi ve planlaması',
       'Kurulum ve özelleştirme',
-      'Veri migrasyonu',
-      'Ekip eğitimi ve go-live'
+      'Veri taşıma',
+      'Ekip eğitimi ve yayına alma'
     ],
-    packageDetails: [
-      'Zoho CRM Professional lisans',
-      'Özel alan ve workflow kurulumu',
-      'Mevcut veri migrasyonu',
+    packageDetails: lang === 'en' ? [
+      'Zoho CRM Professional license',
+      'Custom fields and workflow setup',
+      'Existing data migration',
+      'Comprehensive team training',
+      'Dashboards and reports',
+      '1 year continuous support'
+    ] : [
+      'Zoho CRM Professional lisansı',
+      'Özel alan ve iş akışı kurulumu',
+      'Mevcut veri taşıma',
       'Kapsamlı ekip eğitimi',
-      'Dashboard ve raporlar',
+      'Panolar ve raporlar',
       '1 yıl sürekli destek'
     ]
   },
@@ -80,18 +139,31 @@ const detailedServices = [
     icon: Zap,
     title: t.services.items[3].title,
     description: t.services.items[3].description,
-    badges: ['⚡ Zapier', '🔄 Otomasyon', '📈 Verimlilik', '📊 Analiz'],
-    process: [
-      'Süreç haritalama ve analiz',
+    badges: ['⚡ Zapier', '🔄 Automation', '📈 Efficiency', '📊 Analytics'],
+    process: lang === 'en' ? [
+      'Process mapping and analysis',
+      'Automation strategy development',
+      'Zapier/Make setups',
+      'Testing and optimization',
+      'Monitoring and improvement'
+    ] : [
+      'Süreç haritalama ve analizi',
       'Otomasyon stratejisi geliştirme',
       'Zapier/Make kurulumları',
       'Test ve optimizasyon',
-      'Monitoring ve iyileştirme'
+      'İzleme ve iyileştirme'
     ],
-    packageDetails: [
+    packageDetails: lang === 'en' ? [
+      '10+ application integrations',
+      'Custom automation scenarios',
+      'Error management systems',
+      'Performance reports',
+      'Continuous optimization',
+      '6 months technical support'
+    ] : [
       '10+ uygulama entegrasyonu',
       'Özel otomasyon senaryoları',
-      'Hata yönetimi sistemleri',
+      'Hata yönetim sistemleri',
       'Performans raporları',
       'Sürekli optimizasyon',
       '6 ay teknik destek'
@@ -101,16 +173,29 @@ const detailedServices = [
     icon: Search,
     title: t.services.items[4].title,
     description: t.services.items[4].description,
-    badges: ['🔍 Teknik SEO', '📝 İçerik', '📊 Analytics', '🚀 Performans'],
-    process: [
-      'SEO audit ve analiz',
+    badges: ['🔍 Technical SEO', '📝 Content', '📊 Analytics', '🚀 Performance'],
+    process: lang === 'en' ? [
+      'SEO audit and analysis',
+      'Keyword research',
+      'Technical optimizations',
+      'Content strategy',
+      'Monitoring and reporting'
+    ] : [
+      'SEO denetimi ve analizi',
       'Anahtar kelime araştırması',
       'Teknik optimizasyonlar',
       'İçerik stratejisi',
       'İzleme ve raporlama'
     ],
-    packageDetails: [
-      'Kapsamlı SEO audit',
+    packageDetails: lang === 'en' ? [
+      'Comprehensive SEO audit',
+      'Technical optimizations',
+      'Content strategy',
+      'Google Analytics setup',
+      'Monthly performance reports',
+      '3 months continuous optimization'
+    ] : [
+      'Kapsamlı SEO denetimi',
       'Teknik optimizasyonlar',
       'İçerik stratejisi',
       'Google Analytics kurulumu',
@@ -122,19 +207,32 @@ const detailedServices = [
     icon: BarChart3,
     title: t.services.items[5].title,
     description: t.services.items[5].description,
-    badges: ['🔧 Sistem Analizi', '🛡️ Güvenlik', '📈 Scalability', '💡 Strateji'],
-    process: [
+    badges: ['🔧 System Analysis', '🛡️ Security', '📈 Scalability', '💡 Strategy'],
+    process: lang === 'en' ? [
+      'Current infrastructure assessment',
+      'Needs analysis and planning',
+      'Technology roadmap creation',
+      'Implementation support',
+      'Continuous consulting'
+    ] : [
       'Mevcut altyapı değerlendirmesi',
       'İhtiyaç analizi ve planlama',
-      'Teknoloji roadmap oluşturma',
+      'Teknoloji yol haritası oluşturma',
       'Uygulama desteği',
       'Sürekli danışmanlık'
     ],
-    packageDetails: [
+    packageDetails: lang === 'en' ? [
+      'Comprehensive system analysis',
+      'Technology selection consulting',
+      'Security assessment',
+      'Scalability planning',
+      'Implementation support',
+      'Continuous consulting service'
+    ] : [
       'Kapsamlı sistem analizi',
       'Teknoloji seçimi danışmanlığı',
       'Güvenlik değerlendirmesi',
-      'Scalability planlaması',
+      'Ölçeklenebilirlik planlaması',
       'Uygulama desteği',
       'Sürekli danışmanlık hizmeti'
     ]
@@ -142,7 +240,11 @@ const detailedServices = [
 ];
 ---
 
-<Layout title={`${t.nav.services} | TechCorp`}>
+<Layout
+  title={`${t.nav.services} | TechCorp`}
+  description={t.services.metaDescription}
+  structuredData={[breadcrumbSchema, servicesSchema]}
+>
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
@@ -200,10 +302,10 @@ const detailedServices = [
                   </div>
                   
                   <a
-                    href={lang === 'en' ? '/en/contact' : '/contact'}
+                    href={lang === 'en' ? '/en/contact' : '/iletisim'}
                     class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105"
                   >
-                    {lang === 'en' ? 'Get Quote' : 'Fiyat Al'}
+                    {lang === 'en' ? 'Get Quote' : 'Teklif Al'}
                     <ArrowRight className="ml-2 w-5 h-5" />
                   </a>
                 </div>
@@ -225,7 +327,7 @@ const detailedServices = [
                     <p class="text-sm text-primary-700 font-medium">
                       {lang === 'en' 
                         ? 'Contact us for detailed pricing and custom solutions'
-                        : 'Detaylı fiyatlandırma ve özel çözümler için iletişime geçin'
+                        : 'Detaylı fiyatlandırma ve özel çözümler için bizimle iletişime geçin'
                       }
                     </p>
                   </div>

@@ -3,20 +3,40 @@ import { getLangFromUrl } from '../i18n/utils';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
 import CookieBanner from '../components/CookieBanner';
+import {
+  generateOrganizationSchema,
+  generateWebsiteSchema,
+  injectStructuredData
+} from '../utils/structured-data';
 
 export interface Props {
   title: string;
   description?: string;
+  structuredData?: any;
+  ogImage?: string;
+  twitterImage?: string;
+  canonical?: string;
+  isHomepage?: boolean;
 }
 
-const { title, description } = Astro.props;
+const { title, description, structuredData, ogImage, twitterImage, canonical, isHomepage = false } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 
-const translations = lang === 'en' 
+const translations = lang === 'en'
   ? await import('../i18n/en.json')
   : await import('../i18n/tr.json');
 
 const t = translations.default;
+
+// Generate default structured data
+const organizationSchema = generateOrganizationSchema(lang);
+const websiteSchema = generateWebsiteSchema(lang);
+
+// Default images for social media
+const defaultOgImage = ogImage || '/og-image.jpg';
+const defaultTwitterImage = twitterImage || ogImage || '/twitter-image.jpg';
+const siteUrl = 'https://techcorp.com'; // Bu URL'yi gerçek domain ile değiştirin
+const canonicalUrl = canonical || Astro.url.href;
 ---
 
 <!DOCTYPE html>
@@ -30,21 +50,50 @@ const t = translations.default;
     
     <!-- SEO Meta Tags -->
     <title>{title}</title>
+    <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- Open Graph Meta Tags -->
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description || t.site.description} />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={Astro.url} />
+    <meta property="og:url" content={canonicalUrl} />
     <meta property="og:site_name" content="TechCorp" />
+    <meta property="og:image" content={new URL(defaultOgImage, siteUrl).href} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'tr_TR'} />
+    {lang === 'en' && <meta property="og:locale:alternate" content="tr_TR" />}
+    {lang === 'tr' && <meta property="og:locale:alternate" content="en_US" />}
     
-    <!-- Twitter Card -->
+    <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@techcorp" />
+    <meta name="twitter:creator" content="@techcorp" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description || t.site.description} />
+    <meta name="twitter:image" content={new URL(defaultTwitterImage, siteUrl).href} />
+    <meta name="twitter:image:alt" content={`${title} - TechCorp`} />
+    
+    <!-- Additional SEO Meta Tags -->
+    <meta name="robots" content="index, follow" />
+    <meta name="author" content="TechCorp" />
+    <meta name="language" content={lang === 'en' ? 'English' : 'Turkish'} />
+    <meta name="revisit-after" content="7 days" />
     
     <!-- Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    
+    <!-- Structured Data (JSON-LD) -->
+    {isHomepage && <Fragment set:html={injectStructuredData(organizationSchema)} />}
+    {isHomepage && <Fragment set:html={injectStructuredData(websiteSchema)} />}
+    {structuredData && (
+      Array.isArray(structuredData)
+        ? structuredData.map(schema => <Fragment set:html={injectStructuredData(schema)} />)
+        : <Fragment set:html={injectStructuredData(structuredData)} />
+    )}
   </head>
   <body class="font-sans">
     <Navigation />
