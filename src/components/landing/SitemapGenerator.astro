@@ -1,0 +1,232 @@
+---
+// This component generates sitemap entries for landing pages
+// It should be included in the main sitemap.xml generation
+
+interface Props {
+  baseUrl: string;
+  locale: string;
+  pages: {
+    url: string;
+    lastmod?: string;
+    changefreq?: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+    priority?: number;
+    alternates?: { hreflang: string; href: string }[];
+  }[];
+}
+
+const { baseUrl, locale, pages } = Astro.props;
+
+// Landing page specific URLs
+const landingPages = [
+  {
+    url: `/web-sitesi-kurma`,
+    lastmod: new Date().toISOString(),
+    changefreq: 'weekly' as const,
+    priority: 0.8,
+    alternates: [
+      { hreflang: 'tr', href: `${baseUrl}/web-sitesi-kurma` },
+      { hreflang: 'en', href: `${baseUrl}/en/website-setup` }
+    ]
+  },
+  {
+    url: `/crm-danismanligi`,
+    lastmod: new Date().toISOString(),
+    changefreq: 'weekly' as const,
+    priority: 0.8,
+    alternates: [
+      { hreflang: 'tr', href: `${baseUrl}/crm-danismanligi` },
+      { hreflang: 'en', href: `${baseUrl}/en/crm-consulting` }
+    ]
+  }
+];
+
+// Combine with provided pages
+const allPages = [...pages, ...landingPages];
+
+// Generate XML sitemap content
+const generateSitemap = () => {
+  const urlEntries = allPages.map(page => {
+    const alternateLinks = page.alternates?.map(alt => 
+      `    <xhtml:link rel="alternate" hreflang="${alt.hreflang}" href="${alt.href}" />`
+    ).join('\n') || '';
+    
+    return `  <url>
+    <loc>${baseUrl}${page.url}</loc>
+    <lastmod>${page.lastmod || new Date().toISOString()}</lastmod>
+    <changefreq>${page.changefreq || 'weekly'}</changefreq>
+    <priority>${page.priority || 0.5}</priority>
+${alternateLinks}
+  </url>`;
+  }).join('\n');
+
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urlEntries}
+</urlset>`;
+};
+
+// Generate robots.txt content
+const generateRobots = () => {
+  return `User-agent: *
+Allow: /
+
+# Landing Pages
+Allow: /web-sitesi-kurma
+Allow: /crm-danismanligi
+Allow: /en/website-setup
+Allow: /en/crm-consulting
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /_astro/
+Disallow: /temp/
+
+# XML Sitemap
+Sitemap: ${baseUrl}/sitemap.xml
+
+# Crawl delay
+Crawl-delay: 1`;
+};
+
+// SEO metadata for landing pages
+const landingPagesMeta = {
+  'web-sitesi-kurma': {
+    title: 'Profesyonel Web Sitesi Kurulumu | TechCorp',
+    description: 'Modern, hızlı ve SEO uyumlu web sitesi kurulumu. Responsive tasarım, güvenli hosting ve sürekli destek ile online varlığınızı güçlendirin.',
+    keywords: 'web sitesi kurulumu, web tasarım, responsive tasarım, SEO, e-ticaret sitesi, web geliştirme',
+    canonical: `${baseUrl}/web-sitesi-kurma`
+  },
+  'crm-danismanligi': {
+    title: 'CRM Danışmanlığı ve Kurulumu | TechCorp',
+    description: 'Zoho CRM uzmanı ile müşteri ilişkilerinizi profesyonel düzeyde yönetin. CRM seçimi, kurulum ve eğitim hizmetleri.',
+    keywords: 'CRM danışmanlığı, Zoho CRM, müşteri yönetimi, satış otomasyonu, CRM kurulumu, müşteri ilişkileri',
+    canonical: `${baseUrl}/crm-danismanligi`
+  },
+  'website-setup': {
+    title: 'Professional Website Setup | TechCorp',
+    description: 'Modern, fast and SEO-friendly website setup. Strengthen your online presence with responsive design, secure hosting and continuous support.',
+    keywords: 'website setup, web design, responsive design, SEO, e-commerce website, web development',
+    canonical: `${baseUrl}/en/website-setup`
+  },
+  'crm-consulting': {
+    title: 'CRM Consulting and Setup | TechCorp',
+    description: 'Manage your customer relationships professionally with Zoho CRM expert. CRM selection, setup and training services.',
+    keywords: 'CRM consulting, Zoho CRM, customer management, sales automation, CRM setup, customer relationships',
+    canonical: `${baseUrl}/en/crm-consulting`
+  }
+};
+
+---
+
+<!-- This component is used to generate sitemap data, not for direct rendering -->
+<script type="application/json" id="sitemap-data" set:html={JSON.stringify({
+  sitemap: generateSitemap(),
+  robots: generateRobots(),
+  landingPagesMeta
+})} />
+
+<!-- Performance optimization hints for search engines -->
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/images/hero-bg.webp" as="image" type="image/webp" />
+
+<!-- Additional SEO hints -->
+<meta name="google-site-verification" content="GOOGLE_SITE_VERIFICATION_CODE" />
+<meta name="msvalidate.01" content="BING_SITE_VERIFICATION_CODE" />
+<meta name="yandex-verification" content="YANDEX_SITE_VERIFICATION_CODE" />
+
+<!-- Rich snippets for business information -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "TechCorp",
+  "description": locale === 'tr' ? 
+    "CRM danışmanlığı ve web geliştirme uzmanı" : 
+    "CRM consulting and web development expert",
+  "url": baseUrl,
+  "telephone": "+90-532-123-4567",
+  "email": "info@techcorp.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "TR",
+    "addressLocality": "Istanbul"
+  },
+  "serviceArea": {
+    "@type": "Country",
+    "name": "Turkey"
+  },
+  "hasOfferCatalog": {
+    "@type": "OfferCatalog",
+    "name": locale === 'tr' ? "Hizmetlerimiz" : "Our Services",
+    "itemListElement": [
+      {
+        "@type": "OfferCatalog",
+        "name": locale === 'tr' ? "Web Sitesi Kurulumu" : "Website Setup",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": locale === 'tr' ? "Başlangıç Paketi" : "Starter Package",
+            "price": "2500",
+            "priceCurrency": "TRY"
+          },
+          {
+            "@type": "Offer",
+            "name": locale === 'tr' ? "Profesyonel Paket" : "Professional Package",
+            "price": "4500",
+            "priceCurrency": "TRY"
+          },
+          {
+            "@type": "Offer",
+            "name": locale === 'tr' ? "Kurumsal Paket" : "Enterprise Package",
+            "price": "7500",
+            "priceCurrency": "TRY"
+          }
+        ]
+      },
+      {
+        "@type": "OfferCatalog",
+        "name": locale === 'tr' ? "CRM Danışmanlığı" : "CRM Consulting",
+        "itemListElement": [
+          {
+            "@type": "Offer",
+            "name": locale === 'tr' ? "Küçük İşletme" : "Small Business",
+            "price": "3500",
+            "priceCurrency": "TRY"
+          },
+          {
+            "@type": "Offer",
+            "name": locale === 'tr' ? "Orta Ölçek" : "Medium Scale",
+            "price": "6500",
+            "priceCurrency": "TRY"
+          },
+          {
+            "@type": "Offer",
+            "name": locale === 'tr' ? "Kurumsal" : "Enterprise",
+            "price": "12500",
+            "priceCurrency": "TRY"
+          }
+        ]
+      }
+    ]
+  }
+})} />
+
+<!-- Page loading optimization -->
+<script>
+  // Preload critical landing page resources
+  const preloadResources = [
+    { href: '/images/website-hero.webp', as: 'image', type: 'image/webp' },
+    { href: '/images/crm-hero.webp', as: 'image', type: 'image/webp' },
+    { href: '/css/landing-pages.css', as: 'style' }
+  ];
+
+  preloadResources.forEach(resource => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.href = resource.href;
+    link.as = resource.as;
+    if (resource.type) link.type = resource.type;
+    document.head.appendChild(link);
+  });
+</script>

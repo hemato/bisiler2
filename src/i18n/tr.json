@@ -296,5 +296,388 @@
   "footer": {
     "description": "Dijital süreçlerinizi güçlendiren CRM çözümleri ve teknik danışmanlık hizmetleri.",
     "rights": "Tüm hakları saklıdır."
+  },
+  "exitIntentPopup": {
+    "title": "Bekle! Gitmeden Önce...",
+    "subtitle": "Özel fırsatımızı kaçırma",
+    "message": "Sadece bugün geçerli %20 indirim fırsatını kaçırmayın. Ücretsiz danışmanlık için hemen iletişime geçin.",
+    "cta": "Fırsatı Yakala",
+    "close": "Kapat",
+    "offers": [
+      "Ücretsiz ihtiyaç analizi",
+      "Özel çözüm önerisi",
+      "Hızlı proje başlangıcı",
+      "Uzman danışmanlık"
+    ]
+  },
+  "live_chat": {
+    "header": {
+      "title": "Uzmanla Konuş",
+      "subtitle": "Hemen yanıt alın"
+    },
+    "welcome_message": "Merhaba! Size nasıl yardımcı olabilirim?",
+    "whatsapp": {
+      "title": "WhatsApp ile Mesaj",
+      "subtitle": "Hemen yanıt alın"
+    },
+    "phone": {
+      "title": "Telefon ile Ara",
+      "subtitle": "Direkt görüşelim"
+    },
+    "email": {
+      "title": "E-posta Gönder",
+      "subtitle": "Detaylı bilgi alın"
+    },
+    "status": "Çevrimiçi - Hemen yanıt alın"
+  },
+  "sticky_cta": {
+    "mobile": {
+      "title": "Hemen Başlayın!",
+      "subtitle": "Ücretsiz danışmanlık alın"
+    },
+    "desktop": {
+      "title": "Hazır mısınız? Hemen başlayalım!",
+      "subtitle": "Ücretsiz danışmanlık için iletişime geçin"
+    }
+  },
+  "countdown": {
+    "title": "Sınırlı Süre Fırsatı!",
+    "days": "Gün",
+    "hours": "Saat",
+    "minutes": "Dakika",
+    "seconds": "Saniye",
+    "cta": "Hemen Fırsatı Yakala!",
+    "disclaimer": "Bu fırsat sona erdiğinde tekrar sunulmayacaktır."
+  },
+  "security_badges": {
+    "title": "Güvenli ve Güvenilir",
+    "subtitle": "Bilgileriniz %100 güvende",
+    "ssl": "SSL Sertifikası",
+    "privacy": "Gizlilik Koruması",
+    "secure": "Güvenli Ödeme",
+    "verified": "Doğrulanmış",
+    "indicators": {
+      "uptime": "99.9% Uptime",
+      "support": "7/24 Destek",
+      "response": "< 1 Saat Yanıt"
+    },
+    "guarantee": "30 Gün Para İade Garantisi"
+  },
+  "mobile_nav": {
+    "status": "Çevrimiçi",
+    "call": "Ara",
+    "whatsapp": "WhatsApp"
+  },
+  "mobile_fab": {
+    "title": "Sorularınız mı var?",
+    "subtitle": "Hemen iletişime geçin"
+  },
+  "landing_websitesi": {
+    "meta": {
+      "title": "Profesyonel Web Sitesi Kurulumu | TechCorp",
+      "description": "Modern, hızlı ve SEO uyumlu web sitesi kurulumu. Responsive tasarım, güvenli hosting ve sürekli destek ile online varlığınızı güçlendirin.",
+      "keywords": "web sitesi kurulumu, web tasarım, responsive tasarım, SEO, e-ticaret sitesi"
+    },
+    "hero": {
+      "title": "Profesyonel Web Sitesi ile İşinizi Büyütün",
+      "subtitle": "Modern, hızlı ve SEO uyumlu web sitesi kurulumu ile online varlığınızı güçlendirin. Uzman ekibimizle dijital dünyada fark yaratın.",
+      "cta_primary": "Hemen Teklif Al",
+      "cta_secondary": "Ücretsiz Danışmanlık",
+      "stats": [
+        { "number": "500+", "label": "Tamamlanan Proje" },
+        { "number": "98%", "label": "Müşteri Memnuniyeti" },
+        { "number": "7/24", "label": "Teknik Destek" }
+      ]
+    },
+    "problems": {
+      "title": "Web Sitesi Yoksa Bu Sorunları Yaşıyorsunuz",
+      "items": [
+        "Rakipleriniz online müşteri kazanıyor, siz kaybediyorsunuz",
+        "Güvenilirlik sorunu: Müşteriler sizi bulamıyor",
+        "Mobil erişim yok: Kullanıcıların %60'ı mobil cihaz kullanıyor",
+        "Arama motorlarında görünmüyorsunuz",
+        "Otomatik müşteri kazanma sisteminiz yok"
+      ]
+    },
+    "solutions": {
+      "title": "Profesyonel Web Sitesi ile Bu Sorunları Çözersiniz",
+      "items": [
+        "24/7 online müşteri kazanma sistemi",
+        "Mobil uyumlu tasarım ile her cihazda mükemmel görünüm",
+        "Google'da üst sıralarda yer alma",
+        "SSL sertifikası ile güvenli görünüm",
+        "Otomatik lead toplama ve yönlendirme"
+      ]
+    },
+    "features": {
+      "title": "Web Sitesi Paketimizde Neler Var?",
+      "items": [
+        {
+          "title": "Responsive Tasarım",
+          "description": "Mobil, tablet ve desktop'ta mükemmel görünüm",
+          "icon": "📱"
+        },
+        {
+          "title": "SEO Optimizasyonu",
+          "description": "Google'da üst sıralarda yer almak için teknik SEO",
+          "icon": "🔍"
+        },
+        {
+          "title": "Hızlı Yükleme",
+          "description": "3 saniyede yüklenen ultra hızlı web sitesi",
+          "icon": "⚡"
+        },
+        {
+          "title": "Güvenli Hosting",
+          "description": "SSL sertifikası ve güvenli hosting dahil",
+          "icon": "🔒"
+        },
+        {
+          "title": "İletişim Formları",
+          "description": "Otomatik müşteri kazanma için özel formlar",
+          "icon": "📝"
+        },
+        {
+          "title": "Sürekli Destek",
+          "description": "1 yıl boyunca ücretsiz teknik destek",
+          "icon": "🛠️"
+        }
+      ]
+    },
+    "pricing": {
+      "title": "Web Sitesi Paketleri",
+      "subtitle": "İhtiyacınıza uygun paketi seçin",
+      "packages": [
+        {
+          "name": "Başlangıç",
+          "price": "2.500",
+          "currency": "₺",
+          "duration": "tek seferlik",
+          "description": "Küçük işletmeler için ideal",
+          "features": [
+            "5 sayfa web sitesi",
+            "Responsive tasarım",
+            "Temel SEO",
+            "SSL sertifikası",
+            "3 ay destek"
+          ]
+        },
+        {
+          "name": "Profesyonel",
+          "price": "4.500",
+          "currency": "₺",
+          "duration": "tek seferlik",
+          "popular": true,
+          "description": "Büyüyen işletmeler için",
+          "features": [
+            "10 sayfa web sitesi",
+            "Gelişmiş SEO",
+            "İletişim formları",
+            "Google Analytics",
+            "6 ay destek"
+          ]
+        },
+        {
+          "name": "Kurumsal",
+          "price": "7.500",
+          "currency": "₺",
+          "duration": "tek seferlik",
+          "description": "Büyük şirketler için",
+          "features": [
+            "Sınırsız sayfa",
+            "E-ticaret entegrasyonu",
+            "CRM entegrasyonu",
+            "Özel tasarım",
+            "1 yıl destek"
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "title": "Sık Sorulan Sorular",
+      "items": [
+        {
+          "question": "Web sitesi ne kadar sürede hazır olur?",
+          "answer": "Başlangıç paketi 1 hafta, Profesyonel paket 2 hafta, Kurumsal paket 3-4 hafta sürer."
+        },
+        {
+          "question": "Hosting ve domain dahil mi?",
+          "answer": "Evet, 1 yıllık hosting ve domain ücreti fiyata dahildir."
+        },
+        {
+          "question": "Mobil uyumlu mu?",
+          "answer": "Evet, tüm paketlerde mobil uyumlu responsive tasarım vardır."
+        },
+        {
+          "question": "SEO çalışması yapıyor musunuz?",
+          "answer": "Evet, temel SEO tüm paketlerde, gelişmiş SEO Profesyonel ve Kurumsal paketlerde vardır."
+        },
+        {
+          "question": "Değişiklik yapabilir miyim?",
+          "answer": "Evet, destek süreniz boyunca küçük değişiklikler ücretsizdir."
+        }
+      ]
+    },
+    "cta_section": {
+      "title": "Hemen Başlayın!",
+      "subtitle": "Profesyonel web siteniz 1 hafta içinde hazır",
+      "cta_primary": "Projeye Başla",
+      "cta_secondary": "Ücretsiz Görüşme",
+      "guarantee": "30 gün para iade garantisi"
+    }
+  },
+  "landing_crm": {
+    "meta": {
+      "title": "CRM Danışmanlığı ve Kurulumu | TechCorp",
+      "description": "Zoho CRM uzmanı ile müşteri ilişkilerinizi profesyonel düzeyde yönetin. CRM seçimi, kurulum ve eğitim hizmetleri.",
+      "keywords": "CRM danışmanlığı, Zoho CRM, müşteri yönetimi, satış otomasyonu, CRM kurulumu"
+    },
+    "hero": {
+      "title": "CRM ile Müşteri İlişkilerinizi Profesyonel Düzeyde Yönetin",
+      "subtitle": "Zoho CRM uzmanı ile satış süreçlerinizi otomatikleştirin, müşteri memnuniyetinizi artırın ve gelirlerinizi büyütün.",
+      "cta_primary": "Ücretsiz CRM Analizi",
+      "cta_secondary": "Demo Talep Et",
+      "stats": [
+        { "number": "200+", "label": "CRM Projesi" },
+        { "number": "45%", "label": "Ortalama Satış Artışı" },
+        { "number": "Zoho", "label": "Sertifikalı Partner" }
+      ]
+    },
+    "problems": {
+      "title": "CRM Sistemi Olmadan Bu Sorunları Yaşıyorsunuz",
+      "items": [
+        "Müşteri bilgileri kayboluyoru ve dağınık",
+        "Satış fırsatları kaçırılıyor",
+        "Ekip üyeleri aynı müşteriyi tekrar arıyor",
+        "Satış performansı ölçülemiyor",
+        "Müşteri memnuniyeti takip edilemiyor"
+      ]
+    },
+    "solutions": {
+      "title": "CRM Sistemi ile Bu Sorunları Çözersiniz",
+      "items": [
+        "Tüm müşteri bilgileri tek yerde ve güvenli",
+        "Otomatik satış hunisi ve fırsat takibi",
+        "Ekip koordinasyonu ve verimlilik artışı",
+        "Detaylı satış raporları ve analizler",
+        "Müşteri memnuniyeti ölçümü ve iyileştirme"
+      ]
+    },
+    "features": {
+      "title": "CRM Danışmanlığı Paketimizde Neler Var?",
+      "items": [
+        {
+          "title": "İhtiyaç Analizi",
+          "description": "Detaylı iş süreci analizi ve CRM ihtiyaç belirleme",
+          "icon": "📊"
+        },
+        {
+          "title": "CRM Seçimi",
+          "description": "İhtiyaçlarınıza en uygun CRM sistemini belirleme",
+          "icon": "🎯"
+        },
+        {
+          "title": "Kurulum & Özelleştirme",
+          "description": "Profesyonel kurulum ve özel ayarlar",
+          "icon": "⚙️"
+        },
+        {
+          "title": "Veri Migrasyonu",
+          "description": "Mevcut verilerinizin güvenli aktarımı",
+          "icon": "💾"
+        },
+        {
+          "title": "Ekip Eğitimi",
+          "description": "Kapsamlı kullanım eğitimi ve dökümanlar",
+          "icon": "👥"
+        },
+        {
+          "title": "Sürekli Destek",
+          "description": "6 ay boyunca ücretsiz teknik destek",
+          "icon": "🛠️"
+        }
+      ]
+    },
+    "pricing": {
+      "title": "CRM Danışmanlığı Paketleri",
+      "subtitle": "İşletme büyüklüğünüze uygun paket seçin",
+      "packages": [
+        {
+          "name": "Küçük İşletme",
+          "price": "3.500",
+          "currency": "₺",
+          "duration": "tek seferlik",
+          "description": "10 kullanıcıya kadar",
+          "features": [
+            "Temel CRM kurulumu",
+            "Veri migrasyonu",
+            "2 günlük eğitim",
+            "3 ay destek",
+            "Temel raporlar"
+          ]
+        },
+        {
+          "name": "Orta Ölçek",
+          "price": "6.500",
+          "currency": "₺",
+          "duration": "tek seferlik",
+          "popular": true,
+          "description": "50 kullanıcıya kadar",
+          "features": [
+            "Gelişmiş CRM kurulumu",
+            "Özel alan tanımları",
+            "Otomasyon kurulumu",
+            "4 günlük eğitim",
+            "6 ay destek"
+          ]
+        },
+        {
+          "name": "Kurumsal",
+          "price": "12.500",
+          "currency": "₺",
+          "duration": "tek seferlik",
+          "description": "Sınırsız kullanıcı",
+          "features": [
+            "Tam özelleştirme",
+            "Sistem entegrasyonları",
+            "Gelişmiş otomasyonlar",
+            "Özel eğitim programı",
+            "1 yıl destek"
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "title": "Sık Sorulan Sorular",
+      "items": [
+        {
+          "question": "CRM kurulumu ne kadar sürer?",
+          "answer": "Küçük işletme 1 hafta, Orta ölçek 2 hafta, Kurumsal 3-4 hafta sürer."
+        },
+        {
+          "question": "Zoho CRM lisans ücreti dahil mi?",
+          "answer": "Hayır, Zoho CRM lisans ücretleri ayrıca ödenir. Size en uygun planı öneriyoruz."
+        },
+        {
+          "question": "Mevcut verilerimizi aktarabilir misiniz?",
+          "answer": "Evet, Excel, Google Sheets veya başka CRM'lerden veri aktarımı yapıyoruz."
+        },
+        {
+          "question": "Eğitim nasıl veriliyor?",
+          "answer": "Online veya yerinde eğitim seçenekleri mevcut. Tüm kullanıcılar eğitim alır."
+        },
+        {
+          "question": "Destek süresi sonrası ne olur?",
+          "answer": "Destek süresi sonrası ihtiyaçlarınıza göre aylık destek paketleri sunuyoruz."
+        }
+      ]
+    },
+    "cta_section": {
+      "title": "CRM Yolculuğunuzu Bugün Başlatın!",
+      "subtitle": "Ücretsiz danışmanlık ile CRM ihtiyaçlarınızı analiz edelim",
+      "cta_primary": "Ücretsiz Analiz Al",
+      "cta_secondary": "WhatsApp'tan Sor",
+      "guarantee": "Memnuniyet garantisi"
+    }
   }
 }

@@ -1,0 +1,715 @@
+---
+import { getTranslations } from '../i18n/utils';
+import LandingLayout from '../layouts/LandingLayout.astro';
+import SEOHead from '../components/landing/SEOHead.astro';
+import StructuredData from '../components/landing/StructuredData.astro';
+import SecurityBadges from '../components/landing/SecurityBadges.astro';
+import MobileEnhancements from '../components/landing/MobileEnhancements.astro';
+
+const t = await getTranslations('tr');
+
+// SEO Meta Data
+const seoData = {
+  title: "Web Sitesi Kurma | Profesyonel Web Tasarım Hizmetleri",
+  description: "Profesyonel web sitesi kurma hizmetleri. Modern tasarım, hızlı yükleme ve Google'da üst sıralarda çıkma garantisi ile dijital varlığınızı güçlendirin.",
+  og_title: "Web Sitesi Kurma | TechCorp",
+  og_description: "Profesyonel web sitesi kurma hizmetleri. Modern tasarım, hızlı yükleme ve Google'da üst sıralarda çıkma garantisi.",
+  structured_data: {
+    "@type": "Service",
+    name: "Web Sitesi Kurma",
+    description: "Profesyonel web sitesi kurma ve tasarım hizmetleri",
+    provider: "TechCorp",
+    offers: {
+      "@type": "Offer",
+      name: "Web Sitesi Kurma Paketleri",
+      description: "Temel, Standart ve Premium web sitesi kurma paketleri"
+    }
+  }
+};
+
+// Hero Section Data
+const heroData = {
+  headline: "Profesyonel Web Siteniz Kısa Sürede Hazır!",
+  subheadline: "Modern tasarım, hızlı yükleme ve Google'da üst sıralarda çıkma garantisi ile işletmenizin dijital varlığını güçlendirin.",
+  urgency: "Her gün geçen gün kaybettiğiniz müşteri sayısı artıyor",
+  cta_primary: "Hemen Teklif Al",
+  cta_secondary: "Örnekleri İncele",
+  stats: [
+    { number: "50+", label: "Başarılı Web Sitesi Projesi" },
+    { number: "100%", label: "Müşteri Memnuniyeti" },
+    { number: "2-6", label: "Hafta Teslimat" }
+  ]
+};
+
+// Problem-Solution Data
+const problemSolutionData = {
+  problem: "Web siteniz yok mu? Var olan siteniz mobil uyumlu değil mi? Müşterileriniz sizi online bulamıyor mu?",
+  solution: "TechCorp ile modern, hızlı ve SEO uyumlu web sitenize sahip olun. Profesyonel ekibimiz size özel çözümler sunar."
+};
+
+// Features Data
+const featuresData = [
+  {
+    icon: "📱",
+    title: "Mobil Uyumlu Tasarım",
+    description: "Tüm cihazlarda mükemmel görünüm",
+    benefit: "Mobil ziyaretçilerinizi kaçırmayın"
+  },
+  {
+    icon: "🚀",
+    title: "Hızlı Yükleme",
+    description: "3 saniyede açılan sayfalar",
+    benefit: "Ziyaretçileriniz beklemez, hemen içerik görür"
+  },
+  {
+    icon: "🔍",
+    title: "SEO Optimizasyonu",
+    description: "Google'da üst sıralarda çıkma",
+    benefit: "Daha fazla müşteri sizi bulur"
+  },
+  {
+    icon: "🛡️",
+    title: "Güvenli Hosting",
+    description: "SSL sertifikası ve günlük yedek",
+    benefit: "Siteniz 7/24 güvenli ve erişilebilir"
+  },
+  {
+    icon: "📊",
+    title: "Google Analytics",
+    description: "Detaylı ziyaretçi analizi",
+    benefit: "Müşteri davranışlarını anlayın"
+  },
+  {
+    icon: "🎯",
+    title: "İletişim Formu",
+    description: "Otomatik lead toplama",
+    benefit: "Potansiyel müşteriler direkt size ulaşır"
+  }
+];
+
+// Process Steps
+const processSteps = [
+  {
+    number: 1,
+    title: "Ücretsiz Web Sitesi Analizi",
+    description: "Mevcut durumunuzu analiz ederiz, rakip analizi yaparız, fırsat alanlarını belirleriz"
+  },
+  {
+    number: 2,
+    title: "Strateji Geliştirme",
+    description: "Hedef kitle analizi, içerik stratejisi, tasarım konsepti oluşturuyoruz"
+  },
+  {
+    number: 3,
+    title: "Tasarım & Onay",
+    description: "Markanıza özel tasarım, kullanıcı deneyimi optimizasyonu, mobil uyumluluk"
+  },
+  {
+    number: 4,
+    title: "Geliştirme & Test",
+    description: "Kod yazımı, performans optimizasyonu, güvenlik kurulumu"
+  },
+  {
+    number: 5,
+    title: "Yayın & Eğitim",
+    description: "Canlı yayın, yönetim eğitimi, ilk ay takip"
+  }
+];
+
+// Pricing Packages
+const pricingPackages = [
+  {
+    name: "💼 Temel Paket",
+    price: "Fiyat Teklifi Alın",
+    duration: "2 hafta",
+    features: [
+      "5 sayfa web sitesi",
+      "Mobil uyumlu tasarım",
+      "Temel SEO optimizasyonu",
+      "İletişim formu",
+      "1 yıl hosting dahil"
+    ],
+    ideal_for: "Küçük işletmeler için ideal"
+  },
+  {
+    name: "🚀 Standart Paket",
+    price: "Fiyat Teklifi Alın",
+    duration: "2-3 hafta",
+    features: [
+      "10 sayfa web sitesi",
+      "Özel tasarım",
+      "Temel SEO optimizasyonu",
+      "Blog sistemi",
+      "Sosyal medya entegrasyonu",
+      "Canlı destek widget",
+      "1 yıl hosting + SSL"
+    ],
+    ideal_for: "Büyüyen işletmeler için",
+    popular: true
+  },
+  {
+    name: "⭐ Premium Paket",
+    price: "Fiyat Teklifi Alın",
+    duration: "3-4 hafta",
+    features: [
+      "Sınırsız sayfa",
+      "E-ticaret hazır",
+      "Çok dilli destek",
+      "Gelişmiş analitik",
+      "CRM entegrasyonu",
+      "Özel özellikler",
+      "2 yıl hosting + premium SSL"
+    ],
+    ideal_for: "Kurumsal çözümler için"
+  }
+];
+
+// Social Proof
+const socialProof = {
+  stats: [
+    { number: "50+", label: "Başarılı Web Sitesi Projesi" },
+    { number: "100%", label: "Müşteri Memnuniyeti" },
+    { number: "2-6", label: "Hafta Teslimat" }
+  ]
+};
+
+// Testimonials
+const testimonials = [
+  {
+    name: "Ahmet Kaya",
+    company: "RetailMax",
+    content: "TechCorp sayesinde web sitemiz 2 haftada hazır oldu. Mobil uyumlu tasarım ve hızlı yükleme ile müşteri memnuniyetimiz arttı.",
+    image: "/images/testimonials/ahmet-kaya.jpg"
+  }
+];
+
+// FAQ Data
+const faqData = [
+  {
+    question: "Web sitemi ne kadar sürede teslim ediyorsunuz?",
+    answer: "Standart projeler için ortalama 2 hafta. Karmaşık projeler için 5-6 hafta sürebilir."
+  },
+  {
+    question: "Sonradan değişiklik yapabilir miyim?",
+    answer: "Evet, teslim sonrası değişiklik ve güncelleme hizmeti veriyoruz."
+  },
+  {
+    question: "Mobil uyumlu olacak mı?",
+    answer: "Evet, tüm web sitelerimiz mobil cihazlarda mükemmel çalışır."
+  },
+  {
+    question: "SEO dahil mi?",
+    answer: "Evet, temel SEO optimizasyonu tüm paketlerde dahil."
+  },
+  {
+    question: "Hosting ve domain dahil mi?",
+    answer: "Hosting dahil, domain tercihinize göre ayrı fiyatlandırılır."
+  },
+  {
+    question: "Fiyatlar nasıl belirleniyor?",
+    answer: "Proje kapsamına göre özel fiyatlandırma yapıyoruz. Teklif için iletişime geçin."
+  }
+];
+---
+
+<LandingLayout
+  title={seoData.title}
+  description={seoData.description}
+  pageType="website"
+  canonical="https://techcorp.com/web-sitesi-kurma"
+>
+  <SEOHead
+    title={seoData.title}
+    description={seoData.description}
+    keywords="web sitesi kurma, web tasarım, kurumsal web sitesi, web sitesi kurma fiyatları"
+    canonical="https://techcorp.com/web-sitesi-kurma"
+    ogType="service"
+    locale="tr_TR"
+    alternateLocales={[
+      { href: 'https://techcorp.com/web-sitesi-kurma', hreflang: 'tr' },
+      { href: 'https://techcorp.com/en/website-setup', hreflang: 'en' }
+    ]}
+  />
+  
+  <StructuredData
+    type="website"
+    pageData={seoData}
+    locale="tr"
+  />
+
+  <!-- Hero Section -->
+  <section id="hero" class="bg-gradient-to-r from-primary-600 to-purple-600 text-white py-20 relative overflow-hidden">
+      <div class="absolute inset-0 bg-black/20"></div>
+      <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="text-center lg:text-left">
+            <!-- Urgency Message -->
+            <div class="bg-red-500/20 border border-red-400 rounded-lg p-3 mb-6 inline-block">
+              <div class="flex items-center text-red-100">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm font-medium">{heroData.urgency}</span>
+              </div>
+            </div>
+            
+            <h1 class="text-5xl font-bold mb-6 leading-tight">
+              {heroData.headline}
+            </h1>
+            <p class="text-xl mb-8 opacity-90">
+              {heroData.subheadline}
+            </p>
+            
+            <!-- Hero Stats -->
+            <div class="grid grid-cols-3 gap-6 mb-8">
+              {heroData.stats.map((stat) => (
+                <div class="text-center bg-white/10 rounded-lg p-4">
+                  <div class="text-2xl font-bold">{stat.number}</div>
+                  <div class="text-sm opacity-80">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+            
+            <!-- Hero CTAs -->
+            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+              <button
+                id="hero-primary-cta"
+                class="bg-white text-primary-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105 shadow-lg"
+                onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+              >
+                {heroData.cta_primary}
+              </button>
+              <button
+                id="hero-secondary-cta"
+                class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors"
+                onclick="document.getElementById('portfolio').scrollIntoView({ behavior: 'smooth' })"
+              >
+                {heroData.cta_secondary}
+              </button>
+            </div>
+          </div>
+          
+          <!-- Hero Image -->
+          <div class="hidden lg:block">
+            <div class="relative">
+              <img
+                src="/images/website-hero-mockup.png"
+                alt="Web Sitesi Mockup"
+                class="w-full h-auto rounded-lg shadow-2xl"
+              />
+              <div class="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium animate-bounce">
+                Online!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Social Proof Stats -->
+    <section class="py-12 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold text-gray-900 mb-2">Güvenilir Web Sitesi Uzmanı</h2>
+          <p class="text-gray-600">Başarılı projelerimizle kanıtlanmış deneyim</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {socialProof.stats.map((stat, index) => (
+            <div class="text-center bg-white rounded-lg p-6 shadow-sm">
+              <div class="text-4xl font-bold text-primary-600 mb-2">{stat.number}</div>
+              <div class="text-gray-600">{stat.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Problem-Solution Section -->
+    <section class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-8">Web Sitesi Sorununuz Mu Var?</h2>
+          
+          <!-- Problem -->
+          <div class="bg-red-50 border border-red-200 rounded-lg p-8 mb-8">
+            <div class="flex items-center justify-center mb-4">
+              <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <p class="text-lg text-red-800 font-medium">
+              {problemSolutionData.problem}
+            </p>
+          </div>
+          
+          <!-- Solution -->
+          <div class="bg-green-50 border border-green-200 rounded-lg p-8">
+            <div class="flex items-center justify-center mb-4">
+              <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+            </div>
+            <p class="text-lg text-green-800 font-medium">
+              {problemSolutionData.solution}
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Web Sitesi Paketimizde Neler Var?</h2>
+          <p class="text-xl text-gray-600">Profesyonel web sitesi için gereken tüm özellikler</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {featuresData.map((feature, index) => (
+            <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6">
+              <div class="text-4xl mb-4">{feature.icon}</div>
+              <h3 class="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+              <p class="text-gray-600 mb-4">{feature.description}</p>
+              <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+                <p class="text-sm text-blue-800 font-medium">{feature.benefit}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Process Section -->
+    <section id="process" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Kanıtlanmış Sürecimiz</h2>
+          <p class="text-xl text-gray-600">5 adımda profesyonel web sitenize sahip olun</p>
+        </div>
+        
+        <div class="relative">
+          <!-- Process Timeline -->
+          <div class="hidden lg:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-primary-200"></div>
+          
+          <div class="space-y-12">
+            {processSteps.map((step, index) => (
+              <div class={`flex items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
+                <div class="flex-1 lg:px-8">
+                  <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                    <div class="flex items-center mb-4">
+                      <div class="w-10 h-10 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">
+                        {step.number}
+                      </div>
+                      <h3 class="text-xl font-bold text-gray-900">{step.title}</h3>
+                    </div>
+                    <p class="text-gray-600">{step.description}</p>
+                  </div>
+                </div>
+                
+                <div class="hidden lg:block w-8 h-8 bg-primary-600 rounded-full border-4 border-white shadow-lg"></div>
+                
+                <div class="flex-1 lg:px-8 hidden lg:block"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="packages" class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Web Sitesi Paketleri</h2>
+          <p class="text-xl text-gray-600">İhtiyacınıza uygun paketi seçin</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {pricingPackages.map((pkg, index) => (
+            <div class={`bg-white rounded-2xl shadow-lg p-8 relative ${pkg.popular ? 'ring-2 ring-primary-500 transform scale-105' : ''}`}>
+              {pkg.popular && (
+                <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-primary-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                  En Popüler
+                </div>
+              )}
+              
+              <div class="text-center mb-6">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
+                <div class="text-3xl font-bold text-primary-600 mb-2">{pkg.price}</div>
+                <p class="text-gray-600 mb-4">{pkg.duration}</p>
+                <p class="text-sm text-gray-500">{pkg.ideal_for}</p>
+              </div>
+              
+              <ul class="space-y-3 mb-8">
+                {pkg.features.map((feature) => (
+                  <li class="flex items-start">
+                    <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <span class="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+              
+              <button
+                class="w-full bg-primary-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-primary-700 transition-colors"
+                onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+              >
+                Hemen Teklif Al
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="py-16 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Müşterilerimiz Ne Diyor?</h2>
+          <p class="text-xl text-gray-600">Başarılı projelerimizden örnekler</p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+          {testimonials.map((testimonial) => (
+            <div class="bg-gray-50 rounded-lg p-8 text-center">
+              <div class="mb-6">
+                <svg class="w-12 h-12 text-primary-600 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M11.2 6.94c-2.1-.09-4.14.58-5.87 1.95C3.73 10.25 2.81 12.5 2.81 15c0 1.17.35 2.29.98 3.27l.08.13c-.19-.4-.25-.79-.25-1.23 0-1.5.75-2.79 1.94-3.57.83-.55 1.8-.81 2.8-.81 1.5 0 2.89.56 3.95 1.61C13.4 15.46 14 16.97 14 18.5c0 1.53-.6 3.04-1.69 4.1C11.22 23.66 9.71 24.26 8.18 24.26c-1.53 0-3.04-.6-4.1-1.66C2.94 21.54 2.34 20.03 2.34 18.5c0-3.94 1.83-7.33 4.99-9.57 1.99-1.41 4.39-2.04 6.78-1.95l.09.02v-.06z"/>
+                  <path d="M22.31 6.94c-2.1-.09-4.14.58-5.87 1.95-1.6 1.36-2.52 3.61-2.52 6.11 0 1.17.35 2.29.98 3.27l.08.13c-.19-.4-.25-.79-.25-1.23 0-1.5.75-2.79 1.94-3.57.83-.55 1.8-.81 2.8-.81 1.5 0 2.89.56 3.95 1.61 1.09 1.06 1.69 2.57 1.69 4.1 0 1.53-.6 3.04-1.69 4.1-1.09 1.06-2.6 1.66-4.13 1.66-1.53 0-3.04-.6-4.1-1.66-1.09-1.06-1.69-2.57-1.69-4.1 0-3.94 1.83-7.33 4.99-9.57 1.99-1.41 4.39-2.04 6.78-1.95l.09.02v-.06z"/>
+                </svg>
+              </div>
+              <blockquote class="text-lg text-gray-700 italic mb-6">
+                "{testimonial.content}"
+              </blockquote>
+              <div class="flex items-center justify-center">
+                <img
+                  src={testimonial.image}
+                  alt={testimonial.name}
+                  class="w-12 h-12 rounded-full mr-4"
+                />
+                <div>
+                  <div class="font-semibold text-gray-900">{testimonial.name}</div>
+                  <div class="text-sm text-gray-600">{testimonial.company}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-16 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Sık Sorulan Sorular</h2>
+          <p class="text-xl text-gray-600">Merak ettiğiniz soruların cevapları</p>
+        </div>
+        
+        <div class="max-w-4xl mx-auto">
+          <div class="space-y-6">
+            {faqData.map((item, index) => (
+              <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+                <button
+                  class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                  onclick={`toggleFAQ(${index})`}
+                >
+                  <span class="font-semibold text-gray-900">{item.question}</span>
+                  <svg class="w-5 h-5 text-gray-400 transform transition-transform" id={`faq-icon-${index}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                  </svg>
+                </button>
+                <div class="px-6 pb-4 hidden" id={`faq-content-${index}`}>
+                  <p class="text-gray-600">{item.answer}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Form Section -->
+    <section class="py-16 bg-white" id="contact-form">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+          <h2 class="text-4xl font-bold text-gray-900 mb-4">Hemen Teklif Alın!</h2>
+          <p class="text-xl text-gray-600">Profesyonel web siteniz için ücretsiz görüşme planlayın</p>
+        </div>
+        
+        <div class="bg-gray-50 rounded-2xl p-8">
+          <form class="space-y-6" method="POST" action="/submit-web-form">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Ad Soyad *</label>
+                <input 
+                  type="text" 
+                  name="name" 
+                  required 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Adınız ve soyadınız"
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">E-posta *</label>
+                <input 
+                  type="email" 
+                  name="email" 
+                  required 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="ornek@email.com"
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Telefon *</label>
+                <input 
+                  type="tel" 
+                  name="phone" 
+                  required 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="0532 123 45 67"
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Şirket</label>
+                <input 
+                  type="text" 
+                  name="company" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  placeholder="Şirket adınız"
+                />
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Web Sitesi Türü</label>
+                <select 
+                  name="website_type" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="">Seçiniz</option>
+                  <option value="kurumsal">Kurumsal Web Sitesi</option>
+                  <option value="e-ticaret">E-ticaret Sitesi</option>
+                  <option value="blog">Blog/Haber Sitesi</option>
+                  <option value="portfolio">Portfolio Sitesi</option>
+                  <option value="diğer">Diğer</option>
+                </select>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Proje Zamanlaması</label>
+                <select 
+                  name="project_timeline" 
+                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                >
+                  <option value="">Seçiniz</option>
+                  <option value="acil">Acil (1-2 hafta)</option>
+                  <option value="normal">Normal (2-4 hafta)</option>
+                  <option value="esnek">Esnek (1-2 ay)</option>
+                </select>
+              </div>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Mevcut Web Sitesi</label>
+              <input 
+                type="url" 
+                name="current_website" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                placeholder="https://mevcut-site.com (varsa)"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Ek Bilgiler</label>
+              <textarea 
+                name="additional_info" 
+                rows="4"
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                placeholder="Projeniz hakkında detaylar, özel istekleriniz..."
+              ></textarea>
+            </div>
+            
+            <div class="text-center">
+              <button 
+                type="submit"
+                class="bg-primary-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-primary-700 transition-colors text-lg"
+              >
+                Ücretsiz Teklif Al
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="py-16 bg-gradient-to-r from-primary-600 to-purple-600 text-white">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h2 class="text-4xl font-bold mb-4">Projene Hemen Başla!</h2>
+        <p class="text-xl mb-8 opacity-90">Bu ay başvuran ilk 10 işletmeye %20 özel indirim</p>
+        
+        <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+          <button
+            class="bg-white text-primary-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+            onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+          >
+            Hemen Teklif Al
+          </button>
+          <button
+            class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-primary-600 transition-colors"
+            onclick="window.open('https://wa.me/905321234567', '_blank')"
+          >
+            WhatsApp'tan Sor
+          </button>
+        </div>
+        
+        <div class="text-sm opacity-80">
+          <p>⏰ Bu ay 8 slot kaldı • 🔥 Uzman ekibimiz sınırlı sayıda proje alıyor</p>
+        </div>
+      </div>
+    </section>
+
+  <!-- Security Badges -->
+  <SecurityBadges translations={t} />
+  
+  <!-- Mobile Enhancements -->
+  <MobileEnhancements translations={t} />
+
+  <!-- Scripts -->
+  <script>
+    // FAQ toggle function
+    function toggleFAQ(index) {
+      const content = document.getElementById(`faq-content-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        content.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    // Make function global
+    window.toggleFAQ = toggleFAQ;
+    
+    // Form submission tracking
+    document.querySelector('form').addEventListener('submit', function(e) {
+      // Track form submission
+      if (window.gtag) {
+        gtag('event', 'form_submit', {
+          event_category: 'web_sitesi_form',
+          event_label: 'contact_form',
+          value: 1
+        });
+      }
+    });
+  </script>
+</LandingLayout>

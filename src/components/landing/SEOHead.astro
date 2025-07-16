@@ -1,0 +1,172 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  keywords?: string;
+  canonical?: string;
+  ogType?: 'website' | 'article' | 'product' | 'service';
+  ogImage?: string;
+  ogImageAlt?: string;
+  twitterCard?: 'summary' | 'summary_large_image' | 'app' | 'player';
+  author?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  locale?: string;
+  alternateLocales?: { href: string; hreflang: string }[];
+  noindex?: boolean;
+  nofollow?: boolean;
+  schema?: any;
+}
+
+const {
+  title,
+  description,
+  keywords = '',
+  canonical,
+  ogType = 'website',
+  ogImage = '/images/og-default.jpg',
+  ogImageAlt = 'TechCorp - CRM ve Web Geliştirme Uzmanı',
+  twitterCard = 'summary_large_image',
+  author = 'TechCorp',
+  publishedTime,
+  modifiedTime,
+  locale = 'tr_TR',
+  alternateLocales = [],
+  noindex = false,
+  nofollow = false,
+  schema
+} = Astro.props;
+
+const currentUrl = new URL(Astro.request.url);
+const canonicalUrl = canonical || currentUrl.href;
+const fullOgImage = new URL(ogImage, currentUrl.origin).href;
+
+// Default structured data
+const defaultSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "TechCorp",
+  "url": "https://techcorp.com",
+  "logo": "https://techcorp.com/logo.png",
+  "description": "CRM danışmanlığı ve web geliştirme uzmanı",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "TR",
+    "addressLocality": "Istanbul"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+90-532-123-4567",
+    "contactType": "Customer Service",
+    "availableLanguage": ["Turkish", "English"]
+  },
+  "sameAs": [
+    "https://linkedin.com/company/techcorp",
+    "https://twitter.com/techcorp"
+  ]
+};
+
+const robotsContent = [
+  noindex ? 'noindex' : 'index',
+  nofollow ? 'nofollow' : 'follow'
+].join(', ');
+---
+
+<!-- Basic Meta Tags -->
+<title>{title}</title>
+<meta name="description" content={description} />
+{keywords && <meta name="keywords" content={keywords} />}
+<meta name="author" content={author} />
+<meta name="robots" content={robotsContent} />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8" />
+
+<!-- Canonical URL -->
+<link rel="canonical" href={canonicalUrl} />
+
+<!-- Language and Locale -->
+<meta name="language" content={locale.split('_')[0]} />
+<meta property="og:locale" content={locale} />
+
+<!-- Alternate Language Versions -->
+{alternateLocales.map(({ href, hreflang }) => (
+  <link rel="alternate" href={href} hreflang={hreflang} />
+))}
+
+<!-- Open Graph Meta Tags -->
+<meta property="og:type" content={ogType} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={fullOgImage} />
+<meta property="og:image:alt" content={ogImageAlt} />
+<meta property="og:site_name" content="TechCorp" />
+{publishedTime && <meta property="article:published_time" content={publishedTime} />}
+{modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+
+<!-- Twitter Card Meta Tags -->
+<meta name="twitter:card" content={twitterCard} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={fullOgImage} />
+<meta name="twitter:image:alt" content={ogImageAlt} />
+<meta name="twitter:site" content="@techcorp" />
+<meta name="twitter:creator" content="@techcorp" />
+
+<!-- Additional SEO Meta Tags -->
+<meta name="format-detection" content="telephone=yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="theme-color" content="#6366f1" />
+
+<!-- Favicon and Icons -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+
+<!-- Preconnect for Performance -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="preconnect" href="https://www.google-analytics.com" />
+<link rel="preconnect" href="https://www.googletagmanager.com" />
+
+<!-- DNS Prefetch for External Resources -->
+<link rel="dns-prefetch" href="//fonts.googleapis.com" />
+<link rel="dns-prefetch" href="//www.google-analytics.com" />
+<link rel="dns-prefetch" href="//wa.me" />
+
+<!-- Schema.org Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(schema || defaultSchema)} />
+
+<!-- Additional Performance Hints -->
+<meta name="msapplication-TileColor" content="#6366f1" />
+<meta name="msapplication-config" content="/browserconfig.xml" />
+
+<!-- Security Headers -->
+<meta http-equiv="X-Content-Type-Options" content="nosniff" />
+<meta http-equiv="X-Frame-Options" content="DENY" />
+<meta http-equiv="X-XSS-Protection" content="1; mode=block" />
+<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
+
+<!-- Preload Critical Resources -->
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin />
+
+<!-- Google Analytics (replace with your GA4 ID) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'GA_MEASUREMENT_ID');
+</script>
+
+<!-- Google Tag Manager (replace with your GTM ID) -->
+<script>
+  (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-XXXXXXX');
+</script>

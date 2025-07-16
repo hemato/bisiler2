@@ -1,0 +1,715 @@
+---
+import { getTranslations } from '../../i18n/utils';
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import SEOHead from '../../components/landing/SEOHead.astro';
+import StructuredData from '../../components/landing/StructuredData.astro';
+import SecurityBadges from '../../components/landing/SecurityBadges.astro';
+import MobileEnhancements from '../../components/landing/MobileEnhancements.astro';
+
+const t = await getTranslations('en');
+
+// SEO Meta Data
+const seoData = {
+  title: "Professional Website Setup | TechCorp",
+  description: "Modern, fast and SEO-friendly website setup. Strengthen your online presence with responsive design, secure hosting and continuous support.",
+  og_title: "Professional Website Setup | TechCorp",
+  og_description: "Modern, fast and SEO-friendly website setup. Strengthen your online presence with responsive design, secure hosting and continuous support.",
+  structured_data: {
+    "@type": "Service",
+    name: "Website Setup",
+    description: "Professional website setup and design services",
+    provider: "TechCorp",
+    offers: {
+      "@type": "Offer",
+      name: "Website Setup Packages",
+      description: "Starter, Professional and Enterprise website setup packages"
+    }
+  }
+};
+
+// Hero Section Data
+const heroData = {
+  headline: "Grow Your Business with Professional Website",
+  subheadline: "Strengthen your online presence with modern, fast and SEO-friendly website setup. Make a difference in the digital world with our expert team.",
+  urgency: "Every day you delay, you lose potential customers",
+  cta_primary: "Get Quote Now",
+  cta_secondary: "Free Consultation",
+  stats: [
+    { number: "500+", label: "Completed Projects" },
+    { number: "98%", label: "Customer Satisfaction" },
+    { number: "24/7", label: "Technical Support" }
+  ]
+};
+
+// Problem-Solution Data
+const problemSolutionData = {
+  problem: "Don't have a website? Is your existing site not mobile-friendly? Can't your customers find you online?",
+  solution: "Get a modern, fast and SEO-friendly website with TechCorp. Our professional team offers custom solutions for you."
+};
+
+// Features Data
+const featuresData = [
+  {
+    icon: "📱",
+    title: "Responsive Design",
+    description: "Perfect display on mobile, tablet and desktop",
+    benefit: "Don't miss your mobile visitors"
+  },
+  {
+    icon: "🚀",
+    title: "Fast Loading",
+    description: "Pages that load in 3 seconds",
+    benefit: "Your visitors don't wait, they see content immediately"
+  },
+  {
+    icon: "🔍",
+    title: "SEO Optimization",
+    description: "Top rankings on Google",
+    benefit: "More customers find you"
+  },
+  {
+    icon: "🛡️",
+    title: "Secure Hosting",
+    description: "SSL certificate and daily backup",
+    benefit: "Your site is safe and accessible 24/7"
+  },
+  {
+    icon: "📊",
+    title: "Google Analytics",
+    description: "Detailed visitor analysis",
+    benefit: "Understand customer behavior"
+  },
+  {
+    icon: "🎯",
+    title: "Contact Form",
+    description: "Automatic lead collection",
+    benefit: "Potential customers reach you directly"
+  }
+];
+
+// Process Steps
+const processSteps = [
+  {
+    number: 1,
+    title: "Free Website Analysis",
+    description: "We analyze your current situation, conduct competitor analysis, and identify opportunities"
+  },
+  {
+    number: 2,
+    title: "Strategy Development",
+    description: "Target audience analysis, content strategy, design concept creation"
+  },
+  {
+    number: 3,
+    title: "Design & Approval",
+    description: "Brand-specific design, user experience optimization, mobile compatibility"
+  },
+  {
+    number: 4,
+    title: "Development & Testing",
+    description: "Code writing, performance optimization, security setup"
+  },
+  {
+    number: 5,
+    title: "Launch & Training",
+    description: "Live launch, management training, first month follow-up"
+  }
+];
+
+// Pricing Packages
+const pricingPackages = [
+  {
+    name: "💼 Starter Package",
+    price: "Get Quote",
+    duration: "2 weeks",
+    features: [
+      "5-page website",
+      "Mobile-friendly design",
+      "Basic SEO optimization",
+      "Contact form",
+      "1 year hosting included"
+    ],
+    ideal_for: "Ideal for small businesses"
+  },
+  {
+    name: "🚀 Professional Package",
+    price: "Get Quote",
+    duration: "2-3 weeks",
+    features: [
+      "10-page website",
+      "Custom design",
+      "Advanced SEO optimization",
+      "Blog system",
+      "Social media integration",
+      "Live support widget",
+      "1 year hosting + SSL"
+    ],
+    ideal_for: "For growing businesses",
+    popular: true
+  },
+  {
+    name: "⭐ Enterprise Package",
+    price: "Get Quote",
+    duration: "3-4 weeks",
+    features: [
+      "Unlimited pages",
+      "E-commerce ready",
+      "Multi-language support",
+      "Advanced analytics",
+      "CRM integration",
+      "Custom features",
+      "2 years hosting + premium SSL"
+    ],
+    ideal_for: "For enterprise solutions"
+  }
+];
+
+// Social Proof
+const socialProof = {
+  stats: [
+    { number: "500+", label: "Completed Projects" },
+    { number: "98%", label: "Customer Satisfaction" },
+    { number: "24/7", label: "Technical Support" }
+  ]
+};
+
+// Testimonials
+const testimonials = [
+  {
+    name: "John Smith",
+    company: "RetailMax",
+    content: "Thanks to TechCorp, our website was ready in 2 weeks. Mobile-friendly design and fast loading increased our customer satisfaction.",
+    image: "/images/testimonials/john-smith.jpg"
+  }
+];
+
+// FAQ Data
+const faqData = [
+  {
+    question: "How long does it take to deliver my website?",
+    answer: "Average 2 weeks for standard projects. Complex projects may take 5-6 weeks."
+  },
+  {
+    question: "Can I make changes later?",
+    answer: "Yes, we provide change and update services after delivery."
+  },
+  {
+    question: "Will it be mobile-friendly?",
+    answer: "Yes, all our websites work perfectly on mobile devices."
+  },
+  {
+    question: "Is SEO included?",
+    answer: "Yes, basic SEO optimization is included in all packages."
+  },
+  {
+    question: "Are hosting and domain included?",
+    answer: "Hosting is included, domain is priced separately according to your preference."
+  },
+  {
+    question: "How are prices determined?",
+    answer: "We make custom pricing according to project scope. Contact us for a quote."
+  }
+];
+---
+
+<LandingLayout 
+  title={seoData.title}
+  description={seoData.description}
+  pageType="website"
+  canonical="https://techcorp.com/en/website-setup"
+>
+  <SEOHead
+    title={seoData.title}
+    description={seoData.description}
+    keywords="website setup, web design, responsive design, SEO, e-commerce website"
+    canonical="https://techcorp.com/en/website-setup"
+    ogType="service"
+    locale="en_US"
+    alternateLocales={[
+      { href: 'https://techcorp.com/web-sitesi-kurma', hreflang: 'tr' },
+      { href: 'https://techcorp.com/en/website-setup', hreflang: 'en' }
+    ]}
+  />
+  
+  <StructuredData
+    type="website"
+    pageData={seoData}
+    locale="en"
+  />
+
+  <!-- Hero Section -->
+  <section id="hero" class="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="text-center lg:text-left">
+          <!-- Urgency Message -->
+          <div class="bg-red-500/20 border border-red-400 rounded-lg p-3 mb-6 inline-block">
+            <div class="flex items-center text-red-100">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span class="text-sm font-medium">{heroData.urgency}</span>
+            </div>
+          </div>
+          
+          <h1 class="text-5xl font-bold mb-6 leading-tight">
+            {heroData.headline}
+          </h1>
+          <p class="text-xl mb-8 opacity-90">
+            {heroData.subheadline}
+          </p>
+          
+          <!-- Hero Stats -->
+          <div class="grid grid-cols-3 gap-6 mb-8">
+            {heroData.stats.map((stat) => (
+              <div class="text-center bg-white/10 rounded-lg p-4">
+                <div class="text-2xl font-bold">{stat.number}</div>
+                <div class="text-sm opacity-80">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+          
+          <!-- Hero CTAs -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <button
+              id="hero-primary-cta"
+              class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105 shadow-lg"
+              onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+            >
+              {heroData.cta_primary}
+            </button>
+            <button
+              id="hero-secondary-cta"
+              class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+              onclick="document.getElementById('testimonials').scrollIntoView({ behavior: 'smooth' })"
+            >
+              {heroData.cta_secondary}
+            </button>
+          </div>
+        </div>
+        
+        <!-- Hero Image -->
+        <div class="hidden lg:block">
+          <div class="relative">
+            <img
+              src="/images/website-hero-mockup.png"
+              alt="Website Mockup"
+              class="w-full h-auto rounded-lg shadow-2xl"
+            />
+            <div class="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium animate-bounce">
+              Online!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof Stats -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Trusted Website Expert</h2>
+        <p class="text-gray-600">Proven experience with successful projects</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {socialProof.stats.map((stat, index) => (
+          <div class="text-center bg-white rounded-lg p-6 shadow-sm">
+            <div class="text-4xl font-bold text-blue-600 mb-2">{stat.number}</div>
+            <div class="text-gray-600">{stat.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem-Solution Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-8">Having Website Problems?</h2>
+        
+        <!-- Problem -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-8 mb-8">
+          <div class="flex items-center justify-center mb-4">
+            <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <p class="text-lg text-red-800 font-medium">
+            {problemSolutionData.problem}
+          </p>
+        </div>
+        
+        <!-- Solution -->
+        <div class="bg-green-50 border border-green-200 rounded-lg p-8">
+          <div class="flex items-center justify-center mb-4">
+            <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <p class="text-lg text-green-800 font-medium">
+            {problemSolutionData.solution}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">What's in Our Website Package?</h2>
+        <p class="text-xl text-gray-600">All features needed for a professional website</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuresData.map((feature, index) => (
+          <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6">
+            <div class="text-4xl mb-4">{feature.icon}</div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+            <p class="text-gray-600 mb-4">{feature.description}</p>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p class="text-sm text-blue-800 font-medium">{feature.benefit}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section id="process" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Our Proven Process</h2>
+        <p class="text-xl text-gray-600">Get your professional website in 5 steps</p>
+      </div>
+      
+      <div class="relative">
+        <!-- Process Timeline -->
+        <div class="hidden lg:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-blue-200"></div>
+        
+        <div class="space-y-12">
+          {processSteps.map((step, index) => (
+            <div class={`flex items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
+              <div class="flex-1 lg:px-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                  <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">
+                      {step.number}
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">{step.title}</h3>
+                  </div>
+                  <p class="text-gray-600">{step.description}</p>
+                </div>
+              </div>
+              
+              <div class="hidden lg:block w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg"></div>
+              
+              <div class="flex-1 lg:px-8 hidden lg:block"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="packages" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Website Packages</h2>
+        <p class="text-xl text-gray-600">Choose the package that suits your needs</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {pricingPackages.map((pkg, index) => (
+          <div class={`bg-white rounded-2xl shadow-lg p-8 relative ${pkg.popular ? 'ring-2 ring-blue-500 transform scale-105' : ''}`}>
+            {pkg.popular && (
+              <div class="absolute -top-4 left-1/2 transform -translate-x-1/2 bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium">
+                Most Popular
+              </div>
+            )}
+            
+            <div class="text-center mb-6">
+              <h3 class="text-2xl font-bold text-gray-900 mb-2">{pkg.name}</h3>
+              <div class="text-3xl font-bold text-blue-600 mb-2">{pkg.price}</div>
+              <p class="text-gray-600 mb-4">{pkg.duration}</p>
+              <p class="text-sm text-gray-500">{pkg.ideal_for}</p>
+            </div>
+            
+            <ul class="space-y-3 mb-8">
+              {pkg.features.map((feature) => (
+                <li class="flex items-start">
+                  <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span class="text-gray-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+            
+            <button
+              class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+              onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+            >
+              Get Quote Now
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">What Our Customers Say?</h2>
+        <p class="text-xl text-gray-600">Examples from our successful projects</p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        {testimonials.map((testimonial) => (
+          <div class="bg-gray-50 rounded-lg p-8 text-center">
+            <div class="mb-6">
+              <svg class="w-12 h-12 text-blue-600 mx-auto mb-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M11.2 6.94c-2.1-.09-4.14.58-5.87 1.95C3.73 10.25 2.81 12.5 2.81 15c0 1.17.35 2.29.98 3.27l.08.13c-.19-.4-.25-.79-.25-1.23 0-1.5.75-2.79 1.94-3.57.83-.55 1.8-.81 2.8-.81 1.5 0 2.89.56 3.95 1.61C13.4 15.46 14 16.97 14 18.5c0 1.53-.6 3.04-1.69 4.1C11.22 23.66 9.71 24.26 8.18 24.26c-1.53 0-3.04-.6-4.1-1.66C2.94 21.54 2.34 20.03 2.34 18.5c0-3.94 1.83-7.33 4.99-9.57 1.99-1.41 4.39-2.04 6.78-1.95l.09.02v-.06z"/>
+                <path d="M22.31 6.94c-2.1-.09-4.14.58-5.87 1.95-1.6 1.36-2.52 3.61-2.52 6.11 0 1.17.35 2.29.98 3.27l.08.13c-.19-.4-.25-.79-.25-1.23 0-1.5.75-2.79 1.94-3.57.83-.55 1.8-.81 2.8-.81 1.5 0 2.89.56 3.95 1.61 1.09 1.06 1.69 2.57 1.69 4.1 0 1.53-.6 3.04-1.69 4.1-1.09 1.06-2.6 1.66-4.13 1.66-1.53 0-3.04-.6-4.1-1.66-1.09-1.06-1.69-2.57-1.69-4.1 0-3.94 1.83-7.33 4.99-9.57 1.99-1.41 4.39-2.04 6.78-1.95l.09.02v-.06z"/>
+              </svg>
+            </div>
+            <blockquote class="text-lg text-gray-700 italic mb-6">
+              "{testimonial.content}"
+            </blockquote>
+            <div class="flex items-center justify-center">
+              <img
+                src={testimonial.image}
+                alt={testimonial.name}
+                class="w-12 h-12 rounded-full mr-4"
+              />
+              <div>
+                <div class="font-semibold text-gray-900">{testimonial.name}</div>
+                <div class="text-sm text-gray-600">{testimonial.company}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+        <p class="text-xl text-gray-600">Answers to your questions</p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <div class="space-y-6">
+          {faqData.map((item, index) => (
+            <div class="bg-white rounded-lg shadow-sm border border-gray-200">
+              <button
+                class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
+                onclick={`toggleFAQ(${index})`}
+              >
+                <span class="font-semibold text-gray-900">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-400 transform transition-transform" id={`faq-icon-${index}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 pb-4 hidden" id={`faq-content-${index}`}>
+                <p class="text-gray-600">{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section id="contact-form" class="py-16 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Get Quote Now!</h2>
+        <p class="text-xl text-gray-600">Schedule a free consultation for your professional website</p>
+      </div>
+      
+      <div class="bg-gray-50 rounded-2xl p-8">
+        <form class="space-y-6" method="POST" action="/submit-web-form">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+              <input 
+                type="text" 
+                name="name" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Your full name"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="example@email.com"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+              <input 
+                type="tel" 
+                name="phone" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="+1 555 123 4567"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Company</label>
+              <input 
+                type="text" 
+                name="company" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Your company name"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Website Type</label>
+              <select 
+                name="website_type" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select</option>
+                <option value="corporate">Corporate Website</option>
+                <option value="ecommerce">E-commerce Site</option>
+                <option value="blog">Blog/News Site</option>
+                <option value="portfolio">Portfolio Site</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Project Timeline</label>
+              <select 
+                name="project_timeline" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select</option>
+                <option value="urgent">Urgent (1-2 weeks)</option>
+                <option value="normal">Normal (2-4 weeks)</option>
+                <option value="flexible">Flexible (1-2 months)</option>
+              </select>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Current Website</label>
+            <input 
+              type="url" 
+              name="current_website" 
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="https://current-site.com (if any)"
+            />
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Additional Information</label>
+            <textarea 
+              name="additional_info" 
+              rows="4"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="Details about your project, special requests..."
+            ></textarea>
+          </div>
+          
+          <div class="text-center">
+            <button 
+              type="submit"
+              class="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-lg"
+            >
+              Get Free Quote
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="py-16 bg-gradient-to-r from-blue-600 to-purple-600 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold mb-4">Start Your Project Now!</h2>
+      <p class="text-xl mb-8 opacity-90">20% special discount for first 10 businesses applying this month</p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+        <button
+          class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+        >
+          Get Quote Now
+        </button>
+        <button
+          class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+          onclick="window.open('https://wa.me/1234567890', '_blank')"
+        >
+          Ask via WhatsApp
+        </button>
+      </div>
+      
+      <div class="text-sm opacity-80">
+        <p>⏰ 8 slots left this month • 🔥 Our expert team accepts limited projects</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security Badges -->
+  <SecurityBadges translations={t} />
+  
+  <!-- Mobile Enhancements -->
+  <MobileEnhancements translations={t} />
+
+  <!-- Scripts -->
+  <script>
+    // FAQ toggle function
+    function toggleFAQ(index) {
+      const content = document.getElementById(`faq-content-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        content.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    // Make function global
+    window.toggleFAQ = toggleFAQ;
+    
+    // Form submission tracking
+    document.querySelector('form').addEventListener('submit', function(e) {
+      // Track form submission
+      if (window.gtag) {
+        gtag('event', 'form_submit', {
+          event_category: 'web_sitesi_form',
+          event_label: 'contact_form',
+          value: 1
+        });
+      }
+    });
+  </script>
+</LandingLayout>

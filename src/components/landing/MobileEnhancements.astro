@@ -1,0 +1,299 @@
+---
+interface Props {
+  translations: any;
+  enableSwipeGestures?: boolean;
+  enableTouchOptimization?: boolean;
+  enableMobileMenu?: boolean;
+  className?: string;
+}
+
+const { 
+  translations, 
+  enableSwipeGestures = true, 
+  enableTouchOptimization = true,
+  enableMobileMenu = true,
+  className = '' 
+} = Astro.props;
+---
+
+<!-- Mobile Navigation Enhancement -->
+{enableMobileMenu && (
+  <div class="md:hidden sticky top-0 bg-white/95 backdrop-blur-sm border-b border-gray-200 z-30">
+    <div class="flex items-center justify-between px-4 py-3">
+      <div class="flex items-center space-x-2">
+        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+        <span class="text-sm font-medium text-gray-700">
+          {translations.mobile_nav?.status || 'Çevrimiçi'}
+        </span>
+      </div>
+      <div class="flex items-center space-x-2">
+        <a href="tel:+905321234567" class="bg-primary-600 text-white px-4 py-2 rounded-lg text-sm font-medium">
+          {translations.mobile_nav?.call || 'Ara'}
+        </a>
+        <a href="https://wa.me/905321234567" class="bg-green-500 text-white px-4 py-2 rounded-lg text-sm font-medium">
+          {translations.mobile_nav?.whatsapp || 'WhatsApp'}
+        </a>
+      </div>
+    </div>
+  </div>
+)}
+
+<!-- Mobile-Optimized Content Container -->
+<div class={`mobile-enhanced-content ${className}`}>
+  <!-- Touch-Optimized Buttons -->
+  {enableTouchOptimization && (
+    <style>
+      .mobile-enhanced-content {
+        -webkit-tap-highlight-color: transparent;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+      }
+      
+      .mobile-enhanced-content button,
+      .mobile-enhanced-content a {
+        min-height: 44px;
+        min-width: 44px;
+        touch-action: manipulation;
+      }
+      
+      .mobile-enhanced-content .touch-target {
+        padding: 12px 16px;
+        margin: 8px 0;
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+      
+      .mobile-enhanced-content .touch-target:active {
+        transform: scale(0.98);
+        opacity: 0.8;
+      }
+      
+      /* Improved form inputs for mobile */
+      .mobile-enhanced-content input,
+      .mobile-enhanced-content textarea,
+      .mobile-enhanced-content select {
+        font-size: 16px; /* Prevents zoom on iOS */
+        padding: 12px 16px;
+        border-radius: 8px;
+        border: 2px solid #e5e7eb;
+        transition: border-color 0.2s ease;
+      }
+      
+      .mobile-enhanced-content input:focus,
+      .mobile-enhanced-content textarea:focus,
+      .mobile-enhanced-content select:focus {
+        border-color: #6366f1;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+      }
+      
+      /* Mobile-specific improvements */
+      @media (max-width: 768px) {
+        .mobile-enhanced-content {
+          padding: 16px;
+        }
+        
+        .mobile-enhanced-content h1 {
+          font-size: 2rem;
+          line-height: 1.2;
+        }
+        
+        .mobile-enhanced-content h2 {
+          font-size: 1.5rem;
+          line-height: 1.3;
+        }
+        
+        .mobile-enhanced-content p {
+          font-size: 1rem;
+          line-height: 1.6;
+        }
+        
+        .mobile-enhanced-content .grid {
+          grid-template-columns: 1fr;
+          gap: 16px;
+        }
+        
+        .mobile-enhanced-content .flex {
+          flex-direction: column;
+        }
+        
+        .mobile-enhanced-content .space-x-4 > * {
+          margin-right: 0;
+          margin-bottom: 8px;
+        }
+      }
+    </style>
+  )}
+
+  <!-- Swipe Gestures Enhancement -->
+  {enableSwipeGestures && (
+    <script>
+      // Swipe gesture detection
+      let startX = 0;
+      let startY = 0;
+      let endX = 0;
+      let endY = 0;
+      
+      const minSwipeDistance = 50;
+      
+      document.addEventListener('touchstart', (e) => {
+        startX = e.changedTouches[0].screenX;
+        startY = e.changedTouches[0].screenY;
+      });
+      
+      document.addEventListener('touchend', (e) => {
+        endX = e.changedTouches[0].screenX;
+        endY = e.changedTouches[0].screenY;
+        handleSwipe();
+      });
+      
+      function handleSwipe() {
+        const deltaX = endX - startX;
+        const deltaY = endY - startY;
+        
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+          if (Math.abs(deltaX) > minSwipeDistance) {
+            if (deltaX > 0) {
+              // Swipe right - Go back or previous
+              if (window.history.length > 1) {
+                window.history.back();
+              }
+            } else {
+              // Swipe left - Could trigger mobile menu or next action
+              const mobileMenu = document.querySelector('.mobile-menu');
+              if (mobileMenu) {
+                mobileMenu.classList.toggle('hidden');
+              }
+            }
+          }
+        } else {
+          if (Math.abs(deltaY) > minSwipeDistance) {
+            if (deltaY > 0) {
+              // Swipe down - Refresh or show additional content
+              const refreshButton = document.querySelector('.refresh-trigger');
+              if (refreshButton) {
+                refreshButton.click();
+              }
+            } else {
+              // Swipe up - Scroll to top or show floating action
+              const scrollToTop = document.querySelector('.scroll-to-top');
+              if (scrollToTop) {
+                scrollToTop.click();
+              }
+            }
+          }
+        }
+      }
+    </script>
+  )}
+
+  <!-- Mobile Performance Optimizations -->
+  <script>
+    // Optimize images for mobile
+    function optimizeImagesForMobile() {
+      const images = document.querySelectorAll('img');
+      images.forEach(img => {
+        // Add loading="lazy" if not already present
+        if (!img.hasAttribute('loading')) {
+          img.setAttribute('loading', 'lazy');
+        }
+        
+        // Add proper alt attributes for accessibility
+        if (!img.hasAttribute('alt')) {
+          img.setAttribute('alt', '');
+        }
+      });
+    }
+    
+    // Optimize animations for mobile
+    function optimizeAnimations() {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      
+      if (prefersReducedMotion.matches) {
+        // Disable animations for users who prefer reduced motion
+        document.documentElement.style.setProperty('--animation-duration', '0s');
+        document.documentElement.style.setProperty('--transition-duration', '0s');
+      }
+    }
+    
+    // Handle viewport changes
+    function handleViewportChange() {
+      const viewportMeta = document.querySelector('meta[name="viewport"]');
+      if (viewportMeta) {
+        viewportMeta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+      }
+    }
+    
+    // Initialize mobile optimizations
+    document.addEventListener('DOMContentLoaded', () => {
+      optimizeImagesForMobile();
+      optimizeAnimations();
+      handleViewportChange();
+    });
+    
+    // Handle orientation change
+    window.addEventListener('orientationchange', () => {
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+      }, 100);
+    });
+  </script>
+</div>
+
+<!-- Mobile-Specific Floating Action Button -->
+<div class="md:hidden fixed bottom-4 left-4 right-4 z-40">
+  <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-4">
+    <div class="flex items-center justify-between">
+      <div class="flex-1">
+        <p class="text-sm font-semibold text-gray-900">
+          {translations.mobile_fab?.title || 'Sorularınız mı var?'}
+        </p>
+        <p class="text-xs text-gray-600">
+          {translations.mobile_fab?.subtitle || 'Hemen iletişime geçin'}
+        </p>
+      </div>
+      <div class="flex space-x-2">
+        <a href="tel:+905321234567" class="bg-primary-600 text-white p-3 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"></path>
+          </svg>
+        </a>
+        <a href="https://wa.me/905321234567" class="bg-green-500 text-white p-3 rounded-full">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scroll to Top Button for Mobile -->
+<button class="scroll-to-top md:hidden fixed bottom-24 right-4 bg-primary-600 text-white p-3 rounded-full shadow-lg z-30 opacity-0 transition-opacity duration-300">
+  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+  </svg>
+</button>
+
+<script>
+  // Scroll to top functionality
+  const scrollToTopBtn = document.querySelector('.scroll-to-top');
+  
+  window.addEventListener('scroll', () => {
+    if (window.pageYOffset > 300) {
+      scrollToTopBtn.classList.remove('opacity-0');
+      scrollToTopBtn.classList.add('opacity-100');
+    } else {
+      scrollToTopBtn.classList.add('opacity-0');
+      scrollToTopBtn.classList.remove('opacity-100');
+    }
+  });
+  
+  scrollToTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+</script>

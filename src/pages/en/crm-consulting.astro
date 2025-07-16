@@ -1,0 +1,961 @@
+---
+import { getTranslations } from '../../i18n/utils';
+import LandingLayout from '../../layouts/LandingLayout.astro';
+import SEOHead from '../../components/landing/SEOHead.astro';
+import StructuredData from '../../components/landing/StructuredData.astro';
+import SecurityBadges from '../../components/landing/SecurityBadges.astro';
+import MobileEnhancements from '../../components/landing/MobileEnhancements.astro';
+
+const t = await getTranslations('en');
+
+// SEO Meta Data
+const seoData = {
+  title: "CRM Consulting and Setup | TechCorp",
+  description: "Manage your customer relationships professionally with Zoho CRM expert. CRM selection, setup and training services.",
+  og_title: "CRM Consulting | Stop Customer Loss",
+  og_description: "Manage your customer relationships professionally with Zoho CRM expert. CRM selection, setup and training services.",
+  structured_data: {
+    "@type": "Service",
+    name: "CRM Consulting",
+    description: "CRM consulting, setup and training services",
+    provider: "TechCorp",
+    offers: {
+      "@type": "Offer",
+      name: "CRM Consulting Packages",
+      description: "Zoho CRM and Bitrix24 consulting packages"
+    }
+  }
+};
+
+// Hero Section Data
+const heroData = {
+  headline: "Stop Customer Loss, Increase Sales!",
+  subheadline: "Manage your customer data centrally with Zoho CRM and Bitrix24, automate your sales processes and increase your revenue.",
+  urgency: "Every day you delay, the number of customers you lose increases",
+  cta_primary: "Free Consultation",
+  cta_secondary: "View Success Stories",
+  stats: [
+    { number: "200+", label: "CRM Projects" },
+    { number: "45%", label: "Average Sales Increase" },
+    { number: "Zoho", label: "Certified Partner" }
+  ]
+};
+
+// Problem-Solution Data
+const problemSolutionData = {
+  problem: "Is your customer data scattered in Excel? Are you missing sales opportunities? Don't you know which customer is in what status?",
+  solution: "Manage all your customer data from one place with Zoho CRM or Bitrix24. We determine and set up the most suitable CRM solution for you."
+};
+
+// CRM Platform Comparison
+const crmPlatforms = [
+  {
+    name: "Zoho CRM",
+    icon: "📊",
+    features: [
+      "Comprehensive sales management",
+      "Advanced reporting",
+      "Powerful integration options",
+      "Ideal for medium and large businesses",
+      "Widely used in Turkey"
+    ],
+    ideal_for: "Medium and large businesses"
+  },
+  {
+    name: "Bitrix24",
+    icon: "🚀",
+    features: [
+      "Social collaboration tools",
+      "Project management",
+      "Built-in communication platform",
+      "Suitable for small and medium businesses",
+      "Cost-effective solution"
+    ],
+    ideal_for: "Small and medium businesses"
+  }
+];
+
+// Features Data
+const featuresData = [
+  {
+    icon: "📊",
+    title: "Centralized Customer Management",
+    description: "All customer information on one screen",
+    benefit: "You can quickly view customer history and take the right approach"
+  },
+  {
+    icon: "🤖",
+    title: "Sales Process Automation",
+    description: "Automatic tasks and reminders",
+    benefit: "No customer follow-up is missed, your sales efficiency increases"
+  },
+  {
+    icon: "📈",
+    title: "Detailed Reporting",
+    description: "Sales performance analysis",
+    benefit: "You see which strategies work and base your decisions on data"
+  },
+  {
+    icon: "📱",
+    title: "Mobile Access",
+    description: "Mobile app for field workers",
+    benefit: "Access to all information even during customer visits"
+  },
+  {
+    icon: "🔗",
+    title: "Integration Support",
+    description: "Email, accounting and website integration",
+    benefit: "Works seamlessly with your existing systems"
+  },
+  {
+    icon: "🎯",
+    title: "Lead Management",
+    description: "Potential customer tracking",
+    benefit: "Convert website visitors into customers"
+  }
+];
+
+// Process Steps
+const processSteps = [
+  {
+    number: 1,
+    title: "Current Situation Analysis",
+    description: "We examine your sales processes and existing systems"
+  },
+  {
+    number: 2,
+    title: "CRM Selection and Planning",
+    description: "We determine the most suitable one for you from Zoho CRM or Bitrix24"
+  },
+  {
+    number: 3,
+    title: "Installation and Customization",
+    description: "We configure the selected CRM specifically for your business"
+  },
+  {
+    number: 4,
+    title: "Data Migration",
+    description: "We safely transfer your existing customer data to the new system"
+  },
+  {
+    number: 5,
+    title: "Team Training",
+    description: "We provide comprehensive usage training to your entire team"
+  },
+  {
+    number: 6,
+    title: "Go-Live and Continuous Support",
+    description: "We put the system into operation and provide support when you need it"
+  }
+];
+
+// Service Packages
+const servicePackages = [
+  {
+    name: "🎯 CRM Analysis and Selection",
+    features: [
+      "Current process analysis",
+      "CRM platform comparison",
+      "Need-solution matching",
+      "Investment-benefit analysis",
+      "Detailed recommendation report"
+    ]
+  },
+  {
+    name: "⚙️ CRM Setup",
+    features: [
+      "System setup and configuration",
+      "Custom fields and workflows",
+      "Data migration",
+      "Integration setup",
+      "Testing and optimization"
+    ]
+  },
+  {
+    name: "🎓 Team Training",
+    features: [
+      "Manager training",
+      "User training",
+      "Process training",
+      "Reporting training",
+      "Training materials"
+    ]
+  },
+  {
+    name: "📊 Continuous Support",
+    features: [
+      "System management",
+      "Performance optimization",
+      "Update support",
+      "Troubleshooting",
+      "Strategic consulting"
+    ]
+  }
+];
+
+// Success Stories / Case Studies
+const successStories = [
+  {
+    company: "MediCare Private Hospital",
+    industry: "Healthcare",
+    problem: "Patient appointments are messy, cannot be tracked",
+    solution: "Zoho CRM + appointment system integration",
+    duration: "2 weeks setup + 1 week training",
+    results: [
+      "50% appointment efficiency increase",
+      "35% patient satisfaction increase",
+      "70% manual process reduction"
+    ],
+    testimonial: "Our patient tracking has been completely fixed"
+  },
+  {
+    company: "RetailMax Store Chain",
+    industry: "Retail",
+    problem: "15 branches, no central customer tracking",
+    solution: "Zoho CRM + inventory system integration",
+    duration: "3 weeks setup + 2 weeks training",
+    results: [
+      "45% online sales increase",
+      "30% inventory optimization",
+      "55% customer tracking efficiency"
+    ],
+    testimonial: "Inter-branch coordination is perfect"
+  },
+  {
+    company: "TechFlow Software Inc.",
+    industry: "Technology",
+    problem: "Leads were lost, not tracked",
+    solution: "Zoho CRM + automation systems",
+    duration: "2 weeks setup + 1 week training",
+    results: [
+      "40% lead increase",
+      "60% process optimization",
+      "25% customer satisfaction increase"
+    ],
+    testimonial: "No opportunities are missed anymore"
+  }
+];
+
+// Trust Signals
+const trustSignals = [
+  { icon: "🏆", text: "Zoho Certified Consultant" },
+  { icon: "⭐", text: "5+ Years CRM Experience" },
+  { icon: "📊", text: "200+ Successful CRM Projects" },
+  { icon: "🛡️", text: "ISO 27001 Security Standard" },
+  { icon: "🕒", text: "24/7 Technical Support" }
+];
+
+// FAQ Data
+const faqData = [
+  {
+    question: "Which CRM platform should I choose?",
+    answer: "We recommend Zoho CRM or Bitrix24 according to your business needs. We determine with free analysis."
+  },
+  {
+    question: "How long does installation take?",
+    answer: "It takes 2-8 weeks depending on system complexity."
+  },
+  {
+    question: "Will my existing data be lost?",
+    answer: "No, we safely transfer all your data to the new system."
+  },
+  {
+    question: "Do you provide team training?",
+    answer: "Yes, comprehensive training program is included for all users."
+  },
+  {
+    question: "Does it integrate with other systems?",
+    answer: "Yes, we provide seamless integration with your existing systems."
+  },
+  {
+    question: "How is pricing determined?",
+    answer: "We make custom pricing according to company size and needs."
+  }
+];
+
+// ROI Calculator Parameters
+const roiCalculator = {
+  title: "Calculate Your CRM Investment Return",
+  parameters: [
+    { label: "Your monthly sales", suffix: "$" },
+    { label: "Average customer value", suffix: "$" },
+    { label: "Monthly lost customers", suffix: "count" },
+    { label: "Sales team size", suffix: "people" }
+  ],
+  expected_results: [
+    { label: "Sales increase", value: "25-40%" },
+    { label: "Customer loss reduction", value: "30-50%" },
+    { label: "Process acceleration", value: "60-80%" },
+    { label: "Data accuracy", value: "90%" },
+    { label: "ROI time", value: "6-12 months" }
+  ]
+};
+---
+
+<LandingLayout 
+  title={seoData.title}
+  description={seoData.description}
+  pageType="crm"
+  canonical="https://techcorp.com/en/crm-consulting"
+>
+  <SEOHead
+    title={seoData.title}
+    description={seoData.description}
+    keywords="CRM consulting, Zoho CRM, customer management, sales automation, CRM setup"
+    canonical="https://techcorp.com/en/crm-consulting"
+    ogType="service"
+    locale="en_US"
+    alternateLocales={[
+      { href: 'https://techcorp.com/crm-danismanligi', hreflang: 'tr' },
+      { href: 'https://techcorp.com/en/crm-consulting', hreflang: 'en' }
+    ]}
+  />
+  
+  <StructuredData
+    type="crm"
+    pageData={seoData}
+    locale="en"
+  />
+
+  <!-- Hero Section -->
+  <section id="hero" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-20 relative overflow-hidden">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="text-center lg:text-left">
+          <!-- Urgency Message -->
+          <div class="bg-red-500/20 border border-red-400 rounded-lg p-3 mb-6 inline-block">
+            <div class="flex items-center text-red-100">
+              <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span class="text-sm font-medium">{heroData.urgency}</span>
+            </div>
+          </div>
+          
+          <h1 class="text-5xl font-bold mb-6 leading-tight">
+            {heroData.headline}
+          </h1>
+          <p class="text-xl mb-8 opacity-90">
+            {heroData.subheadline}
+          </p>
+          
+          <!-- Hero Stats -->
+          <div class="grid grid-cols-3 gap-6 mb-8">
+            {heroData.stats.map((stat) => (
+              <div class="text-center bg-white/10 rounded-lg p-4">
+                <div class="text-2xl font-bold">{stat.number}</div>
+                <div class="text-sm opacity-80">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+          
+          <!-- Hero CTAs -->
+          <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+            <button
+              id="hero-primary-cta"
+              class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105 shadow-lg"
+              onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+            >
+              {heroData.cta_primary}
+            </button>
+            <button
+              id="hero-secondary-cta"
+              class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+              onclick="document.getElementById('success-stories').scrollIntoView({ behavior: 'smooth' })"
+            >
+              {heroData.cta_secondary}
+            </button>
+          </div>
+        </div>
+        
+        <!-- Hero Image -->
+        <div class="hidden lg:block">
+          <div class="relative">
+            <img
+              src="/images/crm-dashboard-mockup.png"
+              alt="CRM Dashboard Mockup"
+              class="w-full h-auto rounded-lg shadow-2xl"
+            />
+            <div class="absolute -top-4 -right-4 bg-green-500 text-white px-4 py-2 rounded-full text-sm font-medium animate-bounce">
+              +45% Sales!
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Signals -->
+  <section class="py-12 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-8">
+        <h2 class="text-2xl font-bold text-gray-900 mb-2">Certified CRM Expert</h2>
+        <p class="text-gray-600">Reliable consulting and proven results</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+        {trustSignals.map((signal, index) => (
+          <div class="text-center bg-white rounded-lg p-4 shadow-sm">
+            <div class="text-2xl mb-2">{signal.icon}</div>
+            <div class="text-sm font-medium text-gray-700">{signal.text}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Problem-Solution Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-8">Without CRM System You Face These Problems</h2>
+        
+        <!-- Problem -->
+        <div class="bg-red-50 border border-red-200 rounded-lg p-8 mb-8">
+          <div class="flex items-center justify-center mb-4">
+            <svg class="w-16 h-16 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <p class="text-lg text-red-800 font-medium">
+            {problemSolutionData.problem}
+          </p>
+          
+          <!-- Problem List -->
+          <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              "Customer information scattered in Excel",
+              "Sales team doesn't know which customer to follow up",
+              "Opportunities are missed, not tracked",
+              "Customer satisfaction cannot be measured",
+              "Manual processes take too much time"
+            ].map((problem) => (
+              <div class="flex items-start">
+                <svg class="w-5 h-5 text-red-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+                <span class="text-red-800">{problem}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <!-- Solution -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-8">
+          <div class="flex items-center justify-center mb-4">
+            <svg class="w-16 h-16 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <p class="text-lg text-blue-800 font-medium mb-6">
+            {problemSolutionData.solution}
+          </p>
+          
+          <!-- Solution List -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              "All customer data in one place and secure",
+              "Automatic sales funnel and opportunity tracking",
+              "Team coordination and productivity increase",
+              "Detailed sales reports and analytics",
+              "Customer satisfaction measurement and improvement"
+            ].map((solution) => (
+              <div class="flex items-start">
+                <svg class="w-5 h-5 text-blue-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span class="text-blue-800">{solution}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CRM Platform Comparison -->
+  <section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Our CRM Solutions</h2>
+        <p class="text-xl text-gray-600">We can determine which CRM is more suitable for your business with free analysis</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {crmPlatforms.map((platform) => (
+          <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="text-center mb-6">
+              <div class="text-4xl mb-4">{platform.icon}</div>
+              <h3 class="text-2xl font-bold text-gray-900">{platform.name}</h3>
+              <p class="text-gray-600 mt-2">{platform.ideal_for}</p>
+            </div>
+            
+            <ul class="space-y-3">
+              {platform.features.map((feature) => (
+                <li class="flex items-start">
+                  <svg class="w-5 h-5 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span class="text-gray-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">What's in Our CRM Consulting Package?</h2>
+        <p class="text-xl text-gray-600">Services we provide in our CRM consulting process</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {featuresData.map((feature, index) => (
+          <div class="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow">
+            <div class="text-4xl mb-4">{feature.icon}</div>
+            <h3 class="text-xl font-semibold text-gray-900 mb-3">{feature.title}</h3>
+            <p class="text-gray-600 mb-4">{feature.description}</p>
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3">
+              <p class="text-sm text-blue-800 font-medium">{feature.benefit}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Calculator -->
+  <section class="py-16 bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold mb-4">{roiCalculator.title}</h2>
+        <p class="text-xl opacity-90">See expected results according to your input parameters</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Parameters -->
+        <div class="bg-white/10 rounded-lg p-6">
+          <h3 class="text-xl font-semibold mb-4">Input Parameters</h3>
+          <div class="space-y-4">
+            {roiCalculator.parameters.map((param, index) => (
+              <div>
+                <label class="block text-sm font-medium mb-2">{param.label}</label>
+                <div class="flex">
+                  <input
+                    type="number"
+                    class="flex-1 px-3 py-2 bg-white/20 border border-white/30 rounded-l-lg text-white placeholder-white/60"
+                    placeholder="0"
+                  />
+                  <span class="px-3 py-2 bg-white/10 border border-white/30 rounded-r-lg text-sm">
+                    {param.suffix}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        
+        <!-- Results -->
+        <div class="bg-white/10 rounded-lg p-6">
+          <h3 class="text-xl font-semibold mb-4">Expected Results</h3>
+          <div class="space-y-4">
+            {roiCalculator.expected_results.map((result) => (
+              <div class="flex justify-between items-center">
+                <span class="text-sm">{result.label}</span>
+                <span class="font-semibold text-yellow-300">{result.value}</span>
+              </div>
+            ))}
+          </div>
+          
+          <div class="mt-6 text-center">
+            <div class="text-2xl font-bold text-yellow-300 mb-2">Your Potential Monthly Gain</div>
+            <div class="text-lg opacity-90">Start calculating</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section id="process" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Our CRM Setup Process</h2>
+        <p class="text-xl text-gray-600">We put your CRM system into operation in 6 steps</p>
+      </div>
+      
+      <div class="relative">
+        <!-- Process Timeline -->
+        <div class="hidden lg:block absolute left-1/2 transform -translate-x-1/2 w-1 h-full bg-blue-200"></div>
+        
+        <div class="space-y-12">
+          {processSteps.map((step, index) => (
+            <div class={`flex items-center ${index % 2 === 0 ? 'lg:flex-row' : 'lg:flex-row-reverse'}`}>
+              <div class="flex-1 lg:px-8">
+                <div class="bg-white rounded-lg shadow-lg p-6 border border-gray-200">
+                  <div class="flex items-center mb-4">
+                    <div class="w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold text-lg mr-4">
+                      {step.number}
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900">{step.title}</h3>
+                  </div>
+                  <p class="text-gray-600">{step.description}</p>
+                </div>
+              </div>
+              
+              <div class="hidden lg:block w-8 h-8 bg-blue-600 rounded-full border-4 border-white shadow-lg"></div>
+              
+              <div class="flex-1 lg:px-8 hidden lg:block"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service Packages -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Our CRM Consulting Packages</h2>
+        <p class="text-xl text-gray-600">Modular service packages according to your needs</p>
+        <div class="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-4 inline-block">
+          <p class="text-blue-800 font-medium">💡 Package prices are determined according to business size. Contact us for detailed price information.</p>
+        </div>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {servicePackages.map((pkg) => (
+          <div class="bg-gray-50 rounded-lg p-6 hover:shadow-md transition-shadow">
+            <h3 class="text-xl font-semibold text-gray-900 mb-4">{pkg.name}</h3>
+            <ul class="space-y-3">
+              {pkg.features.map((feature) => (
+                <li class="flex items-start">
+                  <svg class="w-4 h-4 text-green-500 mr-2 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                  </svg>
+                  <span class="text-sm text-gray-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Success Stories -->
+  <section id="success-stories" class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Proven Results</h2>
+        <p class="text-xl text-gray-600">Real customer success stories</p>
+      </div>
+      
+      <div class="space-y-8">
+        {successStories.map((story, index) => (
+          <div class="bg-white rounded-lg shadow-lg p-8">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <!-- Company Info -->
+              <div class="lg:col-span-1">
+                <h3 class="text-2xl font-bold text-gray-900 mb-2">{story.company}</h3>
+                <p class="text-blue-600 font-medium mb-4">{story.industry}</p>
+                <div class="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                  <h4 class="font-semibold text-red-800 mb-2">Problem:</h4>
+                  <p class="text-red-700 text-sm">"{story.problem}"</p>
+                </div>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 class="font-semibold text-blue-800 mb-2">Solution:</h4>
+                  <p class="text-blue-700 text-sm">{story.solution}</p>
+                  <p class="text-blue-600 text-xs mt-2">⏱️ {story.duration}</p>
+                </div>
+              </div>
+              
+              <!-- Results -->
+              <div class="lg:col-span-1">
+                <h4 class="font-semibold text-gray-900 mb-4">Achieved Results:</h4>
+                <div class="space-y-3">
+                  {story.results.map((result) => (
+                    <div class="flex items-center">
+                      <svg class="w-5 h-5 text-green-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                      </svg>
+                      <span class="text-green-700 font-medium">{result}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              
+              <!-- Testimonial -->
+              <div class="lg:col-span-1">
+                <div class="bg-gray-50 rounded-lg p-6">
+                  <svg class="w-8 h-8 text-blue-600 mb-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M11.2 6.94c-2.1-.09-4.14.58-5.87 1.95C3.73 10.25 2.81 12.5 2.81 15c0 1.17.35 2.29.98 3.27l.08.13c-.19-.4-.25-.79-.25-1.23 0-1.5.75-2.79 1.94-3.57.83-.55 1.8-.81 2.8-.81 1.5 0 2.89.56 3.95 1.61C13.4 15.46 14 16.97 14 18.5c0 1.53-.6 3.04-1.69 4.1C11.22 23.66 9.71 24.26 8.18 24.26c-1.53 0-3.04-.6-4.1-1.66C2.94 21.54 2.34 20.03 2.34 18.5c0-3.94 1.83-7.33 4.99-9.57 1.99-1.41 4.39-2.04 6.78-1.95l.09.02v-.06z"/>
+                  </svg>
+                  <blockquote class="text-gray-700 italic">
+                    "{story.testimonial}"
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+        <p class="text-xl text-gray-600">Questions about CRM consulting</p>
+      </div>
+      
+      <div class="max-w-4xl mx-auto">
+        <div class="space-y-6">
+          {faqData.map((item, index) => (
+            <div class="bg-gray-50 rounded-lg border border-gray-200">
+              <button
+                class="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors"
+                onclick={`toggleFAQ(${index})`}
+              >
+                <span class="font-semibold text-gray-900">{item.question}</span>
+                <svg class="w-5 h-5 text-gray-400 transform transition-transform" id={`faq-icon-${index}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+              </button>
+              <div class="px-6 pb-4 hidden" id={`faq-content-${index}`}>
+                <p class="text-gray-600">{item.answer}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Form Section -->
+  <section id="contact-form" class="py-16 bg-blue-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Start Your CRM Journey Today!</h2>
+        <p class="text-xl text-gray-600">Let's analyze your CRM needs with free consultation</p>
+      </div>
+      
+      <div class="bg-white rounded-2xl shadow-lg p-8">
+        <form class="space-y-6" method="POST" action="/submit-crm-form">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Full Name *</label>
+              <input 
+                type="text" 
+                name="name" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Your full name"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Email *</label>
+              <input 
+                type="email" 
+                name="email" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="example@email.com"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Phone *</label>
+              <input 
+                type="tel" 
+                name="phone" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="+1 555 123 4567"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Company *</label>
+              <input 
+                type="text" 
+                name="company" 
+                required 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Your company name"
+              />
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Employee Count</label>
+              <select 
+                name="employee_count" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select</option>
+                <option value="1-10">1-10 people</option>
+                <option value="11-50">11-50 people</option>
+                <option value="51-200">51-200 people</option>
+                <option value="200+">200+ people</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Current System</label>
+              <select 
+                name="current_system" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select</option>
+                <option value="excel">Excel</option>
+                <option value="google-sheets">Google Sheets</option>
+                <option value="other-crm">Other CRM</option>
+                <option value="none">No system</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Preferred CRM</label>
+              <select 
+                name="preferred_crm" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select</option>
+                <option value="zoho">Zoho CRM</option>
+                <option value="bitrix24">Bitrix24</option>
+                <option value="other">Other</option>
+                <option value="undecided">Undecided</option>
+              </select>
+            </div>
+            
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2">Project Timeline</label>
+              <select 
+                name="timeline" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="">Select</option>
+                <option value="asap">ASAP</option>
+                <option value="1-2months">1-2 months</option>
+                <option value="3-6months">3-6 months</option>
+                <option value="planning">Planning phase</option>
+              </select>
+            </div>
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Main Challenge</label>
+            <textarea 
+              name="main_challenge" 
+              rows="4"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              placeholder="What are the main challenges you're currently facing?"
+            ></textarea>
+          </div>
+          
+          <div class="text-center">
+            <button 
+              type="submit"
+              class="bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-lg"
+            >
+              Get Free Analysis
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA Section -->
+  <section class="py-16 bg-gradient-to-r from-blue-600 to-indigo-600 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold mb-4">Free Consultation</h2>
+      <p class="text-xl mb-8 opacity-90">Special discount for first 10 businesses applying this month • Our expert team accepts limited projects</p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-6">
+        <button
+          class="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-gray-100 transition-colors"
+          onclick="document.getElementById('contact-form').scrollIntoView({ behavior: 'smooth' })"
+        >
+          Get Free Analysis
+        </button>
+        <button
+          class="border-2 border-white text-white px-8 py-4 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors"
+          onclick="window.open('https://wa.me/1234567890', '_blank')"
+        >
+          Ask via WhatsApp
+        </button>
+      </div>
+      
+      <div class="text-sm opacity-80">
+        <p>⏰ 7 slots left this month • 🔥 Satisfaction guarantee</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security Badges -->
+  <SecurityBadges translations={t} />
+  
+  <!-- Mobile Enhancements -->
+  <MobileEnhancements translations={t} />
+
+  <!-- Scripts -->
+  <script>
+    // FAQ toggle function
+    function toggleFAQ(index) {
+      const content = document.getElementById(`faq-content-${index}`);
+      const icon = document.getElementById(`faq-icon-${index}`);
+      
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        icon.style.transform = 'rotate(180deg)';
+      } else {
+        content.classList.add('hidden');
+        icon.style.transform = 'rotate(0deg)';
+      }
+    }
+    
+    // Make function global
+    window.toggleFAQ = toggleFAQ;
+    
+    // Form submission tracking
+    document.querySelector('form').addEventListener('submit', function(e) {
+      // Track form submission
+      if (window.gtag) {
+        gtag('event', 'form_submit', {
+          event_category: 'crm_form',
+          event_label: 'contact_form',
+          value: 1
+        });
+      }
+    });
+
+    // ROI Calculator functionality
+    const inputs = document.querySelectorAll('input[type="number"]');
+    inputs.forEach(input => {
+      input.addEventListener('input', calculateROI);
+    });
+
+    function calculateROI() {
+      // Simple ROI calculation logic
+      const monthlySales = parseFloat(inputs[0].value) || 0;
+      const avgCustomerValue = parseFloat(inputs[1].value) || 0;
+      const lostCustomers = parseFloat(inputs[2].value) || 0;
+      const teamSize = parseFloat(inputs[3].value) || 0;
+      
+      if (monthlySales > 0) {
+        const estimatedGain = Math.round((monthlySales * 0.3) + (avgCustomerValue * lostCustomers * 0.4));
+        document.querySelector('.text-yellow-300').textContent = `$${estimatedGain.toLocaleString()}`;
+      }
+    }
+  </script>
+</LandingLayout>

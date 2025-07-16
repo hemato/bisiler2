@@ -296,5 +296,388 @@
   "footer": {
     "description": "CRM solutions and technical consulting services to enhance your digital processes.",
     "rights": "All rights reserved."
+  },
+  "exitIntentPopup": {
+    "title": "Wait! Before You Leave...",
+    "subtitle": "Don't miss our special offer",
+    "message": "Don't miss the 20% discount offer valid only today. Contact us now for free consultation.",
+    "cta": "Grab the Offer",
+    "close": "Close",
+    "offers": [
+      "Free needs analysis",
+      "Custom solution proposal",
+      "Quick project start",
+      "Expert consultation"
+    ]
+  },
+  "live_chat": {
+    "header": {
+      "title": "Talk to Expert",
+      "subtitle": "Get instant response"
+    },
+    "welcome_message": "Hello! How can I help you?",
+    "whatsapp": {
+      "title": "Message via WhatsApp",
+      "subtitle": "Get instant response"
+    },
+    "phone": {
+      "title": "Call by Phone",
+      "subtitle": "Let's talk directly"
+    },
+    "email": {
+      "title": "Send Email",
+      "subtitle": "Get detailed information"
+    },
+    "status": "Online - Get instant response"
+  },
+  "sticky_cta": {
+    "mobile": {
+      "title": "Start Now!",
+      "subtitle": "Get free consultation"
+    },
+    "desktop": {
+      "title": "Ready? Let's get started!",
+      "subtitle": "Contact us for free consultation"
+    }
+  },
+  "countdown": {
+    "title": "Limited Time Offer!",
+    "days": "Days",
+    "hours": "Hours",
+    "minutes": "Minutes",
+    "seconds": "Seconds",
+    "cta": "Grab the Offer Now!",
+    "disclaimer": "This offer will not be available again when it expires."
+  },
+  "security_badges": {
+    "title": "Safe and Reliable",
+    "subtitle": "Your information is 100% secure",
+    "ssl": "SSL Certificate",
+    "privacy": "Privacy Protection",
+    "secure": "Secure Payment",
+    "verified": "Verified",
+    "indicators": {
+      "uptime": "99.9% Uptime",
+      "support": "24/7 Support",
+      "response": "< 1 Hour Response"
+    },
+    "guarantee": "30 Day Money Back Guarantee"
+  },
+  "mobile_nav": {
+    "status": "Online",
+    "call": "Call",
+    "whatsapp": "WhatsApp"
+  },
+  "mobile_fab": {
+    "title": "Have questions?",
+    "subtitle": "Contact us now"
+  },
+  "landing_websitesi": {
+    "meta": {
+      "title": "Professional Website Setup | TechCorp",
+      "description": "Modern, fast and SEO-friendly website setup. Strengthen your online presence with responsive design, secure hosting and continuous support.",
+      "keywords": "website setup, web design, responsive design, SEO, e-commerce website"
+    },
+    "hero": {
+      "title": "Grow Your Business with Professional Website",
+      "subtitle": "Strengthen your online presence with modern, fast and SEO-friendly website setup. Make a difference in the digital world with our expert team.",
+      "cta_primary": "Get Quote Now",
+      "cta_secondary": "Free Consultation",
+      "stats": [
+        { "number": "500+", "label": "Completed Projects" },
+        { "number": "98%", "label": "Customer Satisfaction" },
+        { "number": "24/7", "label": "Technical Support" }
+      ]
+    },
+    "problems": {
+      "title": "Without a Website, You're Facing These Problems",
+      "items": [
+        "Your competitors are gaining online customers, you're losing them",
+        "Credibility issue: Customers can't find you",
+        "No mobile access: 60% of users use mobile devices",
+        "You're not visible in search engines",
+        "You don't have an automatic customer acquisition system"
+      ]
+    },
+    "solutions": {
+      "title": "Professional Website Solves These Problems",
+      "items": [
+        "24/7 online customer acquisition system",
+        "Mobile-friendly design for perfect display on all devices",
+        "Top rankings on Google",
+        "Secure appearance with SSL certificate",
+        "Automatic lead collection and routing"
+      ]
+    },
+    "features": {
+      "title": "What's Included in Our Website Package?",
+      "items": [
+        {
+          "title": "Responsive Design",
+          "description": "Perfect display on mobile, tablet and desktop",
+          "icon": "📱"
+        },
+        {
+          "title": "SEO Optimization",
+          "description": "Technical SEO for top rankings on Google",
+          "icon": "🔍"
+        },
+        {
+          "title": "Fast Loading",
+          "description": "Ultra-fast website loading in 3 seconds",
+          "icon": "⚡"
+        },
+        {
+          "title": "Secure Hosting",
+          "description": "SSL certificate and secure hosting included",
+          "icon": "🔒"
+        },
+        {
+          "title": "Contact Forms",
+          "description": "Special forms for automatic customer acquisition",
+          "icon": "📝"
+        },
+        {
+          "title": "Continuous Support",
+          "description": "Free technical support for 1 year",
+          "icon": "🛠️"
+        }
+      ]
+    },
+    "pricing": {
+      "title": "Website Packages",
+      "subtitle": "Choose the package that suits your needs",
+      "packages": [
+        {
+          "name": "Starter",
+          "price": "2,500",
+          "currency": "₺",
+          "duration": "one-time",
+          "description": "Ideal for small businesses",
+          "features": [
+            "5-page website",
+            "Responsive design",
+            "Basic SEO",
+            "SSL certificate",
+            "3 months support"
+          ]
+        },
+        {
+          "name": "Professional",
+          "price": "4,500",
+          "currency": "₺",
+          "duration": "one-time",
+          "popular": true,
+          "description": "For growing businesses",
+          "features": [
+            "10-page website",
+            "Advanced SEO",
+            "Contact forms",
+            "Google Analytics",
+            "6 months support"
+          ]
+        },
+        {
+          "name": "Enterprise",
+          "price": "7,500",
+          "currency": "₺",
+          "duration": "one-time",
+          "description": "For large companies",
+          "features": [
+            "Unlimited pages",
+            "E-commerce integration",
+            "CRM integration",
+            "Custom design",
+            "1 year support"
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        {
+          "question": "How long does it take to create a website?",
+          "answer": "Starter package takes 1 week, Professional package 2 weeks, Enterprise package 3-4 weeks."
+        },
+        {
+          "question": "Is hosting and domain included?",
+          "answer": "Yes, 1-year hosting and domain fee is included in the price."
+        },
+        {
+          "question": "Is it mobile-friendly?",
+          "answer": "Yes, all packages include mobile-friendly responsive design."
+        },
+        {
+          "question": "Do you do SEO work?",
+          "answer": "Yes, basic SEO is in all packages, advanced SEO is in Professional and Enterprise packages."
+        },
+        {
+          "question": "Can I make changes?",
+          "answer": "Yes, minor changes are free during your support period."
+        }
+      ]
+    },
+    "cta_section": {
+      "title": "Get Started Now!",
+      "subtitle": "Your professional website ready in 1 week",
+      "cta_primary": "Start Project",
+      "cta_secondary": "Free Meeting",
+      "guarantee": "30-day money back guarantee"
+    }
+  },
+  "landing_crm": {
+    "meta": {
+      "title": "CRM Consulting and Setup | TechCorp",
+      "description": "Manage your customer relationships professionally with Zoho CRM expert. CRM selection, setup and training services.",
+      "keywords": "CRM consulting, Zoho CRM, customer management, sales automation, CRM setup"
+    },
+    "hero": {
+      "title": "Manage Your Customer Relationships Professionally with CRM",
+      "subtitle": "Automate your sales processes with Zoho CRM expert, increase customer satisfaction and grow your revenue.",
+      "cta_primary": "Free CRM Analysis",
+      "cta_secondary": "Request Demo",
+      "stats": [
+        { "number": "200+", "label": "CRM Projects" },
+        { "number": "45%", "label": "Average Sales Increase" },
+        { "number": "Zoho", "label": "Certified Partner" }
+      ]
+    },
+    "problems": {
+      "title": "Without CRM System, You're Facing These Problems",
+      "items": [
+        "Customer information is lost and scattered",
+        "Sales opportunities are missed",
+        "Team members are calling the same customer again",
+        "Sales performance cannot be measured",
+        "Customer satisfaction cannot be tracked"
+      ]
+    },
+    "solutions": {
+      "title": "CRM System Solves These Problems",
+      "items": [
+        "All customer information in one place and secure",
+        "Automatic sales funnel and opportunity tracking",
+        "Team coordination and productivity increase",
+        "Detailed sales reports and analytics",
+        "Customer satisfaction measurement and improvement"
+      ]
+    },
+    "features": {
+      "title": "What's Included in Our CRM Consulting Package?",
+      "items": [
+        {
+          "title": "Needs Analysis",
+          "description": "Detailed business process analysis and CRM needs determination",
+          "icon": "📊"
+        },
+        {
+          "title": "CRM Selection",
+          "description": "Determining the most suitable CRM system for your needs",
+          "icon": "🎯"
+        },
+        {
+          "title": "Setup & Customization",
+          "description": "Professional setup and custom configurations",
+          "icon": "⚙️"
+        },
+        {
+          "title": "Data Migration",
+          "description": "Safe transfer of your existing data",
+          "icon": "💾"
+        },
+        {
+          "title": "Team Training",
+          "description": "Comprehensive usage training and documentation",
+          "icon": "👥"
+        },
+        {
+          "title": "Continuous Support",
+          "description": "Free technical support for 6 months",
+          "icon": "🛠️"
+        }
+      ]
+    },
+    "pricing": {
+      "title": "CRM Consulting Packages",
+      "subtitle": "Choose the package suitable for your business size",
+      "packages": [
+        {
+          "name": "Small Business",
+          "price": "3,500",
+          "currency": "₺",
+          "duration": "one-time",
+          "description": "Up to 10 users",
+          "features": [
+            "Basic CRM setup",
+            "Data migration",
+            "2-day training",
+            "3 months support",
+            "Basic reports"
+          ]
+        },
+        {
+          "name": "Medium Scale",
+          "price": "6,500",
+          "currency": "₺",
+          "duration": "one-time",
+          "popular": true,
+          "description": "Up to 50 users",
+          "features": [
+            "Advanced CRM setup",
+            "Custom field definitions",
+            "Automation setup",
+            "4-day training",
+            "6 months support"
+          ]
+        },
+        {
+          "name": "Enterprise",
+          "price": "12,500",
+          "currency": "₺",
+          "duration": "one-time",
+          "description": "Unlimited users",
+          "features": [
+            "Full customization",
+            "System integrations",
+            "Advanced automations",
+            "Custom training program",
+            "1 year support"
+          ]
+        }
+      ]
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "items": [
+        {
+          "question": "How long does CRM setup take?",
+          "answer": "Small business 1 week, Medium scale 2 weeks, Enterprise 3-4 weeks."
+        },
+        {
+          "question": "Is Zoho CRM license fee included?",
+          "answer": "No, Zoho CRM license fees are paid separately. We recommend the most suitable plan for you."
+        },
+        {
+          "question": "Can you transfer our existing data?",
+          "answer": "Yes, we perform data transfer from Excel, Google Sheets or other CRMs."
+        },
+        {
+          "question": "How is training provided?",
+          "answer": "Online or on-site training options are available. All users receive training."
+        },
+        {
+          "question": "What happens after support period?",
+          "answer": "After support period, we offer monthly support packages according to your needs."
+        }
+      ]
+    },
+    "cta_section": {
+      "title": "Start Your CRM Journey Today!",
+      "subtitle": "Let's analyze your CRM needs with free consultation",
+      "cta_primary": "Get Free Analysis",
+      "cta_secondary": "Ask via WhatsApp",
+      "guarantee": "Satisfaction guarantee"
+    }
   }
 }

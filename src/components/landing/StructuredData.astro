@@ -1,0 +1,231 @@
+---
+interface Props {
+  type: 'website' | 'crm' | 'service' | 'product';
+  pageData: any;
+  locale: string;
+}
+
+const { type, pageData, locale } = Astro.props;
+const currentUrl = new URL(Astro.request.url);
+const baseUrl = currentUrl.origin;
+
+// Common organization data
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "TechCorp",
+  "url": baseUrl,
+  "logo": `${baseUrl}/logo.png`,
+  "description": locale === 'tr' ? 
+    "CRM danışmanlığı, web geliştirme ve dijital dönüşüm uzmanı" : 
+    "CRM consulting, web development and digital transformation expert",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "TR",
+    "addressLocality": "Istanbul",
+    "addressRegion": "Istanbul"
+  },
+  "contactPoint": {
+    "@type": "ContactPoint",
+    "telephone": "+90-532-123-4567",
+    "contactType": "Customer Service",
+    "availableLanguage": ["Turkish", "English"],
+    "areaServed": "TR"
+  },
+  "sameAs": [
+    "https://linkedin.com/company/techcorp",
+    "https://twitter.com/techcorp"
+  ]
+};
+
+// Website service schema
+const websiteServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": locale === 'tr' ? "Profesyonel Web Sitesi Kurulumu" : "Professional Website Setup",
+  "description": pageData.meta?.description || "",
+  "provider": {
+    "@type": "Organization",
+    "name": "TechCorp",
+    "url": baseUrl
+  },
+  "serviceType": "Web Development",
+  "areaServed": "TR",
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": currentUrl.href,
+    "serviceSmsNumber": "+90-532-123-4567",
+    "servicePhone": "+90-532-123-4567"
+  },
+  "offers": pageData.pricing?.packages?.map((pkg: any) => ({
+    "@type": "Offer",
+    "name": pkg.name,
+    "description": pkg.description,
+    "price": pkg.price,
+    "priceCurrency": "TRY",
+    "availability": "https://schema.org/InStock",
+    "validFrom": new Date().toISOString(),
+    "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+    "includesObject": pkg.features?.map((feature: string) => ({
+      "@type": "Thing",
+      "name": feature
+    }))
+  })) || []
+};
+
+// CRM service schema
+const crmServiceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": locale === 'tr' ? "CRM Danışmanlığı ve Kurulumu" : "CRM Consulting and Setup",
+  "description": pageData.meta?.description || "",
+  "provider": {
+    "@type": "Organization",
+    "name": "TechCorp",
+    "url": baseUrl
+  },
+  "serviceType": "Business Consulting",
+  "areaServed": "TR",
+  "category": "CRM Implementation",
+  "availableChannel": {
+    "@type": "ServiceChannel",
+    "serviceUrl": currentUrl.href,
+    "serviceSmsNumber": "+90-532-123-4567",
+    "servicePhone": "+90-532-123-4567"
+  },
+  "offers": pageData.pricing?.packages?.map((pkg: any) => ({
+    "@type": "Offer",
+    "name": pkg.name,
+    "description": pkg.description,
+    "price": pkg.price,
+    "priceCurrency": "TRY",
+    "availability": "https://schema.org/InStock",
+    "validFrom": new Date().toISOString(),
+    "priceValidUntil": new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+    "includesObject": pkg.features?.map((feature: string) => ({
+      "@type": "Thing",
+      "name": feature
+    }))
+  })) || []
+};
+
+// FAQ schema
+const faqSchema = pageData.faq?.items ? {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": pageData.faq.items.map((item: any) => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer
+    }
+  }))
+} : null;
+
+// Breadcrumb schema
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": locale === 'tr' ? "Ana Sayfa" : "Home",
+      "item": baseUrl
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": locale === 'tr' ? "Hizmetler" : "Services",
+      "item": `${baseUrl}/services`
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "name": pageData.meta?.title || "",
+      "item": currentUrl.href
+    }
+  ]
+};
+
+// Local Business schema for contact information
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "TechCorp",
+  "description": locale === 'tr' ? 
+    "CRM danışmanlığı ve web geliştirme uzmanı" : 
+    "CRM consulting and web development expert",
+  "url": baseUrl,
+  "telephone": "+90-532-123-4567",
+  "email": "info@techcorp.com",
+  "address": {
+    "@type": "PostalAddress",
+    "addressCountry": "TR",
+    "addressLocality": "Istanbul",
+    "addressRegion": "Istanbul"
+  },
+  "openingHours": "Mo-Fr 09:00-18:00",
+  "priceRange": "₺₺₺",
+  "acceptsReservations": true,
+  "currenciesAccepted": "TRY",
+  "paymentAccepted": "Cash, Credit Card, Bank Transfer"
+};
+
+// Get appropriate schema based on type
+const getSchemaData = () => {
+  const schemas = [organizationSchema, breadcrumbSchema, localBusinessSchema];
+  
+  if (type === 'website') {
+    schemas.push(websiteServiceSchema);
+  } else if (type === 'crm') {
+    schemas.push(crmServiceSchema);
+  }
+  
+  if (faqSchema) {
+    schemas.push(faqSchema);
+  }
+  
+  return schemas;
+};
+
+const schemas = getSchemaData();
+---
+
+{schemas.map((schema, index) => (
+  <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+))}
+
+<!-- Additional microdata for better SEO -->
+<div itemscope itemtype="https://schema.org/Organization" style="display: none;">
+  <span itemprop="name">TechCorp</span>
+  <span itemprop="url">{baseUrl}</span>
+  <span itemprop="telephone">+90-532-123-4567</span>
+  <span itemprop="email">info@techcorp.com</span>
+  <div itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
+    <span itemprop="addressLocality">Istanbul</span>
+    <span itemprop="addressCountry">TR</span>
+  </div>
+</div>
+
+<!-- Rich snippets for services -->
+{type === 'website' && (
+  <div itemscope itemtype="https://schema.org/Service" style="display: none;">
+    <span itemprop="name">{locale === 'tr' ? 'Web Sitesi Kurulumu' : 'Website Setup'}</span>
+    <span itemprop="description">{pageData.meta?.description}</span>
+    <div itemprop="provider" itemscope itemtype="https://schema.org/Organization">
+      <span itemprop="name">TechCorp</span>
+    </div>
+  </div>
+)}
+
+{type === 'crm' && (
+  <div itemscope itemtype="https://schema.org/Service" style="display: none;">
+    <span itemprop="name">{locale === 'tr' ? 'CRM Danışmanlığı' : 'CRM Consulting'}</span>
+    <span itemprop="description">{pageData.meta?.description}</span>
+    <div itemprop="provider" itemscope itemtype="https://schema.org/Organization">
+      <span itemprop="name">TechCorp</span>
+    </div>
+  </div>
+)}

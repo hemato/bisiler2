@@ -1,0 +1,122 @@
+---
+interface Props {
+  translations: any;
+  badges?: string[];
+  className?: string;
+}
+
+const { translations, badges = ['ssl', 'privacy', 'secure', 'verified'], className = '' } = Astro.props;
+---
+
+<div class={`bg-gray-50 border border-gray-200 rounded-lg p-6 ${className}`}>
+  <div class="text-center mb-4">
+    <h3 class="text-lg font-semibold text-gray-800">
+      {translations.security_badges?.title || 'Güvenli ve Güvenilir'}
+    </h3>
+    <p class="text-sm text-gray-600">
+      {translations.security_badges?.subtitle || 'Bilgileriniz %100 güvende'}
+    </p>
+  </div>
+
+  <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    {badges.includes('ssl') && (
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-medium text-gray-700">
+          {translations.security_badges?.ssl || 'SSL Sertifikası'}
+        </span>
+      </div>
+    )}
+
+    {badges.includes('privacy') && (
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-medium text-gray-700">
+          {translations.security_badges?.privacy || 'Gizlilik Koruması'}
+        </span>
+      </div>
+    )}
+
+    {badges.includes('secure') && (
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-2">
+          <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-medium text-gray-700">
+          {translations.security_badges?.secure || 'Güvenli Ödeme'}
+        </span>
+      </div>
+    )}
+
+    {badges.includes('verified') && (
+      <div class="flex flex-col items-center text-center">
+        <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-2">
+          <svg class="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path>
+          </svg>
+        </div>
+        <span class="text-xs font-medium text-gray-700">
+          {translations.security_badges?.verified || 'Doğrulanmış'}
+        </span>
+      </div>
+    )}
+  </div>
+
+  <!-- Trust Indicators -->
+  <div class="mt-6 pt-4 border-t border-gray-200">
+    <div class="flex justify-center items-center space-x-6 text-xs text-gray-500">
+      <div class="flex items-center">
+        <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+        <span>{translations.security_badges?.indicators?.uptime || '99.9% Uptime'}</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
+        <span>{translations.security_badges?.indicators?.support || '7/24 Destek'}</span>
+      </div>
+      <div class="flex items-center">
+        <div class="w-2 h-2 bg-purple-500 rounded-full mr-1"></div>
+        <span>{translations.security_badges?.indicators?.response || '< 1 Saat Yanıt'}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certifications -->
+  <div class="mt-4 text-center">
+    <div class="flex justify-center items-center space-x-4 opacity-60">
+      <!-- ISO 27001 Badge -->
+      <div class="text-xs text-gray-500 border border-gray-300 rounded px-2 py-1">
+        ISO 27001
+      </div>
+      <!-- GDPR Badge -->
+      <div class="text-xs text-gray-500 border border-gray-300 rounded px-2 py-1">
+        GDPR Uyumlu
+      </div>
+      <!-- SOC 2 Badge -->
+      <div class="text-xs text-gray-500 border border-gray-300 rounded px-2 py-1">
+        SOC 2 Type II
+      </div>
+    </div>
+  </div>
+
+  <!-- Money Back Guarantee -->
+  <div class="mt-4 text-center">
+    <div class="inline-flex items-center bg-green-50 text-green-700 px-4 py-2 rounded-full text-sm">
+      <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <span class="font-medium">
+        {translations.security_badges?.guarantee || '30 Gün Para İade Garantisi'}
+      </span>
+    </div>
+  </div>
+</div>
