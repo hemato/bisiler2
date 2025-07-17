@@ -22,6 +22,7 @@ interface FormData {
   services?: string[];
   message?: string;
   formType: 'contact' | 'crm-consulting' | 'website-setup';
+  pageSource?: string;
   language: 'tr' | 'en';
   [key: string]: any;
 }
@@ -50,9 +51,9 @@ function getServiceName(formType: string, language: string): string {
 
 // Create detailed form information for admin
 function createFormDetails(formData: FormData): string {
-  const { formType, language } = formData;
+  const { formType, language, pageSource } = formData;
   
-  let details = `Form Type: ${formType}\nLanguage: ${language}\n\n`;
+  let details = `Form Type: ${formType}\nLanguage: ${language}\nPage Source: ${pageSource || 'Unknown'}\n\n`;
   
   // Add specific form fields based on type
   switch (formType) {
@@ -147,4 +148,31 @@ export function detectLanguage(): 'tr' | 'en' {
     return window.location.pathname.includes('/en') ? 'en' : 'tr';
   }
   return 'tr';
+}
+
+// Detect page source from URL
+export function detectPageSource(): string {
+  if (typeof window !== 'undefined') {
+    const pathname = window.location.pathname;
+    
+    // Define page mappings
+    const pageMap: Record<string, string> = {
+      '/': 'Ana Sayfa (TR)',
+      '/en': 'Home Page (EN)',
+      '/iletisim': 'İletişim Sayfası (TR)',
+      '/en/contact': 'Contact Page (EN)',
+      '/crm-danismanligi': 'CRM Danışmanlığı LP (TR)',
+      '/crm-danismanligi-v2': 'CRM Danışmanlığı LP v2 (TR)',
+      '/en/crm-consulting': 'CRM Consulting LP (EN)',
+      '/en/crm-consulting-v2': 'CRM Consulting LP v2 (EN)',
+      '/web-sitesi-kurulumu': 'Web Sitesi Kurulumu LP (TR)',
+      '/web-sitesi-kurulumu-v2': 'Web Sitesi Kurulumu LP v2 (TR)',
+      '/en/website-setup': 'Website Setup LP (EN)',
+      '/en/website-setup-v2': 'Website Setup LP v2 (EN)'
+    };
+    
+    return pageMap[pathname] || `Unknown Page: ${pathname}`;
+  }
+  
+  return 'Unknown Page';
 }

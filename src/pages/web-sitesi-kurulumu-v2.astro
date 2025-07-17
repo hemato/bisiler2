@@ -1,0 +1,604 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl } from '../i18n/utils';
+import { generateServiceSchema } from '../utils/structured-data';
+import WebsiteSetupForm from '../components/WebsiteSetupForm';
+import { ArrowRight, CheckCircle, TrendingUp, MessageCircle, Phone, Smartphone, Zap, Search, Shield, BarChart3, Target, Clock, Star, Award, Globe, Code, Palette } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+const translations = await import('../i18n/tr.json');
+const t = translations.default;
+
+const structuredData = generateServiceSchema({
+  name: t.websiteSetup.title,
+  description: t.websiteSetup.description,
+  provider: 'TechCorp',
+  offers: {
+    '@type': 'Offer',
+    price: 'varies',
+    priceCurrency: 'TRY',
+    availability: 'InStock'
+  }
+}, lang);
+
+// Hreflang for SEO
+const hreflang = [
+  { lang: 'tr', url: 'https://techcorp.com/web-sitesi-kurulumu-v2' },
+  { lang: 'en', url: 'https://techcorp.com/en/website-setup-v2' }
+];
+---
+
+<Layout 
+  title={t.websiteSetup.title}
+  description={t.websiteSetup.description}
+  structuredData={structuredData}
+  hreflang={hreflang}
+  hideFooter={true}
+  isLandingPage={true}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden">
+    <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-200 rounded-full opacity-20 animate-float"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
+    
+    <!-- Trust Badges -->
+    <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
+      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-700 border border-green-200">
+        <Award className="w-3 h-3 inline mr-1" />
+        Google Partner
+      </div>
+      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-blue-700 border border-blue-200">
+        <Star className="w-3 h-3 inline mr-1" />
+        50+ Web Sitesi
+      </div>
+    </div>
+    
+    <!-- Limited Time Offer Banner -->
+    <div class="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold animate-pulse z-10">
+      Sınırlı Süre: %20 İndirim
+    </div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="animate-fade-in">
+          <div class="bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-flex items-center">
+            <Clock className="w-4 h-4 mr-2" />
+            {t.websiteSetup.hero.urgency}
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight">
+            {t.websiteSetup.hero.title}
+          </h1>
+          <p class="text-xl text-secondary-600 mb-8 leading-relaxed">
+            {t.websiteSetup.hero.subtitle}
+          </p>
+          
+          <!-- Key Benefits -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <div class="flex items-center text-green-700 bg-green-50 p-3 rounded-lg">
+              <Zap className="w-5 h-5 mr-2" />
+              <span class="font-medium">Hızlı Teslimat</span>
+            </div>
+            <div class="flex items-center text-blue-700 bg-blue-50 p-3 rounded-lg">
+              <Search className="w-5 h-5 mr-2" />
+              <span class="font-medium">SEO Optimize</span>
+            </div>
+            <div class="flex items-center text-purple-700 bg-purple-50 p-3 rounded-lg">
+              <Smartphone className="w-5 h-5 mr-2" />
+              <span class="font-medium">Mobil Hazır</span>
+            </div>
+            <div class="flex items-center text-orange-700 bg-orange-50 p-3 rounded-lg">
+              <Shield className="w-5 h-5 mr-2" />
+              <span class="font-medium">Güvenli Hosting</span>
+            </div>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href="#form"
+              class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              {t.websiteSetup.hero.primaryCta}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </a>
+            <a
+              href="#testimonials"
+              class="inline-flex items-center px-8 py-4 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200"
+            >
+              {t.websiteSetup.hero.secondaryCta}
+            </a>
+          </div>
+        </div>
+
+        <div class="relative animate-slide-up">
+          <div class="relative z-10">
+            <img
+              src="https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Profesyonel web sitesi tasarımı - modern responsive düzenler ve mobil optimizasyon vitrin"
+              class="rounded-2xl shadow-2xl w-full"
+              loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-primary-600/20 to-transparent rounded-2xl"></div>
+            
+            <!-- Floating Speed Metric -->
+            <div class="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-xl p-4 animate-bounce">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <Zap className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-600">Yükleme Hızı</div>
+                  <div class="text-xl font-bold text-green-600">< 3sn</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-green-500 rounded-full opacity-20 animate-float"></div>
+          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-orange-500 rounded-full opacity-20 animate-float" style="animation-delay: 0.5s;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scarcity Bar -->
+  <section class="bg-red-600 text-white py-3">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <p class="text-sm font-medium flex items-center justify-center">
+          <Clock className="w-4 h-4 mr-2" />
+          Bu ay sadece <span class="font-bold mx-1">12 proje kontenjanı</span> kaldı - 
+          <span class="font-bold ml-1">Acele edin!</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof Bar -->
+  <section class="bg-white border-b border-gray-200 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">Başarılı işletmeler tarafından tercih ediliyor</p>
+        <div class="flex justify-center items-center gap-8 opacity-60">
+          <div class="text-2xl font-bold text-gray-400">TechFlow</div>
+          <div class="text-2xl font-bold text-gray-400">MediCare</div>
+          <div class="text-2xl font-bold text-gray-400">RetailMax</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problems Section -->
+  <section class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.problems.title}
+        </h2>
+        <p class="text-xl text-red-600 font-medium">Siz beklerken rakipleriniz önde gidiyor</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {t.websiteSetup.problems.items.map((problem, index) => (
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500" key={index}>
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+              <span class="text-red-600 text-2xl">⚠️</span>
+            </div>
+            <p class="text-secondary-700 font-medium">{problem}</p>
+          </div>
+        ))}
+      </div>
+      
+      <!-- Cost of Delay -->
+      <div class="mt-12 text-center">
+        <div class="bg-red-50 border border-red-200 rounded-xl p-6 max-w-2xl mx-auto">
+          <h3 class="text-xl font-bold text-red-800 mb-2">Gecikmenin Maliyeti</h3>
+          <p class="text-red-700">Profesyonel web sitesi olmadan geçen her gün, online varlığına yatırım yapan rakiplerinize potansiyel müşteriler kaybediyorsunuz.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section id="solution" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.solution.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto mb-8">
+          {t.websiteSetup.solution.description}
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {t.websiteSetup.solution.benefits.map((benefit, index) => (
+          <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl text-center group hover:scale-105 transition-transform" key={index}>
+            <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-700 transition-colors">
+              <CheckCircle className="w-8 h-8 text-white" />
+            </div>
+            <p class="text-secondary-700 font-medium">{benefit}</p>
+          </div>
+        ))}
+      </div>
+      
+      <!-- Before/After Comparison -->
+      <div class="bg-gradient-to-r from-red-50 to-green-50 rounded-2xl p-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div class="text-center">
+            <div class="bg-red-100 rounded-xl p-6 mb-4">
+              <h3 class="text-xl font-bold text-red-800 mb-4">Profesyonel Web Sitesi Olmadan</h3>
+              <ul class="text-red-700 space-y-2 text-left">
+                <li>• Müşterileri rakiplere kaptırıyorsunuz</li>
+                <li>• Online güvenilirlik yok</li>
+                <li>• Satış fırsatlarını kaçırıyorsunuz</li>
+                <li>• Kötü mobil deneyim</li>
+              </ul>
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="bg-green-100 rounded-xl p-6 mb-4">
+              <h3 class="text-xl font-bold text-green-800 mb-4">TechCorp Web Sitesi ile</h3>
+              <ul class="text-green-700 space-y-2 text-left">
+                <li>• Daha fazla müşteri çekin</li>
+                <li>• Güven ve itibar kazanın</li>
+                <li>• Ziyaretçileri müşteriye dönüştürün</li>
+                <li>• Tüm cihazlarda mükemmel</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.features.title}
+        </h2>
+        <p class="text-xl text-secondary-600">Online başarı için ihtiyacınız olan her şey</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.features.items.map((feature, index) => (
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
+            <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">{feature.title.split(' ')[0]}</div>
+            <h3 class="text-xl font-bold text-secondary-900 mb-2">
+              {feature.title.substring(2)}
+            </h3>
+            <p class="text-secondary-600 mb-4">{feature.description}</p>
+            <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
+              <p class="text-blue-800 text-sm font-medium">
+                💡 {feature.benefit}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Portfolio Section -->
+  <section id="portfolio" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.portfolio.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
+          {t.websiteSetup.portfolio.subtitle}
+        </p>
+      </div>
+
+      <!-- Projects Slider -->
+      <div class="relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          {t.websiteSetup.portfolio.projects.map((project, index) => (
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden" key={index}>
+              <div class="relative h-48 overflow-hidden">
+                <img
+                  src={project.image}
+                  alt={project.description}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                <div class="absolute bottom-4 left-4 right-4">
+                  <h3 class="text-xl font-bold text-white mb-1">{project.title}</h3>
+                  <p class="text-blue-200 text-sm font-medium">{project.type}</p>
+                </div>
+              </div>
+              <div class="p-6">
+                <p class="text-secondary-600 mb-4">{project.description}</p>
+                <div class="space-y-2">
+                  <h4 class="font-semibold text-secondary-900 text-sm">Elde Edilen Sonuçlar:</h4>
+                  {project.results.map((result, resultIndex) => (
+                    <div class="flex items-center text-sm" key={resultIndex}>
+                      <TrendingUp className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />
+                      <span class="text-secondary-700">{result}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Portfolio CTA -->
+        <div class="text-center">
+          <div class="bg-gradient-to-r from-primary-50 to-blue-50 rounded-2xl p-8 max-w-4xl mx-auto">
+            <h3 class="text-2xl font-bold text-secondary-900 mb-4">
+              {t.websiteSetup.portfolio.cta}
+            </h3>
+            <p class="text-secondary-600 mb-6 max-w-2xl mx-auto">
+              Bu başarılı projeler gibi sizin de işletmenizi dijital dünyada öne çıkaracak profesyonel bir web sitesine sahip olabilirsiniz.
+            </p>
+            <a
+              href="#form"
+              class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              {t.websiteSetup.portfolio.ctaButton}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section id="process" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.process.title}
+        </h2>
+        <p class="text-xl text-secondary-600">Konseptten yayına 5 basit adımda</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.process.steps.map((step, index) => (
+          <div class="relative" key={index}>
+            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-blue-600 relative">
+              <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                  {index + 1}
+                </div>
+                <div class="text-2xl">{step.title.split(' ')[0]}</div>
+              </div>
+              <h3 class="text-lg font-bold text-secondary-900 mb-2">
+                {step.title.substring(2)}
+              </h3>
+              <p class="text-secondary-600">{step.description}</p>
+            </div>
+            {index < t.websiteSetup.process.steps.length - 1 && (
+              <div class="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-blue-300 transform -translate-y-1/2"></div>
+            )}
+          </div>
+        ))}
+      </div>
+      
+      <!-- Process Guarantee -->
+      <div class="mt-12 text-center">
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 max-w-2xl mx-auto">
+          <h3 class="text-xl font-bold text-secondary-900 mb-2">Size Verdiğimiz Söz</h3>
+          <p class="text-secondary-600 mb-4">Web sitenizden tamamen memnun kalmazsanız, sevene kadar revize ediyoruz - ek ücret yok.</p>
+          <div class="flex items-center justify-center">
+            <Shield className="w-5 h-5 text-green-600 mr-2" />
+            <span class="text-green-600 font-semibold">%100 Memnuniyet Garantisi</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages Section -->
+  <section id="packages" class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.packages.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
+          {t.websiteSetup.packages.subtitle}
+        </p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.packages.items.map((packageItem, index) => (
+          <div class={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${packageItem.popular ? 'border-2 border-primary-600 relative ring-4 ring-primary-100' : ''}`} key={index}>
+            {packageItem.popular && (
+              <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div class="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                  En Popüler
+                </div>
+              </div>
+            )}
+            <div class="text-center mb-6">
+              <div class="text-4xl mb-2">{packageItem.title.split(' ')[0]}</div>
+              <h3 class="text-2xl font-bold text-secondary-900 mb-2">
+                {packageItem.title.substring(2)}
+              </h3>
+              <div class="text-3xl font-bold text-primary-600 mb-2">{packageItem.price}</div>
+              <p class="text-secondary-600 text-sm mb-4">{packageItem.duration}</p>
+              <p class="text-secondary-600 text-sm">{packageItem.ideal}</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              {packageItem.features.map((feature, featureIndex) => (
+                <li class="flex items-start" key={featureIndex}>
+                  <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                  <span class="text-secondary-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href="#form"
+              class={`w-full inline-flex items-center justify-center px-6 py-3 font-semibold rounded-lg transition-all duration-200 ${packageItem.popular ? 'bg-primary-600 text-white hover:bg-primary-700' : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'}`}
+            >
+              Teklif Al
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </a>
+          </div>
+        ))}
+      </div>
+      
+      <!-- Package Comparison -->
+      <div class="mt-12 text-center">
+        <div class="bg-blue-50 rounded-xl p-6 max-w-2xl mx-auto">
+          <h3 class="text-xl font-bold text-secondary-900 mb-2">Seçim Yapmakta Yardım Gerekiyor?</h3>
+          <p class="text-secondary-600 mb-4">Ücretsiz danışmanlığımız işletme ihtiyaçlarınız için mükemmel paketi seçmenize yardımcı olacak</p>
+          <a href="#form" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+            Ücretsiz Danışmanlık Al
+            <ArrowRight className="ml-2 w-4 h-4" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.testimonials.title}
+        </h2>
+        <p class="text-xl text-secondary-600">Mutlu müşterilerden başarı hikayeleri</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.testimonials.items.map((testimonial, index) => (
+          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative" key={index}>
+            <div class="absolute top-4 right-4 text-4xl text-blue-200">"</div>
+            <div class="mb-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  {testimonial.company.charAt(0)}
+                </div>
+                <div>
+                  <h4 class="font-bold text-secondary-900">{testimonial.company}</h4>
+                  <p class="text-secondary-600 text-sm">{testimonial.person}</p>
+                </div>
+              </div>
+              <blockquote class="text-secondary-700 italic mb-4 text-lg">
+                "{testimonial.quote}"
+              </blockquote>
+            </div>
+            <div class="space-y-2">
+              <h5 class="font-semibold text-secondary-900 mb-2">Elde Edilen Sonuçlar:</h5>
+              {testimonial.results.map((result, resultIndex) => (
+                <div class="flex items-center text-sm" key={resultIndex}>
+                  <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
+                  <span class="text-secondary-700">{result}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Urgency CTA Section -->
+  <section class="py-16 bg-gradient-to-br from-blue-600 to-purple-800 relative overflow-hidden">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          {t.websiteSetup.cta.title}
+        </h2>
+        <p class="text-xl text-blue-100 mb-8">
+          {t.websiteSetup.cta.subtitle}
+        </p>
+        <div class="bg-orange-500 text-white px-6 py-3 rounded-full text-lg font-semibold mb-8 inline-flex items-center">
+          <Clock className="w-5 h-5 mr-2" />
+          {t.websiteSetup.cta.urgency}
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#form"
+            class="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 transform hover:scale-105"
+          >
+            {t.websiteSetup.cta.primaryCta}
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </a>
+          <a
+            href="https://wa.me/905555555555"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200"
+          >
+            <MessageCircle className="mr-2 w-5 h-5" />
+            {t.websiteSetup.cta.whatsappCta}
+          </a>
+          <a
+            href="tel:+905555555555"
+            class="inline-flex items-center px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200"
+          >
+            <Phone className="mr-2 w-5 h-5" />
+            {t.websiteSetup.cta.phoneCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section id="form" class="py-16 bg-secondary-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <WebsiteSetupForm translations={t} lang={lang} client:load />
+    </div>
+  </section>
+
+  <!-- Sticky CTA -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <div class="flex flex-col gap-2">
+      <a
+        href="https://wa.me/905555555555"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center justify-center w-16 h-16 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-110"
+        title="WhatsApp"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </a>
+      <a
+        href="#form"
+        class="flex items-center justify-center w-16 h-16 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-110 text-xs font-semibold"
+        title="Teklif Al"
+      >
+        Teklif Al
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .bg-grid-secondary-100 {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 1s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 1s ease-out 0.3s both;
+  }
+</style>

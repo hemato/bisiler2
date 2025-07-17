@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Send, CheckCircle, User, Mail, Phone, Building, Globe, Code, Calendar, MessageSquare, DollarSign } from 'lucide-react';
-import { sendEmails, detectLanguage } from '../utils/email';
+import { sendEmails, detectLanguage, detectPageSource } from '../utils/email';
 
 interface WebsiteSetupFormProps {
   translations: {
@@ -57,6 +57,7 @@ export default function WebsiteSetupForm({ translations, lang }: WebsiteSetupFor
       const submitData = {
         ...formData,
         formType: 'website-setup' as const,
+        pageSource: detectPageSource(),
         timestamp: new Date().toISOString(),
         language: lang as 'tr' | 'en'
       };

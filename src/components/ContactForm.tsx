@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Send, CheckCircle } from 'lucide-react';
-import { sendEmails, detectLanguage } from '../utils/email';
+import { sendEmails, detectLanguage, detectPageSource } from '../utils/email';
 
 interface ContactFormProps {
   translations: {
@@ -46,6 +46,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
           ? [...formData.services.filter(s => s !== 'Diğer' && s !== 'Other'), formData.otherService].filter(Boolean)
           : formData.services,
         formType: 'contact' as const,
+        pageSource: detectPageSource(),
         timestamp: new Date().toISOString(),
         language: language as 'tr' | 'en'
       };

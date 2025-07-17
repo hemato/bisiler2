@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Send, CheckCircle, User, Mail, Phone, Building, Users, Database, Target, Zap, Calendar, MessageSquare } from 'lucide-react';
-import { sendEmails, detectLanguage } from '../utils/email';
+import { sendEmails, detectLanguage, detectPageSource } from '../utils/email';
 
 interface CRMConsultingFormProps {
   translations: {
@@ -63,6 +63,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
       const submitData = {
         ...formData,
         formType: 'crm-consulting' as const,
+        pageSource: detectPageSource(),
         timestamp: new Date().toISOString(),
         language: lang as 'tr' | 'en'
       };
