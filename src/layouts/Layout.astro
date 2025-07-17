@@ -17,9 +17,11 @@ export interface Props {
   twitterImage?: string;
   canonical?: string;
   isHomepage?: boolean;
+  hideFooter?: boolean;
+  isLandingPage?: boolean;
 }
 
-const { title, description, structuredData, ogImage, twitterImage, canonical, isHomepage = false } = Astro.props;
+const { title, description, structuredData, ogImage, twitterImage, canonical, isHomepage = false, hideFooter = false, isLandingPage = false } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 
 const translations = lang === 'en'
@@ -96,11 +98,11 @@ const canonicalUrl = canonical || Astro.url.href;
     )}
   </head>
   <body class="font-sans">
-    <Navigation />
+    <Navigation isLandingPage={isLandingPage} />
     <main>
       <slot />
     </main>
-    <Footer />
+    {!hideFooter && <Footer />}
     <CookieBanner client:load />
   </body>
 </html>

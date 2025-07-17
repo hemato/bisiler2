@@ -16,6 +16,8 @@ const urlMapping = {
   '/blog': '/en/blog',
   '/sss': '/en/faq',
   '/gizlilik-politikasi': '/en/privacy',
+  '/crm-danismanligi': '/en/crm-consulting',
+  '/web-sitesi-kurulumu': '/en/website-setup',
   '/': '/en/',
   
   // English to Turkish
@@ -26,6 +28,8 @@ const urlMapping = {
   '/en/blog': '/blog',
   '/en/faq': '/sss',
   '/en/privacy': '/gizlilik-politikasi',
+  '/en/crm-consulting': '/crm-danismanligi',
+  '/en/website-setup': '/web-sitesi-kurulumu',
   '/en/': '/',
   '/en': '/'
 };

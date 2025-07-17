@@ -1,0 +1,532 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl } from '../i18n/utils';
+import { generateServiceSchema } from '../utils/structured-data';
+import CRMConsultingForm from '../components/CRMConsultingForm';
+import { ArrowRight, CheckCircle, TrendingUp, MessageCircle, Phone, Users, Target, BarChart3, Shield, Smartphone, Link, Clock, Star, Award, Zap } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+const translations = await import('../i18n/tr.json');
+const t = translations.default;
+
+const structuredData = generateServiceSchema({
+  name: t.crmConsulting.title,
+  description: t.crmConsulting.description,
+  provider: 'TechCorp',
+  offers: {
+    '@type': 'Offer',
+    price: 'varies',
+    priceCurrency: 'TRY',
+    availability: 'InStock'
+  }
+}, lang);
+
+// Hreflang for SEO
+const hreflang = [
+  { lang: 'tr', url: 'https://techcorp.com/crm-danismanligi' },
+  { lang: 'en', url: 'https://techcorp.com/en/crm-consulting' }
+];
+---
+
+<Layout 
+  title={t.crmConsulting.title}
+  description={t.crmConsulting.description}
+  structuredData={structuredData}
+  hreflang={hreflang}
+  hideFooter={true}
+  isLandingPage={true}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-red-50 to-primary-50 overflow-hidden">
+    <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-red-200 rounded-full opacity-20 animate-float"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-primary-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
+    
+    <!-- Trust Badges -->
+    <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
+      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-700 border border-green-200">
+        <Award className="w-3 h-3 inline mr-1" />
+        Zoho Sertifikalı
+      </div>
+      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-blue-700 border border-blue-200">
+        <Star className="w-3 h-3 inline mr-1" />
+        100+ Proje
+      </div>
+    </div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="animate-fade-in">
+          <div class="bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-flex items-center">
+            <Clock className="w-4 h-4 mr-2" />
+            {t.crmConsulting.hero.urgency}
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight">
+            {t.crmConsulting.hero.title}
+          </h1>
+          <p class="text-xl text-secondary-600 mb-8 leading-relaxed">
+            {t.crmConsulting.hero.subtitle}
+          </p>
+          
+          <!-- Key Benefits -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+            <div class="flex items-center text-green-700 bg-green-50 p-3 rounded-lg">
+              <CheckCircle className="w-5 h-5 mr-2" />
+              <span class="font-medium">Ücretsiz Analiz</span>
+            </div>
+            <div class="flex items-center text-blue-700 bg-blue-50 p-3 rounded-lg">
+              <Zap className="w-5 h-5 mr-2" />
+              <span class="font-medium">Hızlı Kurulum</span>
+            </div>
+          </div>
+          
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href="#form"
+              class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              {t.crmConsulting.hero.primaryCta}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </a>
+            <a
+              href="#testimonials"
+              class="inline-flex items-center px-8 py-4 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200"
+            >
+              {t.crmConsulting.hero.secondaryCta}
+            </a>
+          </div>
+        </div>
+
+        <div class="relative animate-slide-up">
+          <div class="relative z-10">
+            <img
+              src="https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="CRM dashboard analizi gösteren müşteri takip sistemi ve satış performans metrikleri"
+              class="rounded-2xl shadow-2xl w-full"
+              loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-primary-600/20 to-transparent rounded-2xl"></div>
+            
+            <!-- Floating Success Metric -->
+            <div class="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 animate-bounce">
+              <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                  <TrendingUp className="w-4 h-4 text-white" />
+                </div>
+                <div>
+                  <div class="text-sm font-medium text-gray-600">Satış Artışı</div>
+                  <div class="text-xl font-bold text-green-600">+%40</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-green-500 rounded-full opacity-20 animate-float"></div>
+          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-500 rounded-full opacity-20 animate-float" style="animation-delay: 0.5s;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Proof Bar -->
+  <section class="bg-white border-b border-gray-200 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center">
+        <p class="text-sm text-gray-600 mb-4">Önde gelen şirketler tarafından tercih ediliyor</p>
+        <div class="flex justify-center items-center gap-8 opacity-60">
+          <div class="text-2xl font-bold text-gray-400">TechFlow</div>
+          <div class="text-2xl font-bold text-gray-400">MediCare</div>
+          <div class="text-2xl font-bold text-gray-400">RetailMax</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problems Section -->
+  <section class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.crmConsulting.problems.title}
+        </h2>
+        <p class="text-xl text-red-600 font-medium">Bu zorluklarla karşılaştığınızda yalnız değilsiniz</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {t.crmConsulting.problems.items.map((problem, index) => (
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500" key={index}>
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+              <span class="text-red-600 text-2xl">❌</span>
+            </div>
+            <p class="text-secondary-700 font-medium">{problem}</p>
+          </div>
+        ))}
+      </div>
+      
+      <!-- Pain Point Amplifier -->
+      <div class="mt-12 text-center">
+        <div class="bg-red-50 border border-red-200 rounded-xl p-6 max-w-2xl mx-auto">
+          <h3 class="text-xl font-bold text-red-800 mb-2">Hareketsizliğin Gerçek Maliyeti</h3>
+          <p class="text-red-700">Uygun CRM olmadan geçen her gün, potansiyel müşteri ve gelir kaybediyorsunuz. Rakiplerinizin önüne geçmelerine izin vermeyin.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section id="solution" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.crmConsulting.solution.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
+          {t.crmConsulting.solution.description}
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-blue-200 rounded-full opacity-50 -mr-10 -mt-10"></div>
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <BarChart3 className="w-8 h-8 text-white" />
+            </div>
+            <h3 class="text-2xl font-bold text-secondary-900 mb-2">
+              {t.crmConsulting.solution.platforms.zoho.title}
+            </h3>
+            <p class="text-sm text-blue-700 bg-blue-200 px-3 py-1 rounded-full inline-block">Kurumsal Çözüm</p>
+          </div>
+          <ul class="space-y-3">
+            {t.crmConsulting.solution.platforms.zoho.features.map((feature, index) => (
+              <li class="flex items-start" key={index}>
+                <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                <span class="text-secondary-700">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+        
+        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-20 h-20 bg-purple-200 rounded-full opacity-50 -mr-10 -mt-10"></div>
+          <div class="text-center mb-6">
+            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Users className="w-8 h-8 text-white" />
+            </div>
+            <h3 class="text-2xl font-bold text-secondary-900 mb-2">
+              {t.crmConsulting.solution.platforms.bitrix.title}
+            </h3>
+            <p class="text-sm text-purple-700 bg-purple-200 px-3 py-1 rounded-full inline-block">Takım İşbirliği</p>
+          </div>
+          <ul class="space-y-3">
+            {t.crmConsulting.solution.platforms.bitrix.features.map((feature, index) => (
+              <li class="flex items-start" key={index}>
+                <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                <span class="text-secondary-700">{feature}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Decision Helper -->
+      <div class="mt-12 text-center">
+        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 max-w-2xl mx-auto">
+          <h3 class="text-xl font-bold text-secondary-900 mb-2">Hangi CRM'in Size Uygun Olduğundan Emin Değil misiniz?</h3>
+          <p class="text-secondary-600 mb-4">Ücretsiz analizimiz işletmeniz için en iyi çözümü belirleyecek</p>
+          <a href="#form" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+            Ücretsiz Analiz Al
+            <ArrowRight className="ml-2 w-4 h-4" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.crmConsulting.features.title}
+        </h2>
+        <p class="text-xl text-secondary-600">İşletmenizi bu güçlü özelliklerle dönüştürün</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {t.crmConsulting.features.items.map((feature, index) => (
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
+            <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">{feature.title.split(' ')[0]}</div>
+            <h3 class="text-xl font-bold text-secondary-900 mb-2">
+              {feature.title.substring(2)}
+            </h3>
+            <p class="text-secondary-600 mb-4">{feature.description}</p>
+            <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
+              <p class="text-green-800 text-sm font-medium">
+                💡 {feature.benefit}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ROI Calculator Section -->
+  <section class="py-16 bg-gradient-to-br from-green-50 to-blue-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.crmConsulting.roi.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
+          {t.crmConsulting.roi.subtitle}
+        </p>
+      </div>
+      
+      <div class="bg-white rounded-2xl shadow-xl p-8 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full opacity-20 -mr-16 -mt-16"></div>
+        <h3 class="text-2xl font-bold text-secondary-900 mb-6 text-center">
+          {t.crmConsulting.roi.results.title}
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+          {t.crmConsulting.roi.results.items.map((result, index) => (
+            <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200" key={index}>
+              <div class="text-3xl mb-2">{result.split(' ')[0]}</div>
+              <p class="text-secondary-700 font-medium">{result.substring(2)}</p>
+            </div>
+          ))}
+        </div>
+        
+        <!-- ROI Calculator CTA -->
+        <div class="text-center">
+          <div class="bg-gradient-to-r from-green-600 to-blue-600 text-white p-6 rounded-xl">
+            <h4 class="text-xl font-bold mb-2">Spesifik ROI'nizi Hesaplamak İstiyor musunuz?</h4>
+            <p class="mb-4">Potansiyel tasarruf ve gelir artışınızın kişiselleştirilmiş analizini alın</p>
+            <a href="#form" class="inline-flex items-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors">
+              ROI'mi Hesapla
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section id="process" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.crmConsulting.process.title}
+        </h2>
+        <p class="text-xl text-secondary-600">CRM başarısı için kanıtlanmış 6 adımlı sürecimiz</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {t.crmConsulting.process.steps.map((step, index) => (
+          <div class="relative" key={index}>
+            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-primary-600 relative">
+              <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                  {index + 1}
+                </div>
+                <div class="text-2xl">{step.title.split(' ')[0]}</div>
+              </div>
+              <h3 class="text-lg font-bold text-secondary-900 mb-2">
+                {step.title.substring(2)}
+              </h3>
+              <p class="text-secondary-600">{step.description}</p>
+            </div>
+            {index < t.crmConsulting.process.steps.length - 1 && (
+              <div class="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-primary-300 transform -translate-y-1/2"></div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages Section -->
+  <section id="packages" class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.crmConsulting.packages.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
+          {t.crmConsulting.packages.subtitle}
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {t.crmConsulting.packages.items.map((packageItem, index) => (
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
+            <div class="text-center mb-6">
+              <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">{packageItem.title.split(' ')[0]}</div>
+              <h3 class="text-xl font-bold text-secondary-900">
+                {packageItem.title.substring(2)}
+              </h3>
+            </div>
+            <ul class="space-y-3 mb-6">
+              {packageItem.features.map((feature, featureIndex) => (
+                <li class="flex items-start" key={featureIndex}>
+                  <CheckCircle className="w-4 h-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                  <span class="text-secondary-700 text-sm">{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <a href="#form" class="w-full inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+              Teklif Al
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.crmConsulting.testimonials.title}
+        </h2>
+        <p class="text-xl text-secondary-600">Gerçek işletmelerden gerçek sonuçlar</p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {t.crmConsulting.testimonials.items.map((testimonial, index) => (
+          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative" key={index}>
+            <div class="absolute top-4 right-4 text-4xl text-blue-200">"</div>
+            <div class="mb-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  {testimonial.company.charAt(0)}
+                </div>
+                <div>
+                  <h4 class="font-bold text-secondary-900">{testimonial.company}</h4>
+                  <p class="text-secondary-600 text-sm">{testimonial.person}</p>
+                </div>
+              </div>
+              <blockquote class="text-secondary-700 italic mb-4 text-lg">
+                "{testimonial.quote}"
+              </blockquote>
+            </div>
+            <div class="space-y-2">
+              <h5 class="font-semibold text-secondary-900 mb-2">Elde Edilen Sonuçlar:</h5>
+              {testimonial.results.map((result, resultIndex) => (
+                <div class="flex items-center text-sm" key={resultIndex}>
+                  <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
+                  <span class="text-secondary-700">{result}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Urgency CTA Section -->
+  <section class="py-16 bg-gradient-to-br from-primary-600 to-secondary-800 relative overflow-hidden">
+    <div class="absolute inset-0 bg-black/20"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"></div>
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          {t.crmConsulting.cta.title}
+        </h2>
+        <p class="text-xl text-primary-100 mb-8">
+          {t.crmConsulting.cta.subtitle}
+        </p>
+        <div class="bg-red-500 text-white px-6 py-3 rounded-full text-lg font-semibold mb-8 inline-flex items-center">
+          <Clock className="w-5 h-5 mr-2" />
+          {t.crmConsulting.cta.urgency}
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#form"
+            class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
+          >
+            {t.crmConsulting.cta.primaryCta}
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </a>
+          <a
+            href="https://wa.me/905555555555"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200"
+          >
+            <MessageCircle className="mr-2 w-5 h-5" />
+            {t.crmConsulting.cta.whatsappCta}
+          </a>
+          <a
+            href="tel:+905555555555"
+            class="inline-flex items-center px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200"
+          >
+            <Phone className="mr-2 w-5 h-5" />
+            {t.crmConsulting.cta.phoneCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section id="form" class="py-16 bg-secondary-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <CRMConsultingForm translations={t} lang={lang} client:load />
+    </div>
+  </section>
+
+  <!-- Sticky CTA -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <div class="flex flex-col gap-2">
+      <a
+        href="https://wa.me/905555555555"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center justify-center w-16 h-16 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-110"
+        title="WhatsApp"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </a>
+      <a
+        href="#form"
+        class="flex items-center justify-center w-16 h-16 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-110 text-xs font-semibold"
+        title="Teklif Al"
+      >
+        Teklif Al
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .bg-grid-secondary-100 {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+  
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes slide-up {
+    from { opacity: 0; transform: translateY(50px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 1s ease-out;
+  }
+  
+  .animate-slide-up {
+    animation: slide-up 1s ease-out 0.3s both;
+  }
+</style>

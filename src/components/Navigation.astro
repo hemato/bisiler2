@@ -12,6 +12,47 @@ const translations = lang === 'en'
 
 const t = translations.default;
 
+const { isLandingPage = false } = Astro.props;
+
+// Landing page navigation
+const landingNavigation = {
+  'crm-danismanligi': [
+    { name: 'Çözüm', href: '#solution' },
+    { name: 'Özellikler', href: '#features' },
+    { name: 'Süreç', href: '#process' },
+    { name: 'Paketler', href: '#packages' },
+    { name: 'Referanslar', href: '#testimonials' },
+    { name: 'Teklif Al', href: '#form' }
+  ],
+  'crm-consulting': [
+    { name: 'Solution', href: '#solution' },
+    { name: 'Features', href: '#features' },
+    { name: 'Process', href: '#process' },
+    { name: 'Packages', href: '#packages' },
+    { name: 'Testimonials', href: '#testimonials' },
+    { name: 'Get Quote', href: '#form' }
+  ],
+  'web-sitesi-kurulumu': [
+    { name: 'Çözüm', href: '#solution' },
+    { name: 'Özellikler', href: '#features' },
+    { name: 'Örnekler', href: '#portfolio' },
+    { name: 'Süreç', href: '#process' },
+    { name: 'Paketler', href: '#packages' },
+    { name: 'Referanslar', href: '#testimonials' },
+    { name: 'Teklif Al', href: '#form' }
+  ],
+  'website-setup': [
+    { name: 'Solution', href: '#solution' },
+    { name: 'Features', href: '#features' },
+    { name: 'Portfolio', href: '#portfolio' },
+    { name: 'Process', href: '#process' },
+    { name: 'Packages', href: '#packages' },
+    { name: 'Testimonials', href: '#testimonials' },
+    { name: 'Get Quote', href: '#form' }
+  ]
+};
+
+// Regular navigation
 const navigation = [
   { name: t.nav.home, href: lang === 'en' ? '/en' : '/' },
   { name: t.nav.about, href: lang === 'en' ? '/en/about' : '/hakkimizda' },
@@ -21,6 +62,15 @@ const navigation = [
   { name: t.nav.blog, href: lang === 'en' ? '/en/blog' : '/blog' },
   { name: t.nav.contact, href: lang === 'en' ? '/en/contact' : '/iletisim' }
 ];
+
+// Determine navigation based on current path
+const currentPage = currentPath.split('/').pop() || '';
+const navItems = isLandingPage && landingNavigation[currentPage] 
+  ? landingNavigation[currentPage] 
+  : navigation;
+
+// Logo link - for landing pages, link to current page, otherwise to home
+const logoHref = isLandingPage ? currentPath : (lang === 'en' ? '/en' : '/');
 ---
 
 <header class="bg-white shadow-sm sticky top-0 z-50">
@@ -28,7 +78,7 @@ const navigation = [
     <div class="flex justify-between items-center h-16">
       <!-- Logo -->
       <div class="flex-shrink-0">
-        <a href={lang === 'en' ? '/en' : '/'} class="text-2xl font-bold text-primary-600">
+        <a href={logoHref} class="text-2xl font-bold text-primary-600">
           TechCorp
         </a>
       </div>
@@ -36,11 +86,11 @@ const navigation = [
       <!-- Desktop Navigation -->
       <div class="hidden md:block">
         <div class="ml-10 flex items-baseline space-x-4">
-          {navigation.map((item) => (
+          {navItems.map((item) => (
             <a
               href={item.href}
               class={`px-3 py-2 rounded-md text-sm font-medium transition-colors ${
-                currentPath === item.href
+                currentPath === item.href || (item.href.startsWith('#') && currentPath.includes(item.href.slice(1)))
                   ? 'text-primary-600 bg-primary-50'
                   : 'text-secondary-600 hover:text-primary-600 hover:bg-secondary-50'
               }`}
@@ -73,11 +123,11 @@ const navigation = [
     <!-- Mobile menu -->
     <div class="mobile-menu hidden md:hidden">
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-        {navigation.map((item) => (
+        {navItems.map((item) => (
           <a
             href={item.href}
             class={`block px-3 py-2 rounded-md text-base font-medium transition-colors ${
-              currentPath === item.href
+              currentPath === item.href || (item.href.startsWith('#') && currentPath.includes(item.href.slice(1)))
                 ? 'text-primary-600 bg-primary-50'
                 : 'text-secondary-600 hover:text-primary-600 hover:bg-secondary-50'
             }`}

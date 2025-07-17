@@ -296,5 +296,517 @@
   "footer": {
     "description": "CRM solutions and technical consulting services to enhance your digital processes.",
     "rights": "All rights reserved."
+  },
+  "crmConsulting": {
+    "title": "CRM Consulting - Stop Customer Loss, Increase Sales by 40%",
+    "description": "Centrally manage your customer data with Zoho CRM and Bitrix24, automate your sales processes, and increase your revenue.",
+    "hero": {
+      "title": "Stop Customer Loss, Increase Sales by 40%!",
+      "subtitle": "Centrally manage your customer data with Zoho CRM and Bitrix24, automate your sales processes, and increase your revenue.",
+      "urgency": "Every day that passes, the number of customers you lose increases",
+      "primaryCta": "Free Consultation",
+      "secondaryCta": "View Success Stories"
+    },
+    "problems": {
+      "title": "Do These Problems Sound Familiar?",
+      "items": [
+        "Is your customer data scattered in Excel?",
+        "Are you missing sales opportunities?",
+        "Don't you know which customer is in what status?",
+        "Are manual tracking processes taking too much time?",
+        "Can't you measure customer satisfaction?"
+      ]
+    },
+    "solution": {
+      "title": "Solution: Take Control with Professional CRM",
+      "description": "Manage all your customer data from a single location with Zoho CRM or Bitrix24. We determine and set up the most suitable CRM solution for you.",
+      "platforms": {
+        "zoho": {
+          "title": "Zoho CRM",
+          "features": [
+            "Comprehensive sales management",
+            "Advanced reporting",
+            "Powerful integration options",
+            "Ideal for medium and large businesses"
+          ]
+        },
+        "bitrix": {
+          "title": "Bitrix24",
+          "features": [
+            "Social collaboration tools",
+            "Project management",
+            "Built-in communication platform",
+            "Suitable for small and medium businesses"
+          ]
+        }
+      }
+    },
+    "features": {
+      "title": "What Do You Gain with CRM?",
+      "items": [
+        {
+          "title": "📊 Centralized Customer Management",
+          "description": "All customer information on one screen",
+          "benefit": "You can quickly view customer history and take the right approach"
+        },
+        {
+          "title": "🤖 Sales Process Automation",
+          "description": "Automatic tasks and reminders",
+          "benefit": "No customer follow-up is missed, your sales efficiency increases"
+        },
+        {
+          "title": "📈 Detailed Reporting",
+          "description": "Sales performance analysis",
+          "benefit": "You see which strategies work and base your decisions on data"
+        },
+        {
+          "title": "📱 Mobile Access",
+          "description": "Mobile app for field staff",
+          "benefit": "Access to all information even during customer visits"
+        },
+        {
+          "title": "🔗 Integration Support",
+          "description": "Email, accounting, and website integration",
+          "benefit": "Works seamlessly with your existing systems"
+        },
+        {
+          "title": "🎯 Lead Management",
+          "description": "Potential customer tracking",
+          "benefit": "Convert website visitors into customers"
+        }
+      ]
+    },
+    "roi": {
+      "title": "Calculate the ROI of Your CRM Investment",
+      "subtitle": "See your potential earnings based on our reference projects",
+      "results": {
+        "title": "Expected Results (Reference-Based)",
+        "items": [
+          "🎯 25-40% sales increase",
+          "📉 30-50% customer loss reduction",
+          "⚡ 60-80% process acceleration",
+          "📊 90% data accuracy",
+          "💰 6-12 months ROI period"
+        ]
+      }
+    },
+    "process": {
+      "title": "Our CRM Setup Process",
+      "steps": [
+        {
+          "title": "📋 Current State Analysis",
+          "description": "We examine your sales processes and existing systems"
+        },
+        {
+          "title": "🎯 CRM Selection and Planning",
+          "description": "We determine the most suitable one for you from Zoho CRM or Bitrix24"
+        },
+        {
+          "title": "⚙️ Setup and Customization",
+          "description": "We configure the selected CRM specifically for your business"
+        },
+        {
+          "title": "📊 Data Migration",
+          "description": "We safely transfer your existing customer data to the new system"
+        },
+        {
+          "title": "🎓 Team Training",
+          "description": "We provide comprehensive usage training to your entire team"
+        },
+        {
+          "title": "🚀 Go-Live and Continuous Support",
+          "description": "We launch the system and provide support when you need it"
+        }
+      ]
+    },
+    "packages": {
+      "title": "Our CRM Consulting Packages",
+      "subtitle": "Package prices are determined according to business size. Contact us for detailed pricing information.",
+      "items": [
+        {
+          "title": "🎯 CRM Analysis and Selection",
+          "features": [
+            "Current process analysis",
+            "CRM platform comparison",
+            "Need-solution matching",
+            "Investment-benefit analysis",
+            "Detailed recommendation report"
+          ]
+        },
+        {
+          "title": "⚙️ CRM Setup",
+          "features": [
+            "System setup and configuration",
+            "Custom fields and workflows",
+            "Data migration",
+            "Integration setup",
+            "Testing and optimization"
+          ]
+        },
+        {
+          "title": "🎓 Team Training",
+          "features": [
+            "Manager training",
+            "User training",
+            "Process training",
+            "Reporting training",
+            "Training materials"
+          ]
+        },
+        {
+          "title": "📊 Continuous Support",
+          "features": [
+            "System management",
+            "Performance optimization",
+            "Update support",
+            "Troubleshooting",
+            "Strategic consulting"
+          ]
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "items": [
+        {
+          "company": "TechFlow Software Inc.",
+          "person": "Mehmet Yılmaz, General Manager",
+          "quote": "Thanks to the CRM setup, our customer tracking was organized and our sales increased by 30%. No opportunity is missed anymore.",
+          "results": [
+            "40% lead increase",
+            "60% process optimization",
+            "25% customer satisfaction increase"
+          ]
+        },
+        {
+          "company": "MediCare Private Hospital",
+          "person": "Dr. Ayşe Kara, Chief Physician",
+          "quote": "Patient appointments and follow-ups have been completely fixed. Thanks to Zoho CRM integration, our work has become much easier.",
+          "results": [
+            "50% appointment efficiency increase",
+            "35% patient satisfaction increase",
+            "70% manual process reduction"
+          ]
+        },
+        {
+          "company": "RetailMax Store Chain",
+          "person": "Fatma Özkan, Sales Manager",
+          "quote": "Customer tracking between our 15 branches is perfect. Thanks to inventory and CRM integration, our sales have increased.",
+          "results": [
+            "45% online sales increase",
+            "30% inventory optimization",
+            "55% customer tracking efficiency"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "Contact Us for Free CRM Consulting",
+      "subtitle": "Stop customer loss, increase sales. Our expert team determines the most suitable CRM solution for you.",
+      "urgency": "20% discount for the first 10 businesses applying this month!",
+      "primaryCta": "Free Consultation",
+      "whatsappCta": "Ask via WhatsApp",
+      "phoneCta": "Call Now"
+    },
+    "form": {
+      "title": "Free CRM Consulting Request",
+      "fields": {
+        "name": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "company": "Company",
+        "employeeCount": "Number of Employees",
+        "currentSystem": "Current System",
+        "mainChallenge": "Main Challenge",
+        "preferredCrm": "Preferred CRM",
+        "budgetRange": "Budget Range",
+        "timeline": "Project Timeline",
+        "message": "Additional Information"
+      },
+      "options": {
+        "employeeCount": ["1-10", "11-50", "51-100", "100+"],
+        "currentSystem": ["Excel", "Other CRM", "Paper Records", "No System"],
+        "mainChallenge": ["Customer Tracking", "Sales Process", "Reporting", "Integration"],
+        "preferredCrm": ["Zoho CRM", "Bitrix24", "Undecided", "Awaiting Your Recommendation"],
+        "budgetRange": ["$0-2,000", "$2,000-6,000", "$6,000-12,000", "$12,000+"],
+        "timeline": ["1 month", "2-3 months", "3-6 months", "6+ months"]
+      },
+      "submit": "Request Free Consultation"
+    }
+  },
+  "websiteSetup": {
+    "title": "Website Setup - Professional Website Ready in 2 Weeks",
+    "description": "Strengthen your business's digital presence with modern design, fast loading, and guaranteed top rankings on Google.",
+    "hero": {
+      "title": "Professional Website Ready in 2 Weeks!",
+      "subtitle": "Strengthen your business's digital presence with modern design, fast loading, and guaranteed top rankings on Google.",
+      "urgency": "20% discount this month! Limited time",
+      "primaryCta": "Get Quote Now",
+      "secondaryCta": "View Examples"
+    },
+    "problems": {
+      "title": "Don't Be Invisible in the Digital World!",
+      "items": [
+        "Don't you have a website?",
+        "Is your existing website not mobile-friendly?",
+        "Can't your customers find you online?",
+        "Are you lagging behind your competitors on Google?",
+        "Does your website load too slowly?"
+      ]
+    },
+    "solution": {
+      "title": "Solution: Modern, Fast and Effective Website",
+      "description": "Get a modern, fast, and SEO-friendly website with TechCorp. Our professional team offers you customized solutions.",
+      "benefits": [
+        "Delivered in 2 weeks",
+        "Mobile-responsive design",
+        "Top rankings on Google",
+        "Fast loading guarantee",
+        "1 year free support"
+      ]
+    },
+    "features": {
+      "title": "What Do You Gain with Your Website?",
+      "items": [
+        {
+          "title": "📱 Mobile-Responsive Design",
+          "description": "Perfect appearance on all devices",
+          "benefit": "Don't miss your mobile visitors"
+        },
+        {
+          "title": "🚀 Fast Loading",
+          "description": "Pages that open in 3 seconds",
+          "benefit": "Your visitors don't wait, they see content immediately"
+        },
+        {
+          "title": "🔍 SEO Optimization",
+          "description": "Top rankings on Google",
+          "benefit": "More customers find you"
+        },
+        {
+          "title": "🛡️ Secure Hosting",
+          "description": "SSL certificate and daily backup",
+          "benefit": "Your site is secure and accessible 24/7"
+        },
+        {
+          "title": "📊 Google Analytics",
+          "description": "Detailed visitor analysis",
+          "benefit": "Understand customer behavior"
+        },
+        {
+          "title": "🎯 Contact Form",
+          "description": "Automatic lead collection",
+          "benefit": "Potential customers reach you directly"
+        }
+      ]
+    },
+    "process": {
+      "title": "Our Website Setup Process",
+      "steps": [
+        {
+          "title": "🔍 Free Website Analysis",
+          "description": "We analyze your current situation, conduct competitor analysis, and identify opportunity areas"
+        },
+        {
+          "title": "🎯 Strategy Development",
+          "description": "Target audience analysis, content strategy, and design concept are determined"
+        },
+        {
+          "title": "🎨 Design & Approval",
+          "description": "Brand-specific design, user experience optimization, mobile compatibility"
+        },
+        {
+          "title": "💻 Development & Testing",
+          "description": "Code writing, performance optimization, security setup"
+        },
+        {
+          "title": "🚀 Launch & Training",
+          "description": "Live launch, management training, first month follow-up"
+        }
+      ]
+    },
+    "packages": {
+      "title": "Our Website Packages",
+      "subtitle": "Choose the package that suits you best, let us prepare personalized offers for your specific needs.",
+      "items": [
+        {
+          "title": "💼 Basic Package",
+          "price": "Custom Quote",
+          "duration": "2 weeks",
+          "features": [
+            "5-page website",
+            "Mobile-responsive design",
+            "Basic SEO optimization",
+            "Contact form",
+            "1 year hosting included",
+            "SSL certificate"
+          ],
+          "ideal": "Ideal for small businesses",
+          "popular": false
+        },
+        {
+          "title": "🚀 Standard Package",
+          "price": "Custom Quote",
+          "duration": "2-3 weeks",
+          "features": [
+            "10-page website",
+            "Custom design",
+            "Advanced SEO optimization",
+            "Blog system",
+            "Social media integration",
+            "Live support widget",
+            "1 year hosting + SSL",
+            "Google Analytics setup"
+          ],
+          "ideal": "For growing businesses",
+          "popular": true
+        },
+        {
+          "title": "⭐ Premium Package",
+          "price": "Custom Quote",
+          "duration": "3-4 weeks",
+          "features": [
+            "Unlimited pages",
+            "E-commerce ready",
+            "Multi-language support",
+            "Advanced analytics",
+            "CRM integration",
+            "Custom features",
+            "2 years hosting + premium SSL",
+            "Priority support",
+            "Performance optimization"
+          ],
+          "ideal": "For enterprise solutions",
+          "popular": false
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "items": [
+        {
+          "company": "RetailMax Store Chain",
+          "person": "Ahmet Kaya, General Manager",
+          "quote": "Thanks to TechCorp, our website was ready in 2 weeks. Customer satisfaction increased with mobile-responsive design and fast loading.",
+          "results": [
+            "60% online visit increase",
+            "40% conversion rate increase",
+            "25% mobile user increase"
+          ]
+        },
+        {
+          "company": "MediCare Private Hospital",
+          "person": "Dr. Ayşe Kara, Marketing Manager",
+          "quote": "We can take patient appointments online. Thanks to SEO optimization, we are at the top of Google.",
+          "results": [
+            "80% online appointment increase",
+            "50% Google traffic increase",
+            "30% patient satisfaction increase"
+          ]
+        },
+        {
+          "company": "TechFlow Software",
+          "person": "Mehmet Yılmaz, CEO",
+          "quote": "Customer trust increased thanks to the professional website. Lead forms work very effectively.",
+          "results": [
+            "45% lead increase",
+            "35% customer trust increase",
+            "50% page view increase"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "Get a Quote Now for Your Professional Website",
+      "subtitle": "Get ahead of your competitors, find your customers in the online world. Website ready in 2 weeks.",
+      "urgency": "20% discount this month! Only 12 project slots left.",
+      "primaryCta": "Get Quote Now",
+      "whatsappCta": "Ask via WhatsApp",
+      "phoneCta": "Call Now"
+    },
+    "portfolio": {
+      "title": "Our Successful Projects",
+      "subtitle": "Real clients, real results",
+      "cta": "Your Project Can Look Like This Too",
+      "ctaButton": "I Want a Similar Project",
+      "projects": [
+        {
+          "title": "TechFlow Software",
+          "type": "Corporate Website",
+          "description": "Responsive corporate website for modern technology company",
+          "image": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "60% page view increase",
+            "40% longer session duration",
+            "25% more leads generated"
+          ]
+        },
+        {
+          "title": "MediCare Hospital",
+          "type": "Appointment System",
+          "description": "Healthcare website with integrated patient appointment system",
+          "image": "https://images.pexels.com/photos/263402/pexels-photo-263402.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "80% online appointment increase",
+            "50% phone call reduction",
+            "30% patient satisfaction increase"
+          ]
+        },
+        {
+          "title": "RetailMax Store",
+          "type": "E-commerce Platform",
+          "description": "Mobile-responsive e-commerce platform for retail chain",
+          "image": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "100% online sales increase",
+            "90% mobile sales growth",
+            "45% new customer acquisition"
+          ]
+        },
+        {
+          "title": "EduTech Academy",
+          "type": "Educational Platform",
+          "description": "Online education platform and course management system",
+          "image": "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "200% student enrollment increase",
+            "150% course completion rate",
+            "75% user satisfaction score"
+          ]
+        },
+        {
+          "title": "GreenEnergy",
+          "type": "Portfolio Website",
+          "description": "Portfolio website for renewable energy company",
+          "image": "https://images.pexels.com/photos/9875380/pexels-photo-9875380.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "120% project inquiry increase",
+            "65% customer trust improvement",
+            "85% mobile user growth"
+          ]
+        }
+      ]
+    },
+    "form": {
+      "title": "Free Website Quote",
+      "fields": {
+        "name": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "company": "Company",
+        "websiteType": "Website Type",
+        "currentWebsite": "Current Website",
+        "timeline": "Project Timeline",
+        "budget": "Budget Range",
+        "message": "Additional Information"
+      },
+      "options": {
+        "websiteType": ["Corporate", "E-commerce", "Blog", "Portfolio", "Other"],
+        "currentWebsite": ["None", "Existing but outdated", "Needs renovation", "Want to start from scratch"],
+        "timeline": ["1-2 weeks", "3-4 weeks", "1-2 months", "No rush"],
+        "budget": ["$2,000-6,000", "$6,000-12,000", "$12,000-20,000", "$20,000+"]
+      },
+      "submit": "Request Free Quote"
+    }
   }
 }

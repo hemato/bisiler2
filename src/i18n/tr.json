@@ -296,5 +296,572 @@
   "footer": {
     "description": "Dijital süreçlerinizi güçlendiren CRM çözümleri ve teknik danışmanlık hizmetleri.",
     "rights": "Tüm hakları saklıdır."
+  },
+  "crmConsulting": {
+    "title": "CRM Danışmanlığı - Müşteri Kaybını Durdurun",
+    "description": "Zoho CRM ve Bitrix24 ile profesyonel müşteri yönetimi. Uzman ekibimizle CRM çözümünüze bugün başlayın.",
+    "hero": {
+      "title": "Müşteri Kaybını Durdurun, Satışları %40 Artırın!",
+      "subtitle": "Zoho CRM ve Bitrix24 ile müşteri verilerinizi merkezi olarak yönetin, satış süreçlerinizi otomatikleştirin ve gelirlerinizi artırın.",
+      "urgency": "Her gün geçen gün kaybettiğiniz müşteri sayısı artıyor",
+      "primaryCta": "Ücretsiz Konsültasyon",
+      "secondaryCta": "Başarı Hikayelerini Gör"
+    },
+    "problems": {
+      "title": "CRM Sorunlarınız Bitmedi mi?",
+      "items": [
+        "Müşteri verileriniz Excel'de dağınık mı?",
+        "Satış fırsatlarını kaçırıyor musunuz?",
+        "Hangi müşterinin ne durumda olduğunu bilemiyor musunuz?",
+        "Manuel müşteri takibi çok zaman alıyor mu?",
+        "Satış ekibiniz koordineli çalışamıyor mu?",
+        "Müşteri memnuniyetini ölçemez misiniz?"
+      ]
+    },
+    "solution": {
+      "title": "Size En Uygun CRM Çözümünü Bulalım",
+      "description": "Zoho CRM veya Bitrix24 ile tüm müşteri verilerinizi tek yerden yönetin. Size en uygun CRM çözümünü belirliyor ve kuruyoruz.",
+      "platforms": {
+        "zoho": {
+          "title": "Zoho CRM",
+          "features": [
+            "Kapsamlı satış yönetimi",
+            "Gelişmiş raporlama",
+            "Güçlü entegrasyon seçenekleri",
+            "Orta ve büyük ölçekli işletmeler için ideal",
+            "Türkiye'de yaygın kullanım"
+          ]
+        },
+        "bitrix": {
+          "title": "Bitrix24",
+          "features": [
+            "Sosyal işbirliği araçları",
+            "Proje yönetimi",
+            "Dahili iletişim platformu",
+            "Küçük ve orta ölçekli işletmeler için uygun",
+            "Maliyet etkin çözüm"
+          ]
+        }
+      }
+    },
+    "features": {
+      "title": "CRM ile Neler Kazanacaksınız?",
+      "items": [
+        {
+          "title": "📊 Merkezi Müşteri Yönetimi",
+          "description": "Tüm müşteri bilgileri tek ekranda",
+          "benefit": "Müşteri geçmişini hızlıca görüp, doğru yaklaşım sergileyebilirsiniz"
+        },
+        {
+          "title": "🤖 Satış Süreci Otomasyonu",
+          "description": "Otomatik görevler ve hatırlatıcılar",
+          "benefit": "Hiçbir müşteri takibi kaçmaz, satış verimliliğiniz artar"
+        },
+        {
+          "title": "📈 Detaylı Raporlama",
+          "description": "Satış performansı analizi",
+          "benefit": "Hangi stratejilerin işe yaradığını görür, kararlarınızı veriye dayandırırsınız"
+        },
+        {
+          "title": "📱 Mobil Erişim",
+          "description": "Saha çalışanları için mobil uygulama",
+          "benefit": "Müşteri ziyaretlerinde bile tüm bilgilere erişim"
+        },
+        {
+          "title": "🔗 Entegrasyon Desteği",
+          "description": "E-posta, muhasebe ve web sitesi entegrasyonu",
+          "benefit": "Mevcut sistemlerinizle sorunsuz çalışır"
+        },
+        {
+          "title": "🎯 Lead Yönetimi",
+          "description": "Potansiyel müşteri takibi",
+          "benefit": "Web sitesi ziyaretçilerini müşteriye dönüştürün"
+        }
+      ]
+    },
+    "roi": {
+      "title": "CRM Yatırımınızın Geri Dönüşünü Hesaplayın",
+      "subtitle": "Referans projelerimizden elde edilen verilerle potansiyel kazancınızı görün",
+      "results": {
+        "title": "Beklenen Sonuçlar",
+        "items": [
+          "%25-40 satış artışı",
+          "%30-50 müşteri kaybı azalması",
+          "%60-80 süreç hızlanması",
+          "%90 veri doğruluğu",
+          "6-12 ay ROI süresi"
+        ]
+      }
+    },
+    "process": {
+      "title": "CRM Kurulum Sürecimiz",
+      "steps": [
+        {
+          "title": "📋 Mevcut Durum Analizi",
+          "description": "Satış süreçlerinizi ve mevcut sistemlerinizi inceliyoruz"
+        },
+        {
+          "title": "🎯 CRM Seçimi ve Planlaması",
+          "description": "Zoho CRM veya Bitrix24'ten size en uygun olanı belirliyoruz"
+        },
+        {
+          "title": "⚙️ Kurulum ve Özelleştirme",
+          "description": "Seçilen CRM'i işletmenize özel olarak yapılandırıyoruz"
+        },
+        {
+          "title": "📊 Veri Migrasyonu",
+          "description": "Mevcut müşteri verilerinizi güvenle yeni sisteme aktarıyoruz"
+        },
+        {
+          "title": "🎓 Ekip Eğitimi",
+          "description": "Tüm ekibinize kapsamlı kullanım eğitimi veriyoruz"
+        },
+        {
+          "title": "🚀 Go-Live ve Sürekli Destek",
+          "description": "Sistemi devreye alıyor ve ihtiyaç duyduğunuzda destek sağlıyoruz"
+        }
+      ]
+    },
+    "packages": {
+      "title": "CRM Danışmanlık Paketlerimiz",
+      "subtitle": "Paket fiyatları işletme büyüklüğüne göre belirlenir. Detaylı fiyat bilgisi için bizimle iletişime geçin.",
+      "items": [
+        {
+          "title": "🎯 CRM Analizi ve Seçimi",
+          "features": [
+            "Mevcut süreç analizi",
+            "CRM platform karşılaştırması",
+            "İhtiyaç-çözüm eşleştirmesi",
+            "Yatırım-fayda analizi",
+            "Detaylı öneri raporu"
+          ]
+        },
+        {
+          "title": "⚙️ CRM Kurulumu",
+          "features": [
+            "Sistem kurulumu ve yapılandırma",
+            "Özel alanlar ve iş akışları",
+            "Veri migrasyonu",
+            "Entegrasyon kurulumu",
+            "Test ve optimizasyon"
+          ]
+        },
+        {
+          "title": "🎓 Ekip Eğitimi",
+          "features": [
+            "Yönetici eğitimi",
+            "Kullanıcı eğitimi",
+            "Süreç eğitimi",
+            "Raporlama eğitimi",
+            "Eğitim materyalleri"
+          ]
+        },
+        {
+          "title": "📊 Sürekli Destek",
+          "features": [
+            "Sistem yönetimi",
+            "Performans optimizasyonu",
+            "Güncelleme desteği",
+            "Sorun giderme",
+            "Stratejik danışmanlık"
+          ]
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "Müşteri Başarı Hikayeleri",
+      "items": [
+        {
+          "company": "MediCare Özel Hastanesi",
+          "person": "Dr. Mehmet Yılmaz",
+          "quote": "CRM kurulumu sayesinde hasta takibimiz düzenlendi ve verimliliğimiz %30 arttı.",
+          "results": [
+            "%50 randevu verimliliği artışı",
+            "%35 hasta memnuniyeti artışı",
+            "%70 manuel işlem azalması"
+          ]
+        },
+        {
+          "company": "RetailMax Mağaza Zinciri",
+          "person": "Ayşe Demir",
+          "quote": "15 şube arası koordinasyon mükemmel oldu. Stok ve müşteri takibi artık çok kolay.",
+          "results": [
+            "%45 online satış artışı",
+            "%30 stok optimizasyonu",
+            "%55 müşteri takip verimliliği"
+          ]
+        },
+        {
+          "company": "TechFlow Yazılım A.Ş",
+          "person": "Can Özkan",
+          "quote": "Hiçbir lead kaçmıyor artık. Satış süreçlerimiz tamamen optimize oldu.",
+          "results": [
+            "%40 lead artışı",
+            "%60 süreç optimizasyonu",
+            "%25 müşteri memnuniyeti artışı"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "CRM Dönüşümünüzü Bugün Başlatın",
+      "subtitle": "Uzman ekibimizle ücretsiz danışmanlık alın ve size özel CRM çözümünüzü keşfedin",
+      "urgency": "Bu ay başvuran ilk 10 işletmeye özel indirim",
+      "primaryCta": "Ücretsiz Konsültasyon Al",
+      "whatsappCta": "WhatsApp ile Konuş",
+      "phoneCta": "Hemen Ara"
+    },
+    "form": {
+      "title": "Ücretsiz CRM Danışmanlığı Talep Edin",
+      "fields": {
+        "name": "Ad Soyad",
+        "email": "E-posta Adresi",
+        "phone": "Telefon Numarası",
+        "company": "Şirket Adı",
+        "employeeCount": "Çalışan Sayısı",
+        "currentSystem": "Mevcut Sistem",
+        "mainChallenge": "Ana Zorluk",
+        "preferredCrm": "Tercih Edilen CRM",
+        "budgetRange": "Bütçe Aralığı",
+        "timeline": "Proje Zamanlaması",
+        "message": "Ek Notlar"
+      },
+      "options": {
+        "employeeCount": [
+          "1-10 kişi",
+          "11-25 kişi",
+          "26-50 kişi",
+          "51-100 kişi",
+          "100+ kişi"
+        ],
+        "currentSystem": [
+          "Excel dosyaları",
+          "Google Sheets",
+          "Kağıt kayıtlar",
+          "Başka bir CRM",
+          "Hiçbir sistem yok"
+        ],
+        "mainChallenge": [
+          "Müşteri takibi",
+          "Satış süreci",
+          "Raporlama",
+          "Ekip koordinasyonu",
+          "Veri yönetimi"
+        ],
+        "preferredCrm": [
+          "Zoho CRM",
+          "Bitrix24",
+          "Kararsızım",
+          "Başka bir öneri"
+        ],
+        "budgetRange": [
+          "0-5.000 TL",
+          "5.000-15.000 TL",
+          "15.000-30.000 TL",
+          "30.000+ TL"
+        ],
+        "timeline": [
+          "Hemen",
+          "1 ay içinde",
+          "2-3 ay içinde",
+          "6 ay içinde"
+        ]
+      },
+      "submit": "Ücretsiz Danışmanlık Talep Et"
+    }
+  },
+  "websiteSetup": {
+    "title": "Web Sitesi Kurulumu - Profesyonel Tasarım",
+    "description": "Modern, responsive ve SEO uyumlu web siteleri. Hızlı teslimat, güvenli hosting ve 1 yıl ücretsiz teknik destek.",
+    "hero": {
+      "title": "Profesyonel Web Siteniz Kısa Sürede Hazır!",
+      "subtitle": "Modern tasarım, hızlı yükleme ve Google'da üst sıralarda çıkma garantisi ile işletmenizin dijital varlığını güçlendirin.",
+      "urgency": "Her gün geçen gün kaybettiğiniz müşteri sayısı artıyor",
+      "primaryCta": "Hemen Teklif Al",
+      "secondaryCta": "Örnekleri İncele"
+    },
+    "problems": {
+      "title": "Web Sitesi Sorunlarınız Var mı?",
+      "items": [
+        "Web siteniz yok mu?",
+        "Var olan siteniz mobil uyumlu değil mi?",
+        "Müşterileriniz sizi online bulamıyor mu?",
+        "Site yavaş yükleniyor mu?",
+        "Google'da görünmez misiniz?",
+        "Profesyonel görünmüyor mu?"
+      ]
+    },
+    "solution": {
+      "title": "TechCorp ile Farkı Hissedin",
+      "description": "Modern teknoloji ile tasarlanan, hızlı yüklenen ve SEO uyumlu web sitenizle rakiplerinizin önüne geçin.",
+      "benefits": [
+        "Mobil uyumlu responsive tasarım",
+        "Google'da üst sıralarda çıkma",
+        "Hızlı yükleme süreleri",
+        "Güvenli SSL sertifikası",
+        "1 yıl ücretsiz teknik destek",
+        "SEO optimizasyonu dahil"
+      ]
+    },
+    "features": {
+      "title": "Web Sitesi Özelliklerimiz",
+      "items": [
+        {
+          "title": "📱 Mobil Uyumlu Tasarım",
+          "description": "Tüm cihazlarda mükemmel görünüm",
+          "benefit": "Mobil ziyaretçilerinizi kaçırmayın"
+        },
+        {
+          "title": "🚀 Hızlı Yükleme",
+          "description": "3 saniyede açılan sayfalar",
+          "benefit": "Ziyaretçileriniz beklemez, hemen içerik görür"
+        },
+        {
+          "title": "🔍 SEO Optimizasyonu",
+          "description": "Google'da üst sıralarda çıkma",
+          "benefit": "Daha fazla müşteri sizi bulur"
+        },
+        {
+          "title": "🛡️ Güvenli Hosting",
+          "description": "SSL sertifikası ve günlük yedek",
+          "benefit": "Siteniz 7/24 güvenli ve erişilebilir"
+        },
+        {
+          "title": "📊 Google Analytics",
+          "description": "Detaylı ziyaretçi analizi",
+          "benefit": "Müşteri davranışlarını anlayın"
+        },
+        {
+          "title": "🎯 İletişim Formu",
+          "description": "Otomatik lead toplama",
+          "benefit": "Potansiyel müşteriler direkt size ulaşır"
+        }
+      ]
+    },
+    "process": {
+      "title": "Web Sitesi Geliştirme Sürecimiz",
+      "steps": [
+        {
+          "title": "🔍 Ücretsiz Web Sitesi Analizi",
+          "description": "Mevcut durumunuzu analiz ederiz, rakip analizi yaparız, fırsat alanlarını belirleriz"
+        },
+        {
+          "title": "🎯 Strateji Geliştirme",
+          "description": "Hedef kitle analizi, içerik stratejisi, tasarım konsepti"
+        },
+        {
+          "title": "🎨 Tasarım & Onay",
+          "description": "Markanıza özel tasarım, kullanıcı deneyimi optimizasyonu, mobil uyumluluk"
+        },
+        {
+          "title": "💻 Geliştirme & Test",
+          "description": "Kod yazımı, performans optimizasyonu, güvenlik kurulumu"
+        },
+        {
+          "title": "🚀 Yayın & Eğitim",
+          "description": "Canlı yayın, yönetim eğitimi, ilk ay takip"
+        }
+      ]
+    },
+    "packages": {
+      "title": "Web Sitesi Paketlerimiz",
+      "subtitle": "İşletme ihtiyaçlarınıza göre özel fiyatlandırma yapıyoruz",
+      "items": [
+        {
+          "title": "💼 Temel Paket",
+          "price": "Fiyat Teklifi Alın",
+          "duration": "2 hafta",
+          "ideal": "Küçük işletmeler için ideal",
+          "features": [
+            "5 sayfa web sitesi",
+            "Mobil uyumlu tasarım",
+            "Temel SEO optimizasyonu",
+            "İletişim formu",
+            "1 yıl hosting dahil"
+          ]
+        },
+        {
+          "title": "🚀 Standart Paket",
+          "price": "Fiyat Teklifi Alın",
+          "duration": "2-3 hafta",
+          "ideal": "Büyüyen işletmeler için",
+          "popular": true,
+          "features": [
+            "10 sayfa web sitesi",
+            "Özel tasarım",
+            "Gelişmiş SEO optimizasyonu",
+            "Blog sistemi",
+            "Sosyal medya entegrasyonu",
+            "Canlı destek widget",
+            "1 yıl hosting + SSL"
+          ]
+        },
+        {
+          "title": "⭐ Premium Paket",
+          "price": "Fiyat Teklifi Alın",
+          "duration": "3-4 hafta",
+          "ideal": "Kurumsal çözümler için",
+          "features": [
+            "Sınırsız sayfa",
+            "E-ticaret hazır",
+            "Çok dilli destek",
+            "Gelişmiş analitik",
+            "CRM entegrasyonu",
+            "Özel özellikler",
+            "2 yıl hosting + premium SSL"
+          ]
+        }
+      ]
+    },
+    "testimonials": {
+      "title": "Müşteri Başarı Hikayeleri",
+      "items": [
+        {
+          "company": "TechFlow Yazılım",
+          "person": "Ahmet Kaya",
+          "quote": "TechCorp sayesinde web sitemiz 2 haftada hazır oldu. Mobil uyumlu tasarım ve hızlı yükleme ile müşteri memnuniyetimiz arttı.",
+          "results": [
+            "%60 sayfa görüntüleme artışı",
+            "%40 daha uzun site kalış süresi",
+            "%25 daha fazla iletişim formu"
+          ]
+        },
+        {
+          "company": "MediCare Hastanesi",
+          "person": "Dr. Ayşe Yılmaz",
+          "quote": "Hasta randevu sistemi entegrasyonu sayesinde online randevu alma oranımız %80 arttı.",
+          "results": [
+            "%80 online randevu artışı",
+            "%50 telefon yoğunluğu azalması",
+            "%30 hasta memnuniyeti artışı"
+          ]
+        },
+        {
+          "company": "RetailMax",
+          "person": "Can Öztürk",
+          "quote": "E-ticaret entegrasyonu ile online satışlarımız ikiye katlandı. Mobil uyumluluk sayesinde mobil satışlar %90 arttı.",
+          "results": [
+            "%100 online satış artışı",
+            "%90 mobil satış artışı",
+            "%45 yeni müşteri kazanımı"
+          ]
+        }
+      ]
+    },
+    "cta": {
+      "title": "Web Sitenizi Bugün Yenileyin",
+      "subtitle": "Profesyonel tasarım ekibimizle görüşün ve size özel web sitesi teklifini alın",
+      "urgency": "Bu ay %20 indirim fırsatını kaçırmayın",
+      "primaryCta": "Hemen Teklif Al",
+      "whatsappCta": "WhatsApp ile Konuş",
+      "phoneCta": "Hemen Ara"
+    },
+    "portfolio": {
+      "title": "Başarılı Projelerimiz",
+      "subtitle": "Gerçek müşteriler, gerçek sonuçlar",
+      "cta": "Sizin Projeniz de Böyle Olabilir",
+      "ctaButton": "Benzer Bir Proje İstiyorum",
+      "projects": [
+        {
+          "title": "TechFlow Yazılım",
+          "type": "Kurumsal Web Sitesi",
+          "description": "Modern teknoloji firması için responsive kurumsal web sitesi",
+          "image": "https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "%60 sayfa görüntüleme artışı",
+            "%40 daha uzun kalış süresi",
+            "%25 daha fazla lead"
+          ]
+        },
+        {
+          "title": "MediCare Hastanesi",
+          "type": "Randevu Sistemi",
+          "description": "Hasta randevu sistemi entegrasyonlu sağlık web sitesi",
+          "image": "https://images.pexels.com/photos/263402/pexels-photo-263402.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "%80 online randevu artışı",
+            "%50 telefon yoğunluğu azalması",
+            "%30 hasta memnuniyeti artışı"
+          ]
+        },
+        {
+          "title": "RetailMax Mağaza",
+          "type": "E-ticaret Sitesi",
+          "description": "Mağaza zinciri için mobil uyumlu e-ticaret platformu",
+          "image": "https://images.pexels.com/photos/230544/pexels-photo-230544.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "%100 online satış artışı",
+            "%90 mobil satış artışı",
+            "%45 yeni müşteri kazanımı"
+          ]
+        },
+        {
+          "title": "EduTech Akademi",
+          "type": "Eğitim Platformu",
+          "description": "Online eğitim platformu ve kurs yönetim sistemi",
+          "image": "https://images.pexels.com/photos/159711/books-bookstore-book-reading-159711.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "%200 öğrenci artışı",
+            "%150 kurs tamamlama oranı",
+            "%75 kullanıcı memnuniyeti"
+          ]
+        },
+        {
+          "title": "GreenEnergy",
+          "type": "Portfolyo Sitesi",
+          "description": "Yenilenebilir enerji firması için portfolyo web sitesi",
+          "image": "https://images.pexels.com/photos/9875380/pexels-photo-9875380.jpeg?auto=compress&cs=tinysrgb&w=600",
+          "results": [
+            "%120 proje sorgusu artışı",
+            "%65 müşteri güveni artışı",
+            "%85 mobil kullanıcı artışı"
+          ]
+        }
+      ]
+    },
+    "form": {
+      "title": "Ücretsiz Web Sitesi Teklifi Alın",
+      "fields": {
+        "name": "Ad Soyad",
+        "email": "E-posta Adresi",
+        "phone": "Telefon Numarası",
+        "company": "Şirket Adı",
+        "websiteType": "Web Sitesi Türü",
+        "currentWebsite": "Mevcut Web Sitesi",
+        "timeline": "Proje Zamanlaması",
+        "budget": "Bütçe Aralığı",
+        "message": "Ek Bilgiler"
+      },
+      "options": {
+        "websiteType": [
+          "Kurumsal Web Sitesi",
+          "E-ticaret Sitesi",
+          "Blog / Haber Sitesi",
+          "Portfolyo Sitesi",
+          "Landing Page",
+          "Özel Proje"
+        ],
+        "currentWebsite": [
+          "Hiç web sitem yok",
+          "Eski bir sitem var",
+          "WordPress sitesi var",
+          "Sosyal medya hesapları var",
+          "E-ticaret sitesi var"
+        ],
+        "timeline": [
+          "Hemen",
+          "1 ay içinde",
+          "2-3 ay içinde",
+          "6 ay içinde"
+        ],
+        "budget": [
+          "5.000-15.000 TL",
+          "15.000-30.000 TL",
+          "30.000-50.000 TL",
+          "50.000+ TL"
+        ]
+      },
+      "submit": "Ücretsiz Teklif Al"
+    }
   }
 }
