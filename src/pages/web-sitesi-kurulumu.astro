@@ -1,0 +1,350 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getLangFromUrl } from '../i18n/utils';
+import { generateServiceSchema } from '../utils/structured-data';
+import WebsiteSetupForm from '../components/WebsiteSetupForm';
+import { ArrowRight, CheckCircle, TrendingUp, MessageCircle, Phone, Smartphone, Zap, Search, Shield, BarChart3, Target } from 'lucide-react';
+
+const lang = getLangFromUrl(Astro.url);
+const translations = await import('../i18n/tr.json');
+const t = translations.default;
+
+const structuredData = generateServiceSchema({
+  name: t.websiteSetup.title,
+  description: t.websiteSetup.description,
+  provider: 'TechCorp',
+  offers: {
+    '@type': 'Offer',
+    price: 'varies',
+    priceCurrency: 'TRY',
+    availability: 'InStock'
+  }
+}, lang);
+---
+
+<Layout 
+  title={t.websiteSetup.title}
+  description={t.websiteSetup.description}
+  structuredData={structuredData}
+>
+  <!-- Hero Section -->
+  <section class="relative bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden">
+    <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
+    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-200 rounded-full opacity-20 animate-float"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
+    
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="animate-fade-in">
+          <div class="bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-block">
+            {t.websiteSetup.hero.urgency}
+          </div>
+          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight">
+            {t.websiteSetup.hero.title}
+          </h1>
+          <p class="text-xl text-secondary-600 mb-8 leading-relaxed">
+            {t.websiteSetup.hero.subtitle}
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href="#form"
+              class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
+            >
+              {t.websiteSetup.hero.primaryCta}
+              <ArrowRight className="ml-2 w-5 h-5" />
+            </a>
+            <a
+              href="#testimonials"
+              class="inline-flex items-center px-8 py-4 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200"
+            >
+              {t.websiteSetup.hero.secondaryCta}
+            </a>
+          </div>
+        </div>
+
+        <div class="relative animate-slide-up">
+          <div class="relative z-10">
+            <img
+              src="https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800"
+              alt="Web Development"
+              class="rounded-2xl shadow-2xl w-full"
+              loading="eager"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-primary-600/20 to-transparent rounded-2xl"></div>
+          </div>
+          <div class="absolute -top-6 -right-6 w-24 h-24 bg-green-500 rounded-full opacity-20 animate-float"></div>
+          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-orange-500 rounded-full opacity-20 animate-float" style="animation-delay: 0.5s;"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Problems Section -->
+  <section class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.problems.title}
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {t.websiteSetup.problems.items.map((problem, index) => (
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow" key={index}>
+            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
+              <span class="text-red-600 text-2xl">⚠️</span>
+            </div>
+            <p class="text-secondary-700 font-medium">{problem}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Solution Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.solution.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto mb-8">
+          {t.websiteSetup.solution.description}
+        </p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {t.websiteSetup.solution.benefits.map((benefit, index) => (
+          <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl text-center" key={index}>
+            <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-8 h-8 text-white" />
+            </div>
+            <p class="text-secondary-700 font-medium">{benefit}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.features.title}
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.features.items.map((feature, index) => (
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2" key={index}>
+            <div class="text-4xl mb-4">{feature.title.split(' ')[0]}</div>
+            <h3 class="text-xl font-bold text-secondary-900 mb-2">
+              {feature.title.substring(2)}
+            </h3>
+            <p class="text-secondary-600 mb-4">{feature.description}</p>
+            <div class="bg-blue-50 p-3 rounded-lg">
+              <p class="text-blue-800 text-sm font-medium">
+                💡 {feature.benefit}
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.process.title}
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.process.steps.map((step, index) => (
+          <div class="relative" key={index}>
+            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-blue-600">
+              <div class="flex items-center mb-4">
+                <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                  {index + 1}
+                </div>
+                <div class="text-2xl">{step.title.split(' ')[0]}</div>
+              </div>
+              <h3 class="text-lg font-bold text-secondary-900 mb-2">
+                {step.title.substring(2)}
+              </h3>
+              <p class="text-secondary-600">{step.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Packages Section -->
+  <section class="py-16 bg-secondary-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.packages.title}
+        </h2>
+        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
+          {t.websiteSetup.packages.subtitle}
+        </p>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.packages.items.map((packageItem, index) => (
+          <div class={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${packageItem.popular ? 'border-2 border-primary-600 relative' : ''}`} key={index}>
+            {packageItem.popular && (
+              <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                <div class="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                  En Popüler
+                </div>
+              </div>
+            )}
+            <div class="text-center mb-6">
+              <div class="text-4xl mb-2">{packageItem.title.split(' ')[0]}</div>
+              <h3 class="text-2xl font-bold text-secondary-900 mb-2">
+                {packageItem.title.substring(2)}
+              </h3>
+              <div class="text-3xl font-bold text-primary-600 mb-2">{packageItem.price}</div>
+              <p class="text-secondary-600 text-sm mb-4">{packageItem.duration}</p>
+              <p class="text-secondary-600 text-sm">{packageItem.ideal}</p>
+            </div>
+            <ul class="space-y-3 mb-8">
+              {packageItem.features.map((feature, featureIndex) => (
+                <li class="flex items-start" key={featureIndex}>
+                  <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
+                  <span class="text-secondary-700">{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <a
+              href="#form"
+              class={`w-full inline-flex items-center justify-center px-6 py-3 font-semibold rounded-lg transition-all duration-200 ${packageItem.popular ? 'bg-primary-600 text-white hover:bg-primary-700' : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'}`}
+            >
+              Teklif Al
+              <ArrowRight className="ml-2 w-4 h-4" />
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section id="testimonials" class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {t.websiteSetup.testimonials.title}
+        </h2>
+      </div>
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {t.websiteSetup.testimonials.items.map((testimonial, index) => (
+          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow" key={index}>
+            <div class="mb-6">
+              <div class="flex items-center mb-4">
+                <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                  {testimonial.company.charAt(0)}
+                </div>
+                <div>
+                  <h4 class="font-bold text-secondary-900">{testimonial.company}</h4>
+                  <p class="text-secondary-600 text-sm">{testimonial.person}</p>
+                </div>
+              </div>
+              <blockquote class="text-secondary-700 italic mb-4">
+                "{testimonial.quote}"
+              </blockquote>
+            </div>
+            <div class="space-y-2">
+              {testimonial.results.map((result, resultIndex) => (
+                <div class="flex items-center text-sm" key={resultIndex}>
+                  <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
+                  <span class="text-secondary-700">{result}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-16 bg-gradient-to-br from-blue-600 to-purple-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-3xl font-bold text-white mb-4">
+          {t.websiteSetup.cta.title}
+        </h2>
+        <p class="text-xl text-blue-100 mb-8">
+          {t.websiteSetup.cta.subtitle}
+        </p>
+        <div class="bg-orange-500 text-white px-6 py-3 rounded-full text-lg font-semibold mb-8 inline-block">
+          {t.websiteSetup.cta.urgency}
+        </div>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href="#form"
+            class="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 transform hover:scale-105"
+          >
+            {t.websiteSetup.cta.primaryCta}
+            <ArrowRight className="ml-2 w-5 h-5" />
+          </a>
+          <a
+            href="https://wa.me/905555555555"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200"
+          >
+            <MessageCircle className="mr-2 w-5 h-5" />
+            {t.websiteSetup.cta.whatsappCta}
+          </a>
+          <a
+            href="tel:+905555555555"
+            class="inline-flex items-center px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200"
+          >
+            <Phone className="mr-2 w-5 h-5" />
+            {t.websiteSetup.cta.phoneCta}
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form Section -->
+  <section id="form" class="py-16 bg-secondary-50">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <WebsiteSetupForm translations={t} lang={lang} client:load />
+    </div>
+  </section>
+
+  <!-- Sticky CTA -->
+  <div class="fixed bottom-6 right-6 z-50">
+    <div class="flex flex-col gap-2">
+      <a
+        href="https://wa.me/905555555555"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center justify-center w-14 h-14 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-110"
+        title="WhatsApp"
+      >
+        <MessageCircle className="w-6 h-6" />
+      </a>
+      <a
+        href="tel:+905555555555"
+        class="flex items-center justify-center w-14 h-14 bg-orange-600 text-white rounded-full shadow-lg hover:bg-orange-700 transition-all duration-200 transform hover:scale-110"
+        title="Telefon"
+      >
+        <Phone className="w-6 h-6" />
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<style>
+  .bg-grid-secondary-100 {
+    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+</style>
