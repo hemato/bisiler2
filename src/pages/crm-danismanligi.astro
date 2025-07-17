@@ -1,532 +1,1002 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl } from '../i18n/utils';
-import { generateServiceSchema } from '../utils/structured-data';
-import CRMConsultingForm from '../components/CRMConsultingForm';
-import { ArrowRight, CheckCircle, TrendingUp, MessageCircle, Phone, Users, Target, BarChart3, Shield, Smartphone, Link, Clock, Star, Award, Zap } from 'lucide-react';
-
-const lang = getLangFromUrl(Astro.url);
-const translations = await import('../i18n/tr.json');
-const t = translations.default;
-
-const structuredData = generateServiceSchema({
-  name: t.crmConsulting.title,
-  description: t.crmConsulting.description,
-  provider: 'TechCorp',
-  offers: {
-    '@type': 'Offer',
-    price: 'varies',
-    priceCurrency: 'TRY',
-    availability: 'InStock'
-  }
-}, lang);
-
-// Hreflang for SEO
-const hreflang = [
-  { lang: 'tr', url: 'https://techcorp.com/crm-danismanligi' },
-  { lang: 'en', url: 'https://techcorp.com/en/crm-consulting' }
-];
+import CRMConsultingForm from '../components/CRMConsultingForm.tsx';
+import translations from '../i18n/tr.json';
 ---
 
 <Layout 
-  title={t.crmConsulting.title}
-  description={t.crmConsulting.description}
-  structuredData={structuredData}
-  hreflang={hreflang}
-  hideFooter={true}
+  title="CRM Danışmanlığı | Müşteri Kaybını Durdurun, Satışları %40 Artırın"
+  description="Zoho CRM ve Bitrix24 ile profesyonel müşteri yönetimi. Merkezi müşteri veritabanı, otomatik satış süreçleri, detaylı raporlama. Ücretsiz konsültasyon için hemen başvurun!"
+  canonical="https://techcorp.com.tr/crm-danismanligi"
   isLandingPage={true}
+  hideFooter={true}
 >
-  <!-- Hero Section -->
-  <section class="relative bg-gradient-to-br from-red-50 to-primary-50 overflow-hidden">
-    <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
-    <div class="absolute top-0 right-0 w-96 h-96 bg-red-200 rounded-full opacity-20 animate-float"></div>
-    <div class="absolute bottom-0 left-0 w-64 h-64 bg-primary-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
-    
-    <!-- Trust Badges -->
-    <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
-      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-700 border border-green-200">
-        <Award className="w-3 h-3 inline mr-1" />
-        Zoho Sertifikalı
-      </div>
-      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-blue-700 border border-blue-200">
-        <Star className="w-3 h-3 inline mr-1" />
-        100+ Proje
-      </div>
-    </div>
-    
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div class="animate-fade-in">
-          <div class="bg-red-100 text-red-800 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-flex items-center">
-            <Clock className="w-4 h-4 mr-2" />
-            {t.crmConsulting.hero.urgency}
-          </div>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight">
-            {t.crmConsulting.hero.title}
-          </h1>
-          <p class="text-xl text-secondary-600 mb-8 leading-relaxed">
-            {t.crmConsulting.hero.subtitle}
-          </p>
-          
-          <!-- Key Benefits -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <div class="flex items-center text-green-700 bg-green-50 p-3 rounded-lg">
-              <CheckCircle className="w-5 h-5 mr-2" />
-              <span class="font-medium">Ücretsiz Analiz</span>
-            </div>
-            <div class="flex items-center text-blue-700 bg-blue-50 p-3 rounded-lg">
-              <Zap className="w-5 h-5 mr-2" />
-              <span class="font-medium">Hızlı Kurulum</span>
-            </div>
-          </div>
-          
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a
-              href="#form"
-              class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              {t.crmConsulting.hero.primaryCta}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </a>
-            <a
-              href="#testimonials"
-              class="inline-flex items-center px-8 py-4 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200"
-            >
-              {t.crmConsulting.hero.secondaryCta}
-            </a>
-          </div>
-        </div>
 
-        <div class="relative animate-slide-up">
-          <div class="relative z-10">
-            <img
-              src="https://images.pexels.com/photos/7688336/pexels-photo-7688336.jpeg?auto=compress&cs=tinysrgb&w=800"
-              alt="CRM dashboard analizi gösteren müşteri takip sistemi ve satış performans metrikleri"
-              class="rounded-2xl shadow-2xl w-full"
-              loading="eager"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-primary-600/20 to-transparent rounded-2xl"></div>
-            
-            <!-- Floating Success Metric -->
-            <div class="absolute -bottom-6 -left-6 bg-white rounded-xl shadow-xl p-4 animate-bounce">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <TrendingUp className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-600">Satış Artışı</div>
-                  <div class="text-xl font-bold text-green-600">+%40</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="absolute -top-6 -right-6 w-24 h-24 bg-green-500 rounded-full opacity-20 animate-float"></div>
-          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-blue-500 rounded-full opacity-20 animate-float" style="animation-delay: 0.5s;"></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Social Proof Bar -->
-  <section class="bg-white border-b border-gray-200 py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <p class="text-sm text-gray-600 mb-4">Önde gelen şirketler tarafından tercih ediliyor</p>
-        <div class="flex justify-center items-center gap-8 opacity-60">
-          <div class="text-2xl font-bold text-gray-400">TechFlow</div>
-          <div class="text-2xl font-bold text-gray-400">MediCare</div>
-          <div class="text-2xl font-bold text-gray-400">RetailMax</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Problems Section -->
-  <section class="py-16 bg-secondary-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.crmConsulting.problems.title}
-        </h2>
-        <p class="text-xl text-red-600 font-medium">Bu zorluklarla karşılaştığınızda yalnız değilsiniz</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {t.crmConsulting.problems.items.map((problem, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500" key={index}>
-            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-              <span class="text-red-600 text-2xl">❌</span>
-            </div>
-            <p class="text-secondary-700 font-medium">{problem}</p>
-          </div>
-        ))}
-      </div>
-      
-      <!-- Pain Point Amplifier -->
-      <div class="mt-12 text-center">
-        <div class="bg-red-50 border border-red-200 rounded-xl p-6 max-w-2xl mx-auto">
-          <h3 class="text-xl font-bold text-red-800 mb-2">Hareketsizliğin Gerçek Maliyeti</h3>
-          <p class="text-red-700">Uygun CRM olmadan geçen her gün, potansiyel müşteri ve gelir kaybediyorsunuz. Rakiplerinizin önüne geçmelerine izin vermeyin.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Solution Section -->
-  <section id="solution" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.crmConsulting.solution.title}
-        </h2>
-        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
-          {t.crmConsulting.solution.description}
-        </p>
-      </div>
-      
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-20 h-20 bg-blue-200 rounded-full opacity-50 -mr-10 -mt-10"></div>
-          <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <BarChart3 className="w-8 h-8 text-white" />
-            </div>
-            <h3 class="text-2xl font-bold text-secondary-900 mb-2">
-              {t.crmConsulting.solution.platforms.zoho.title}
-            </h3>
-            <p class="text-sm text-blue-700 bg-blue-200 px-3 py-1 rounded-full inline-block">Kurumsal Çözüm</p>
-          </div>
-          <ul class="space-y-3">
-            {t.crmConsulting.solution.platforms.zoho.features.map((feature, index) => (
-              <li class="flex items-start" key={index}>
-                <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span class="text-secondary-700">{feature}</span>
-              </li>
-            ))}
-          </ul>
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white overflow-hidden">
+  <div class="absolute inset-0 bg-black/20"></div>
+  <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="30" cy="30" r="4"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <!-- Left Content -->
+      <div class="text-center lg:text-left">
+        <!-- Urgency Badge -->
+        <div class="inline-flex items-center px-4 py-2 bg-red-600 rounded-full text-sm font-semibold mb-6 animate-pulse">
+          ⚠️ Her gün geçen gün kaybettiğiniz müşteri sayısı artıyor
         </div>
         
-        <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl relative overflow-hidden">
-          <div class="absolute top-0 right-0 w-20 h-20 bg-purple-200 rounded-full opacity-50 -mr-10 -mt-10"></div>
-          <div class="text-center mb-6">
-            <div class="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Users className="w-8 h-8 text-white" />
-            </div>
-            <h3 class="text-2xl font-bold text-secondary-900 mb-2">
-              {t.crmConsulting.solution.platforms.bitrix.title}
-            </h3>
-            <p class="text-sm text-purple-700 bg-purple-200 px-3 py-1 rounded-full inline-block">Takım İşbirliği</p>
+        <!-- Main Headline -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+          Müşteri Kaybını Durdurun, 
+          <span class="text-yellow-400">Satışları %40 Artırın!</span>
+        </h1>
+        
+        <!-- Subheadline -->
+        <p class="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
+          Zoho CRM ve Bitrix24 ile müşteri verilerinizi merkezi olarak yönetin, 
+          satış süreçlerinizi otomatikleştirin ve gelirlerinizi artırın.
+        </p>
+        
+        <!-- Key Benefits -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">Merkezi müşteri veritabanı</span>
           </div>
-          <ul class="space-y-3">
-            {t.crmConsulting.solution.platforms.bitrix.features.map((feature, index) => (
-              <li class="flex items-start" key={index}>
-                <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                <span class="text-secondary-700">{feature}</span>
-              </li>
-            ))}
-          </ul>
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">Otomatik satış süreçleri</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">Detaylı raporlama ve analiz</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">Sertifikalı uzman desteği</span>
+          </div>
         </div>
-      </div>
-      
-      <!-- Decision Helper -->
-      <div class="mt-12 text-center">
-        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 max-w-2xl mx-auto">
-          <h3 class="text-xl font-bold text-secondary-900 mb-2">Hangi CRM'in Size Uygun Olduğundan Emin Değil misiniz?</h3>
-          <p class="text-secondary-600 mb-4">Ücretsiz analizimiz işletmeniz için en iyi çözümü belirleyecek</p>
-          <a href="#form" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-            Ücretsiz Analiz Al
-            <ArrowRight className="ml-2 w-4 h-4" />
+        
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="#form" class="inline-flex items-center px-8 py-4 bg-yellow-500 text-gray-900 font-bold rounded-lg hover:bg-yellow-400 transition-all transform hover:scale-105 text-lg">
+            🎯 Ücretsiz Konsültasyon
+          </a>
+          <a href="#success-stories" class="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary-600 transition-all">
+            📊 Başarı Hikayelerini Gör
           </a>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section id="features" class="py-16 bg-secondary-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.crmConsulting.features.title}
-        </h2>
-        <p class="text-xl text-secondary-600">İşletmenizi bu güçlü özelliklerle dönüştürün</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {t.crmConsulting.features.items.map((feature, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
-            <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">{feature.title.split(' ')[0]}</div>
-            <h3 class="text-xl font-bold text-secondary-900 mb-2">
-              {feature.title.substring(2)}
-            </h3>
-            <p class="text-secondary-600 mb-4">{feature.description}</p>
-            <div class="bg-green-50 p-3 rounded-lg border-l-4 border-green-500">
-              <p class="text-green-800 text-sm font-medium">
-                💡 {feature.benefit}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- ROI Calculator Section -->
-  <section class="py-16 bg-gradient-to-br from-green-50 to-blue-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.crmConsulting.roi.title}
-        </h2>
-        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
-          {t.crmConsulting.roi.subtitle}
-        </p>
+        
+        <!-- Social Proof -->
+        <div class="mt-8 flex items-center justify-center lg:justify-start text-sm text-gray-300">
+          <span class="mr-2">⭐⭐⭐⭐⭐</span>
+          <span class="font-semibold">100+ başarılı CRM projesi</span>
+          <span class="mx-2">•</span>
+          <span>%100 müşteri memnuniyeti</span>
+        </div>
       </div>
       
-      <div class="bg-white rounded-2xl shadow-xl p-8 relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-green-200 rounded-full opacity-20 -mr-16 -mt-16"></div>
-        <h3 class="text-2xl font-bold text-secondary-900 mb-6 text-center">
-          {t.crmConsulting.roi.results.title}
-        </h3>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          {t.crmConsulting.roi.results.items.map((result, index) => (
-            <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200" key={index}>
-              <div class="text-3xl mb-2">{result.split(' ')[0]}</div>
-              <p class="text-secondary-700 font-medium">{result.substring(2)}</p>
+      <!-- Right Content - Dashboard Preview -->
+      <div class="relative">
+        <div class="bg-white rounded-2xl shadow-2xl p-6 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+          <div class="bg-gray-100 rounded-lg p-4 mb-4">
+            <div class="flex items-center mb-3">
+              <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
+              <div class="w-3 h-3 bg-yellow-500 rounded-full mr-2"></div>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
             </div>
-          ))}
-        </div>
-        
-        <!-- ROI Calculator CTA -->
-        <div class="text-center">
-          <div class="bg-gradient-to-r from-green-600 to-blue-600 text-white p-6 rounded-xl">
-            <h4 class="text-xl font-bold mb-2">Spesifik ROI'nizi Hesaplamak İstiyor musunuz?</h4>
-            <p class="mb-4">Potansiyel tasarruf ve gelir artışınızın kişiselleştirilmiş analizini alın</p>
-            <a href="#form" class="inline-flex items-center px-6 py-3 bg-white text-green-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors">
-              ROI'mi Hesapla
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Process Section -->
-  <section id="process" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.crmConsulting.process.title}
-        </h2>
-        <p class="text-xl text-secondary-600">CRM başarısı için kanıtlanmış 6 adımlı sürecimiz</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {t.crmConsulting.process.steps.map((step, index) => (
-          <div class="relative" key={index}>
-            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-primary-600 relative">
-              <div class="flex items-center mb-4">
-                <div class="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                  {index + 1}
-                </div>
-                <div class="text-2xl">{step.title.split(' ')[0]}</div>
-              </div>
-              <h3 class="text-lg font-bold text-secondary-900 mb-2">
-                {step.title.substring(2)}
-              </h3>
-              <p class="text-secondary-600">{step.description}</p>
-            </div>
-            {index < t.crmConsulting.process.steps.length - 1 && (
-              <div class="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-primary-300 transform -translate-y-1/2"></div>
-            )}
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Packages Section -->
-  <section id="packages" class="py-16 bg-secondary-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.crmConsulting.packages.title}
-        </h2>
-        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
-          {t.crmConsulting.packages.subtitle}
-        </p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {t.crmConsulting.packages.items.map((packageItem, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
-            <div class="text-center mb-6">
-              <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">{packageItem.title.split(' ')[0]}</div>
-              <h3 class="text-xl font-bold text-secondary-900">
-                {packageItem.title.substring(2)}
-              </h3>
-            </div>
-            <ul class="space-y-3 mb-6">
-              {packageItem.features.map((feature, featureIndex) => (
-                <li class="flex items-start" key={featureIndex}>
-                  <CheckCircle className="w-4 h-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <span class="text-secondary-700 text-sm">{feature}</span>
-                </li>
-              ))}
-            </ul>
-            <a href="#form" class="w-full inline-flex items-center justify-center px-4 py-2 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-              Teklif Al
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </a>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Testimonials Section -->
-  <section id="testimonials" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.crmConsulting.testimonials.title}
-        </h2>
-        <p class="text-xl text-secondary-600">Gerçek işletmelerden gerçek sonuçlar</p>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {t.crmConsulting.testimonials.items.map((testimonial, index) => (
-          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative" key={index}>
-            <div class="absolute top-4 right-4 text-4xl text-blue-200">"</div>
-            <div class="mb-6">
-              <div class="flex items-center mb-4">
-                <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
-                  {testimonial.company.charAt(0)}
-                </div>
-                <div>
-                  <h4 class="font-bold text-secondary-900">{testimonial.company}</h4>
-                  <p class="text-secondary-600 text-sm">{testimonial.person}</p>
-                </div>
-              </div>
-              <blockquote class="text-secondary-700 italic mb-4 text-lg">
-                "{testimonial.quote}"
-              </blockquote>
-            </div>
+            <div class="text-gray-800 font-semibold mb-2">CRM Dashboard</div>
             <div class="space-y-2">
-              <h5 class="font-semibold text-secondary-900 mb-2">Elde Edilen Sonuçlar:</h5>
-              {testimonial.results.map((result, resultIndex) => (
-                <div class="flex items-center text-sm" key={resultIndex}>
-                  <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
-                  <span class="text-secondary-700">{result}</span>
-                </div>
-              ))}
+              <div class="bg-blue-100 rounded p-2 text-xs text-gray-700">📈 Satış %40 artış</div>
+              <div class="bg-green-100 rounded p-2 text-xs text-gray-700">✅ 245 aktif müşteri</div>
+              <div class="bg-purple-100 rounded p-2 text-xs text-gray-700">🎯 15 yeni fırsat</div>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Urgency CTA Section -->
-  <section class="py-16 bg-gradient-to-br from-primary-600 to-secondary-800 relative overflow-hidden">
-    <div class="absolute inset-0 bg-black/20"></div>
-    <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-white mb-4">
-          {t.crmConsulting.cta.title}
-        </h2>
-        <p class="text-xl text-primary-100 mb-8">
-          {t.crmConsulting.cta.subtitle}
-        </p>
-        <div class="bg-red-500 text-white px-6 py-3 rounded-full text-lg font-semibold mb-8 inline-flex items-center">
-          <Clock className="w-5 h-5 mr-2" />
-          {t.crmConsulting.cta.urgency}
-        </div>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="#form"
-            class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
-          >
-            {t.crmConsulting.cta.primaryCta}
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </a>
-          <a
-            href="https://wa.me/905555555555"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200"
-          >
-            <MessageCircle className="mr-2 w-5 h-5" />
-            {t.crmConsulting.cta.whatsappCta}
-          </a>
-          <a
-            href="tel:+905555555555"
-            class="inline-flex items-center px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200"
-          >
-            <Phone className="mr-2 w-5 h-5" />
-            {t.crmConsulting.cta.phoneCta}
-          </a>
         </div>
       </div>
-    </div>
-  </section>
-
-  <!-- Form Section -->
-  <section id="form" class="py-16 bg-secondary-50">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <CRMConsultingForm translations={t} lang={lang} client:load />
-    </div>
-  </section>
-
-  <!-- Sticky CTA -->
-  <div class="fixed bottom-6 right-6 z-50">
-    <div class="flex flex-col gap-2">
-      <a
-        href="https://wa.me/905555555555"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center justify-center w-16 h-16 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-110"
-        title="WhatsApp"
-      >
-        <MessageCircle className="w-6 h-6" />
-      </a>
-      <a
-        href="#form"
-        class="flex items-center justify-center w-16 h-16 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-110 text-xs font-semibold"
-        title="Teklif Al"
-      >
-        Teklif Al
-      </a>
     </div>
   </div>
+</section>
+
+<!-- Scarcity Banner -->
+<section class="bg-red-600 text-white py-3">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+    <p class="text-sm md:text-base font-semibold">
+      🔥 Bu ay başvuran ilk 10 işletmeye özel %20 indirim! 
+      <span class="font-bold">Sadece 7 slot kaldı!</span>
+    </p>
+  </div>
+</section>
+
+<!-- Problem-Solution Section -->
+<section id="solution" class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <!-- Problem -->
+      <div>
+        <div class="text-red-600 font-semibold mb-4">❌ Şu An Yaşadığınız Sorunlar</div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+          Müşteri verileriniz Excel'de mi dağınık?
+        </h2>
+        
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-red-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Satış fırsatları kaçıyor</h3>
+              <p class="text-gray-600">Hangi müşterinin ne durumda olduğunu bilemiyor, takip yapamıyorsunuz</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-red-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Veri karmaşası</h3>
+              <p class="text-gray-600">Müşteri bilgileri farklı Excel dosyalarında dağınık durumda</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-red-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Manuel süreçler</h3>
+              <p class="text-gray-600">Tekrarlayan işlemler çok zaman alıyor, verimlilik düşük</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Solution -->
+      <div>
+        <div class="text-green-600 font-semibold mb-4">✅ TechCorp'un Çözümü</div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+          Zoho CRM veya Bitrix24 ile tüm müşteri verilerinizi tek yerden yönetin
+        </h2>
+        
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Hiçbir fırsat kaçmaz</h3>
+              <p class="text-gray-600">Otomatik hatırlatıcılar ve takip sistemi ile %40 satış artışı</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Merkezi veri yönetimi</h3>
+              <p class="text-gray-600">Tüm müşteri bilgileri tek ekranda, anında erişim</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Otomatik süreçler</h3>
+              <p class="text-gray-600">%60 zaman tasarrufu, ekibiniz daha verimli çalışır</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <a href="#form" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+            💡 Hangi CRM'in işletmeniz için uygun olduğunu öğrenin →
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CRM Platform Comparison -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        🔄 CRM Çözümlerimiz
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Size en uygun CRM'i belirliyoruz ve profesyonelce kuruyoruz
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+      <!-- Zoho CRM -->
+      <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 border-2 border-blue-200">
+        <div class="flex items-center mb-6">
+          <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mr-4">
+            <span class="text-white font-bold text-lg">Z</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900">Zoho CRM</h3>
+            <p class="text-blue-600 font-semibold">Kapsamlı İşletme Çözümü</p>
+          </div>
+        </div>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Kapsamlı satış yönetimi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Gelişmiş raporlama</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Güçlü entegrasyon seçenekleri</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Orta ve büyük ölçekli işletmeler için ideal</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Türkiye'de yaygın kullanım</span>
+          </div>
+        </div>
+        
+        <div class="bg-blue-600 text-white px-4 py-2 rounded-lg text-center font-semibold">
+          🏆 Kurumsal Tercih
+        </div>
+      </div>
+      
+      <!-- Bitrix24 -->
+      <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 border-2 border-orange-200">
+        <div class="flex items-center mb-6">
+          <div class="w-16 h-16 bg-orange-600 rounded-xl flex items-center justify-center mr-4">
+            <span class="text-white font-bold text-lg">B</span>
+          </div>
+          <div>
+            <h3 class="text-2xl font-bold text-gray-900">Bitrix24</h3>
+            <p class="text-orange-600 font-semibold">Maliyet Etkin Çözüm</p>
+          </div>
+        </div>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Sosyal işbirliği araçları</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Proje yönetimi dahil</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Dahili iletişim platformu</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Küçük ve orta ölçekli işletmeler için uygun</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Maliyet etkin çözüm</span>
+          </div>
+        </div>
+        
+        <div class="bg-orange-600 text-white px-4 py-2 rounded-lg text-center font-semibold">
+          💰 Ekonomik Tercih
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-12">
+      <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-6 max-w-2xl mx-auto">
+        <p class="text-lg font-semibold text-gray-900 mb-2">
+          💡 Hangi CRM'in işletmeniz için daha uygun olduğunu
+        </p>
+        <p class="text-gray-700 mb-4">
+          ücretsiz analiz ile belirleyebiliriz
+        </p>
+        <a href="#form" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
+          🎯 Ücretsiz CRM Analizi Al
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Success Stories -->
+<section id="success-stories" class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        🎯 Kanıtlanmış Sonuçlar
+      </h2>
+      <p class="text-xl text-gray-600">
+        Gerçek müşteri başarı hikayeleri
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Case Study 1 -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🏥</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">MediCare Özel Hastanesi</h3>
+          <p class="text-gray-600">Hasta takip sistemi</p>
+        </div>
+        
+        <div class="space-y-4 mb-6">
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Randevu verimliliği</span>
+            <span class="text-green-600 font-bold">+%50</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Hasta memnuniyeti</span>
+            <span class="text-green-600 font-bold">+%35</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Manuel işlem azalması</span>
+            <span class="text-green-600 font-bold">-%70</span>
+          </div>
+        </div>
+        
+        <div class="bg-gray-50 rounded-lg p-4">
+          <p class="text-sm italic text-gray-700">
+            "Hasta takibimiz tamamen düzeldi. Zoho CRM sayesinde hiçbir randevu karışmıyor."
+          </p>
+        </div>
+      </div>
+      
+      <!-- Case Study 2 -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🏪</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">RetailMax Mağaza Zinciri</h3>
+          <p class="text-gray-600">15 şube entegrasyonu</p>
+        </div>
+        
+        <div class="space-y-4 mb-6">
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Online satış artışı</span>
+            <span class="text-green-600 font-bold">+%45</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Stok optimizasyonu</span>
+            <span class="text-green-600 font-bold">+%30</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Müşteri takip verimliliği</span>
+            <span class="text-green-600 font-bold">+%55</span>
+          </div>
+        </div>
+        
+        <div class="bg-gray-50 rounded-lg p-4">
+          <p class="text-sm italic text-gray-700">
+            "Şubeler arası koordinasyon mükemmel. Artık tüm müşteri verilerimiz merkezi."
+          </p>
+        </div>
+      </div>
+      
+      <!-- Case Study 3 -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">💻</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900">TechFlow Yazılım A.Ş</h3>
+          <p class="text-gray-600">Lead yönetimi</p>
+        </div>
+        
+        <div class="space-y-4 mb-6">
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Lead artışı</span>
+            <span class="text-green-600 font-bold">+%40</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Süreç optimizasyonu</span>
+            <span class="text-green-600 font-bold">+%60</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-gray-600">Müşteri memnuniyeti</span>
+            <span class="text-green-600 font-bold">+%25</span>
+          </div>
+        </div>
+        
+        <div class="bg-gray-50 rounded-lg p-4">
+          <p class="text-sm italic text-gray-700">
+            "Hiçbir fırsat kaçmıyor artık. Otomatik takip sistemi mükemmel çalışıyor."
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ROI Calculator -->
+<section class="py-20 bg-primary-600 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        🧮 CRM Yatırımınızın Geri Dönüşünü Hesaplayın
+      </h2>
+      <p class="text-xl text-gray-200">
+        Referans projelerimiz bazında potansiyel kazancınızı görün
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <!-- Input Side -->
+      <div class="bg-white/10 backdrop-blur rounded-2xl p-8">
+        <h3 class="text-2xl font-bold mb-6">Mevcut Durumunuz</h3>
+        <div class="space-y-4">
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Aylık satış rakamınız</label>
+              <input type="text" class="w-full px-4 py-2 bg-white/20 rounded-lg border border-white/30 text-white placeholder-gray-300" placeholder="100.000 TL">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Aylık kaybettiğiniz müşteri</label>
+              <input type="text" class="w-full px-4 py-2 bg-white/20 rounded-lg border border-white/30 text-white placeholder-gray-300" placeholder="5 müşteri">
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="block text-sm font-medium mb-2">Ortalama müşteri değeri</label>
+              <input type="text" class="w-full px-4 py-2 bg-white/20 rounded-lg border border-white/30 text-white placeholder-gray-300" placeholder="2.000 TL">
+            </div>
+            <div>
+              <label class="block text-sm font-medium mb-2">Satış ekibi büyüklüğü</label>
+              <input type="text" class="w-full px-4 py-2 bg-white/20 rounded-lg border border-white/30 text-white placeholder-gray-300" placeholder="3 kişi">
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Results Side -->
+      <div class="text-center">
+        <h3 class="text-2xl font-bold mb-6">Beklenen Sonuçlar</h3>
+        <div class="grid grid-cols-2 gap-6 mb-8">
+          <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+            <div class="text-3xl font-bold text-yellow-400 mb-2">%25-40</div>
+            <div class="text-sm">Satış Artışı</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+            <div class="text-3xl font-bold text-green-400 mb-2">%30-50</div>
+            <div class="text-sm">Müşteri Kaybı Azalması</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+            <div class="text-3xl font-bold text-blue-400 mb-2">%60-80</div>
+            <div class="text-sm">Süreç Hızlanması</div>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-xl p-6">
+            <div class="text-3xl font-bold text-purple-400 mb-2">6-12 ay</div>
+            <div class="text-sm">ROI Süresi</div>
+          </div>
+        </div>
+        
+        <div class="bg-yellow-500 text-black rounded-xl p-6 mb-6">
+          <div class="text-lg font-semibold mb-2">🔥 Potansiyel Aylık Kazancınız</div>
+          <div class="text-3xl font-bold">35.000 - 50.000 TL</div>
+          <div class="text-sm opacity-75">Referans projeler bazında</div>
+        </div>
+        
+        <a href="#form" class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-bold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+          🎯 Kesin Hesaplama İçin Başvur
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Process Steps -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        🔄 CRM Kurulum Sürecimiz
+      </h2>
+      <p class="text-xl text-gray-600">
+        6 adımda profesyonel CRM çözümü
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Step 1 -->
+      <div class="relative">
+        <div class="bg-blue-50 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-blue-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">📋 Mevcut Durum Analizi</h3>
+          <p class="text-gray-600">Satış süreçlerinizi ve mevcut sistemlerinizi detaylı inceliyoruz</p>
+        </div>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="relative">
+        <div class="bg-green-50 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-green-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">🎯 CRM Seçimi ve Planlaması</h3>
+          <p class="text-gray-600">Zoho CRM veya Bitrix24'ten size en uygun olanı belirliyoruz</p>
+        </div>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="relative">
+        <div class="bg-purple-50 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-purple-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">⚙️ Kurulum ve Özelleştirme</h3>
+          <p class="text-gray-600">Seçilen CRM'i işletmenize özel olarak yapılandırıyoruz</p>
+        </div>
+      </div>
+      
+      <!-- Step 4 -->
+      <div class="relative">
+        <div class="bg-orange-50 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-orange-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">📊 Veri Migrasyonu</h3>
+          <p class="text-gray-600">Mevcut müşteri verilerinizi güvenle yeni sisteme aktarıyoruz</p>
+        </div>
+      </div>
+      
+      <!-- Step 5 -->
+      <div class="relative">
+        <div class="bg-pink-50 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-pink-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">5</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">🎓 Ekip Eğitimi</h3>
+          <p class="text-gray-600">Tüm ekibinize kapsamlı kullanım eğitimi veriyoruz</p>
+        </div>
+      </div>
+      
+      <!-- Step 6 -->
+      <div class="relative">
+        <div class="bg-red-50 rounded-2xl p-8 text-center">
+          <div class="w-16 h-16 bg-red-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">6</div>
+          <h3 class="text-xl font-bold text-gray-900 mb-3">🚀 Go-Live ve Sürekli Destek</h3>
+          <p class="text-gray-600">Sistemi devreye alıyor ve ihtiyaç duyduğunuzda destek sağlıyoruz</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Service Packages -->
+<section id="packages" class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        📦 CRM Danışmanlık Paketlerimiz
+      </h2>
+      <p class="text-xl text-gray-600">
+        İhtiyaçlarınıza uygun esnek paket seçenekleri
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+      <!-- Package 1 -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🎯</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">CRM Analizi ve Seçimi</h3>
+        </div>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Mevcut süreç analizi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">CRM platform karşılaştırması</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">İhtiyaç-çözüm eşleştirmesi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Yatırım-fayda analizi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Detaylı öneri raporu</span>
+          </div>
+        </div>
+        
+        <a href="#form" class="w-full inline-flex items-center justify-center px-4 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+          Fiyat Teklifi Al
+        </a>
+      </div>
+      
+      <!-- Package 2 -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow border-2 border-green-200">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">⚙️</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">CRM Kurulumu</h3>
+          <div class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-semibold">Popüler</div>
+        </div>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Sistem kurulumu ve yapılandırma</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Özel alanlar ve iş akışları</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Veri migrasyonu</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Entegrasyon kurulumu</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Test ve optimizasyon</span>
+          </div>
+        </div>
+        
+        <a href="#form" class="w-full inline-flex items-center justify-center px-4 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+          Fiyat Teklifi Al
+        </a>
+      </div>
+      
+      <!-- Package 3 -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🎓</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Ekip Eğitimi</h3>
+        </div>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Yönetici eğitimi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Kullanıcı eğitimi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Süreç eğitimi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Raporlama eğitimi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Eğitim materyalleri</span>
+          </div>
+        </div>
+        
+        <a href="#form" class="w-full inline-flex items-center justify-center px-4 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+          Fiyat Teklifi Al
+        </a>
+      </div>
+      
+      <!-- Package 4 -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-6">
+          <div class="w-16 h-16 bg-orange-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">📊</span>
+          </div>
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Sürekli Destek</h3>
+        </div>
+        
+        <div class="space-y-3 mb-6">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Sistem yönetimi</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Performans optimizasyonu</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Güncelleme desteği</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Sorun giderme</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-sm text-gray-700">Stratejik danışmanlık</span>
+          </div>
+        </div>
+        
+        <a href="#form" class="w-full inline-flex items-center justify-center px-4 py-3 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-colors">
+          Fiyat Teklifi Al
+        </a>
+      </div>
+    </div>
+    
+    <div class="text-center mt-12">
+      <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-6 max-w-2xl mx-auto">
+        <p class="text-lg font-semibold text-gray-900 mb-2">
+          💡 Paket fiyatları işletme büyüklüğüne göre belirlenir
+        </p>
+        <p class="text-gray-700">
+          Detaylı fiyat bilgisi için bizimle iletişime geçin
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CRM Form Section -->
+<section id="form" class="py-20 bg-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <CRMConsultingForm 
+      translations={translations}
+      lang="tr"
+      client:load 
+    />
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-20 bg-gray-50">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        ❓ Sık Sorulan Sorular
+      </h2>
+      <p class="text-xl text-gray-600">
+        CRM danışmanlığı hakkında merak ettikleriniz
+      </p>
+    </div>
+    
+    <div class="space-y-6">
+      <!-- FAQ Item 1 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Hangi CRM platformunu seçmeliyim?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">İşletme ihtiyaçlarınıza göre Zoho CRM veya Bitrix24 öneririz. Ücretsiz analiz ile size en uygun olanı belirliyoruz. Şirket büyüklüğü, mevcut sistemler ve bütçeniz gibi faktörleri değerlendirerek doğru seçim yapıyoruz.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 2 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Kurulum ne kadar sürer?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Sistem karmaşıklığına göre 2-8 hafta arası sürer. Basit CRM kurulumları 2-3 hafta, kapsamlı entegrasyonlar ve özelleştirmeler 6-8 hafta sürebilir. Proje başında size net bir zaman planı veriyoruz.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 3 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Mevcut verilerim kaybolur mu?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Hayır, tüm verilerinizi güvenle yeni sisteme aktarıyoruz. Veri migrasyonu sürecinde backup alır, test ederiz. Excel, eski CRM veya diğer sistemlerdeki tüm müşteri verileriniz korunur ve temiz halde yeni sisteme taşınır.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 4 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Ekip eğitimi sağlıyor musunuz?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Evet, tüm kullanıcılara kapsamlı eğitim programı dahil. Yöneticiler için stratejik kullanım, satış ekibi için operasyonel kullanım eğitimleri veriyoruz. Video materyaller ve dokümantasyon da sağlıyoruz.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 5 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Başka sistemlerle entegre olur mu?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Evet, mümkün. E-posta sistemleri, muhasebe yazılımları, web sitesi, e-ticaret platformları ile entegrasyon sağlayabiliriz. API bağlantıları ile mevcut iş akışlarınızı CRM'e dahil ederiz.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 6 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Fiyat nasıl belirleniyor?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Şirket büyüklüğü ve ihtiyaçlarına göre özel fiyatlandırma yapıyoruz. Kullanıcı sayısı, entegrasyon karmaşıklığı, özelleştirme ihtiyacı gibi faktörlere göre. Form doldurun, size özel teklif hazırlayalım.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trust Signals -->
+<section class="py-20 bg-primary-600 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        🏆 Sertifikalar ve Güven Göstergeleri
+      </h2>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-8 items-center text-center">
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">🏅</span>
+        </div>
+        <div class="text-sm font-semibold">Zoho Certified Consultant</div>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">📅</span>
+        </div>
+        <div class="text-sm font-semibold">5+ Yıl CRM Deneyimi</div>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">✅</span>
+        </div>
+        <div class="text-sm font-semibold">100+ Başarılı CRM Projesi</div>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">🔒</span>
+        </div>
+        <div class="text-sm font-semibold">ISO 27001 Güvenlik Standardı</div>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">📞</span>
+        </div>
+        <div class="text-sm font-semibold">7/24 Teknik Destek</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="py-20 bg-gradient-to-br from-yellow-400 via-yellow-500 to-orange-500 text-gray-900">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+      🚀 Müşteri Kaybını Bugün Durdurun!
+    </h2>
+    <p class="text-xl mb-8 text-gray-800">
+      Her gün beklediğinizde daha fazla müşteri ve gelir kaybediyorsunuz. 
+      Hemen harekete geçin!
+    </p>
+    
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+      <a href="#form" class="inline-flex items-center px-8 py-4 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition-colors text-lg">
+        🎯 Ücretsiz Konsültasyon Al
+      </a>
+      <a href="https://wa.me/905555555555" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors text-lg">
+        💬 WhatsApp'tan Hemen Sor
+      </a>
+    </div>
+    
+    <div class="text-sm text-gray-700">
+      ⏰ Sadece 24 saat içinde size dönüş yapıyoruz • 🆓 Analiz tamamen ücretsiz
+    </div>
+  </div>
+</section>
+
+<!-- Sticky WhatsApp Button -->
+<div class="fixed bottom-6 right-6 z-50">
+  <a 
+    href="https://wa.me/905555555555?text=Merhaba,%20CRM%20danışmanlığı%20hakkında%20bilgi%20almak%20istiyorum." 
+    target="_blank" 
+    rel="noopener noreferrer"
+    class="flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 animate-pulse"
+    aria-label="WhatsApp ile iletişime geç"
+  >
+    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.893 3.488"/>
+    </svg>
+  </a>
+</div>
+
 </Layout>
 
 <style>
-  .bg-grid-secondary-100 {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  /* Smooth scroll for anchor links */
+  html {
+    scroll-behavior: smooth;
   }
   
-  @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+  /* Custom animation for stats */
+  @keyframes countUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
   
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
+  .animate-count-up {
+    animation: countUp 0.6s ease-out forwards;
   }
   
-  @keyframes slide-up {
-    from { opacity: 0; transform: translateY(50px); }
-    to { opacity: 1; transform: translateY(0); }
+  /* Hover effects for cards */
+  .hover-card {
+    transition: all 0.3s ease;
   }
   
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .hover-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   }
   
-  .animate-fade-in {
-    animation: fade-in 1s ease-out;
+  /* Pulse effect for urgency elements */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+    }
   }
   
-  .animate-slide-up {
-    animation: slide-up 1s ease-out 0.3s both;
+  .pulse-urgency {
+    animation: pulse-glow 2s infinite;
   }
 </style>

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Send, CheckCircle } from 'lucide-react';
+import { sendEmails, detectLanguage } from '../utils/email';
 
 interface ContactFormProps {
   translations: {
@@ -36,41 +37,56 @@ export default function ContactForm({ translations }: ContactFormProps) {
     setIsSubmitting(true);
     
     try {
+      const language = window.location.pathname.includes('/en') ? 'en' : 'tr';
+      
       // Prepare form data for submission
       const submitData = {
         ...formData,
         services: formData.services.includes('Diğer') || formData.services.includes('Other')
           ? [...formData.services.filter(s => s !== 'Diğer' && s !== 'Other'), formData.otherService].filter(Boolean)
           : formData.services,
+        formType: 'contact' as const,
         timestamp: new Date().toISOString(),
-        language: window.location.pathname.includes('/en') ? 'en' : 'tr'
+        language: language as 'tr' | 'en'
       };
 
-      // Here you would typically send to your backend API
-      // For now, we'll simulate the API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      console.log('Contact Form submitted:', submitData);
       
-      console.log('Form submitted:', submitData);
+      // Send emails
+      const emailResult = await sendEmails(submitData);
       
-      // Send email notification (this would be handled by your backend)
-      // await sendEmailNotification(submitData);
-      
-      setIsSubmitted(true);
-      
-      // Reset form after successful submission
-      setFormData({
-        name: '',
-        email: '',
-        company: '',
-        services: [],
-        message: '',
-        otherService: '',
-        privacyAccepted: false
-      });
+      if (emailResult.success) {
+        setIsSubmitted(true);
+        
+        // Reset form after successful submission
+        setFormData({
+          name: '',
+          email: '',
+          company: '',
+          services: [],
+          message: '',
+          otherService: '',
+          privacyAccepted: false
+        });
+      } else {
+        // Show specific error based on what failed
+        let errorMessage = language === 'en' 
+          ? 'An error occurred while sending emails. Please try again.' 
+          : 'Email gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
+          
+        if (!emailResult.customerEmailSent && !emailResult.adminEmailSent) {
+          errorMessage = language === 'en' 
+            ? 'Failed to send confirmation emails. Please contact us directly.' 
+            : 'Onay emaili gönderilemedi. Lütfen direkt bizimle iletişime geçin.';
+        }
+        
+        alert(errorMessage);
+      }
       
     } catch (error) {
       console.error('Form submission error:', error);
-      alert('Form gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      const language = window.location.pathname.includes('/en') ? 'en' : 'tr';
+      alert(language === 'en' ? 'An error occurred while submitting the form. Please try again.' : 'Form gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
     } finally {
       setIsSubmitting(false);
     }
@@ -95,12 +111,12 @@ export default function ContactForm({ translations }: ContactFormProps) {
 
   if (isSubmitted) {
     return (
-      <div class="text-center py-12">
+      <div className="text-center py-12">
         <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-6" />
-        <h3 class="text-2xl font-bold text-secondary-900 mb-4">
+        <h3 className="text-2xl font-bold text-secondary-900 mb-4">
           {translations.contact.form.submit === 'Send' ? 'Thank You!' : 'Teşekkürler!'}
         </h3>
-        <p class="text-secondary-600 mb-8">
+        <p className="text-secondary-600 mb-8">
           {translations.contact.form.submit === 'Send'
             ? 'Your message has been sent successfully. We will get back to you soon.'
             : 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.'
@@ -108,7 +124,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
         </p>
         <button
           onClick={() => setIsSubmitted(false)}
-          class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
+          className="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
         >
           {translations.contact.form.submit === 'Send' ? 'Send Another Message' : 'Başka Mesaj Gönder'}
         </button>

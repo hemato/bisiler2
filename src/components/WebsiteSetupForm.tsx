@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Send, CheckCircle, User, Mail, Phone, Building, Globe, Code, Calendar, MessageSquare, DollarSign } from 'lucide-react';
+import { sendEmails, detectLanguage } from '../utils/email';
 
 interface WebsiteSetupFormProps {
   translations: {
@@ -55,31 +56,46 @@ export default function WebsiteSetupForm({ translations, lang }: WebsiteSetupFor
       // Prepare form data for submission
       const submitData = {
         ...formData,
-        formType: 'website-setup',
+        formType: 'website-setup' as const,
         timestamp: new Date().toISOString(),
-        language: lang
+        language: lang as 'tr' | 'en'
       };
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
       console.log('Website Setup Form submitted:', submitData);
       
-      setIsSubmitted(true);
+      // Send emails
+      const emailResult = await sendEmails(submitData);
       
-      // Reset form after successful submission
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        company: '',
-        websiteType: '',
-        currentWebsite: '',
-        timeline: '',
-        budget: '',
-        message: '',
-        privacyAccepted: false
-      });
+      if (emailResult.success) {
+        setIsSubmitted(true);
+        
+        // Reset form after successful submission
+        setFormData({
+          name: '',
+          email: '',
+          phone: '',
+          company: '',
+          websiteType: '',
+          currentWebsite: '',
+          timeline: '',
+          budget: '',
+          message: '',
+          privacyAccepted: false
+        });
+      } else {
+        // Show specific error based on what failed
+        let errorMessage = lang === 'en' 
+          ? 'An error occurred while sending emails. Please try again.' 
+          : 'Email gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
+          
+        if (!emailResult.customerEmailSent && !emailResult.adminEmailSent) {
+          errorMessage = lang === 'en' 
+            ? 'Failed to send confirmation emails. Please contact us directly.' 
+            : 'Onay emaili gönderilemedi. Lütfen direkt bizimle iletişime geçin.';
+        }
+        
+        alert(errorMessage);
+      }
       
     } catch (error) {
       console.error('Form submission error:', error);

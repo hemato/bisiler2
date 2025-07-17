@@ -1,604 +1,971 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { getLangFromUrl } from '../../i18n/utils';
-import { generateServiceSchema } from '../../utils/structured-data';
-import WebsiteSetupForm from '../../components/WebsiteSetupForm';
-import { ArrowRight, CheckCircle, TrendingUp, MessageCircle, Phone, Smartphone, Zap, Search, Shield, BarChart3, Target, Clock, Star, Award, Globe, Code, Palette } from 'lucide-react';
-
-const lang = getLangFromUrl(Astro.url);
-const translations = await import('../../i18n/en.json');
-const t = translations.default;
-
-const structuredData = generateServiceSchema({
-  name: t.websiteSetup.title,
-  description: t.websiteSetup.description,
-  provider: 'TechCorp',
-  offers: {
-    '@type': 'Offer',
-    price: 'varies',
-    priceCurrency: 'USD',
-    availability: 'InStock'
-  }
-}, lang);
-
-// Hreflang for SEO
-const hreflang = [
-  { lang: 'tr', url: 'https://techcorp.com/web-sitesi-kurulumu' },
-  { lang: 'en', url: 'https://techcorp.com/en/website-setup' }
-];
+import WebsiteSetupForm from '../../components/WebsiteSetupForm.tsx';
+import translations from '../../i18n/en.json';
 ---
 
 <Layout 
-  title={t.websiteSetup.title}
-  description={t.websiteSetup.description}
-  structuredData={structuredData}
-  hreflang={hreflang}
-  hideFooter={true}
+  title="Website Setup | Your Professional Website Ready in 2 Weeks"
+  description="Modern design, fast loading, SEO optimized website setup. Mobile responsive design, guaranteed top ranking on Google. 20% discount this month!"
+  canonical="https://techcorp.com/en/website-setup"
   isLandingPage={true}
+  hideFooter={true}
 >
-  <!-- Hero Section -->
-  <section class="relative bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden">
-    <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
-    <div class="absolute top-0 right-0 w-96 h-96 bg-blue-200 rounded-full opacity-20 animate-float"></div>
-    <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
-    
-    <!-- Trust Badges -->
-    <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
-      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-700 border border-green-200">
-        <Award className="w-3 h-3 inline mr-1" />
-        Google Partner
-      </div>
-      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-blue-700 border border-blue-200">
-        <Star className="w-3 h-3 inline mr-1" />
-        50+ Websites
-      </div>
-    </div>
-    
-    <!-- Limited Time Offer Banner -->
-    <div class="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold animate-pulse z-10">
-      Limited Time: 20% OFF
-    </div>
-    
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div class="animate-fade-in">
-          <div class="bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-flex items-center">
-            <Clock className="w-4 h-4 mr-2" />
-            {t.websiteSetup.hero.urgency}
-          </div>
-          <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight">
-            {t.websiteSetup.hero.title}
-          </h1>
-          <p class="text-xl text-secondary-600 mb-8 leading-relaxed">
-            {t.websiteSetup.hero.subtitle}
-          </p>
-          
-          <!-- Key Benefits -->
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <div class="flex items-center text-green-700 bg-green-50 p-3 rounded-lg">
-              <Zap className="w-5 h-5 mr-2" />
-              <span class="font-medium">Fast Delivery</span>
-            </div>
-            <div class="flex items-center text-blue-700 bg-blue-50 p-3 rounded-lg">
-              <Search className="w-5 h-5 mr-2" />
-              <span class="font-medium">SEO Optimized</span>
-            </div>
-            <div class="flex items-center text-purple-700 bg-purple-50 p-3 rounded-lg">
-              <Smartphone className="w-5 h-5 mr-2" />
-              <span class="font-medium">Mobile Ready</span>
-            </div>
-            <div class="flex items-center text-orange-700 bg-orange-50 p-3 rounded-lg">
-              <Shield className="w-5 h-5 mr-2" />
-              <span class="font-medium">Secure Hosting</span>
-            </div>
-          </div>
-          
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a
-              href="#form"
-              class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              {t.websiteSetup.hero.primaryCta}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </a>
-            <a
-              href="#testimonials"
-              class="inline-flex items-center px-8 py-4 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200"
-            >
-              {t.websiteSetup.hero.secondaryCta}
-            </a>
-          </div>
-        </div>
 
-        <div class="relative animate-slide-up">
-          <div class="relative z-10">
-            <img
-              src="https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800"
-              alt="Professional website design showcase featuring modern responsive layouts and mobile optimization"
-              class="rounded-2xl shadow-2xl w-full"
-              loading="eager"
-            />
-            <div class="absolute inset-0 bg-gradient-to-t from-primary-600/20 to-transparent rounded-2xl"></div>
-            
-            <!-- Floating Speed Metric -->
-            <div class="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-xl p-4 animate-bounce">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-white" />
-                </div>
-                <div>
-                  <div class="text-sm font-medium text-gray-600">Load Speed</div>
-                  <div class="text-xl font-bold text-green-600">< 3s</div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="absolute -top-6 -right-6 w-24 h-24 bg-green-500 rounded-full opacity-20 animate-float"></div>
-          <div class="absolute -bottom-6 -left-6 w-32 h-32 bg-orange-500 rounded-full opacity-20 animate-float" style="animation-delay: 0.5s;"></div>
+<!-- Hero Section -->
+<section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 text-white overflow-hidden">
+  <div class="absolute inset-0 bg-black/20"></div>
+  <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.08"%3E%3Cpath d="M0 0h80v80H0V0zm20 20v40h40V20H20zm20 35a15 15 0 1 1 0-30 15 15 0 0 1 0 30z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')]"></div>
+  
+  <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+      <!-- Left Content -->
+      <div class="text-center lg:text-left">
+        <!-- Urgency Badge -->
+        <div class="inline-flex items-center px-4 py-2 bg-red-600 rounded-full text-sm font-semibold mb-6 animate-pulse">
+          ⚠️ The number of customers you lose increases every day
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Scarcity Bar -->
-  <section class="bg-red-600 text-white py-3">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <p class="text-sm font-medium flex items-center justify-center">
-          <Clock className="w-4 h-4 mr-2" />
-          Only <span class="font-bold mx-1">12 project slots</span> available this month - 
-          <span class="font-bold ml-1">Act fast!</span>
+        
+        <!-- Main Headline -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
+          Your Professional Website
+          <span class="text-yellow-400">Ready in Short Time!</span>
+        </h1>
+        
+        <!-- Subheadline -->
+        <p class="text-xl md:text-2xl text-gray-200 mb-8 leading-relaxed">
+          Modern design, fast loading and guaranteed top ranking on Google 
+          to strengthen your business's digital presence.
         </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Social Proof Bar -->
-  <section class="bg-white border-b border-gray-200 py-6">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center">
-        <p class="text-sm text-gray-600 mb-4">Trusted by successful businesses</p>
-        <div class="flex justify-center items-center gap-8 opacity-60">
-          <div class="text-2xl font-bold text-gray-400">TechFlow</div>
-          <div class="text-2xl font-bold text-gray-400">MediCare</div>
-          <div class="text-2xl font-bold text-gray-400">RetailMax</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Problems Section -->
-  <section class="py-16 bg-secondary-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.websiteSetup.problems.title}
-        </h2>
-        <p class="text-xl text-red-600 font-medium">Your competitors are getting ahead while you wait</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {t.websiteSetup.problems.items.map((problem, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500" key={index}>
-            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
-              <span class="text-red-600 text-2xl">⚠️</span>
-            </div>
-            <p class="text-secondary-700 font-medium">{problem}</p>
+        
+        <!-- Key Benefits -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">Mobile responsive design</span>
           </div>
-        ))}
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">Top ranking on Google</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">Fast loading times</span>
+          </div>
+          <div class="flex items-center">
+            <div class="w-2 h-2 bg-green-400 rounded-full mr-3"></div>
+            <span class="text-lg">1 year free technical support</span>
+          </div>
+        </div>
+        
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+          <a href="#form" class="inline-flex items-center px-8 py-4 bg-yellow-500 text-gray-900 font-bold rounded-lg hover:bg-yellow-400 transition-all transform hover:scale-105 text-lg">
+            🚀 Get Quote Now
+          </a>
+          <a href="#portfolio" class="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-all">
+            👁️ View Examples
+          </a>
+        </div>
+        
+        <!-- Social Proof -->
+        <div class="mt-8 flex items-center justify-center lg:justify-start text-sm text-gray-300">
+          <span class="mr-2">⭐⭐⭐⭐⭐</span>
+          <span class="font-semibold">50+ successful website projects</span>
+          <span class="mx-2">•</span>
+          <span>100% customer satisfaction</span>
+        </div>
       </div>
       
-      <!-- Cost of Delay -->
-      <div class="mt-12 text-center">
-        <div class="bg-red-50 border border-red-200 rounded-xl p-6 max-w-2xl mx-auto">
-          <h3 class="text-xl font-bold text-red-800 mb-2">The Cost of Delay</h3>
-          <p class="text-red-700">Every day without a professional website, you're losing potential customers to competitors who invested in their online presence.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Solution Section -->
-  <section id="solution" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.websiteSetup.solution.title}
-        </h2>
-        <p class="text-xl text-secondary-600 max-w-3xl mx-auto mb-8">
-          {t.websiteSetup.solution.description}
-        </p>
-      </div>
-      
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {t.websiteSetup.solution.benefits.map((benefit, index) => (
-          <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl text-center group hover:scale-105 transition-transform" key={index}>
-            <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-700 transition-colors">
-              <CheckCircle className="w-8 h-8 text-white" />
-            </div>
-            <p class="text-secondary-700 font-medium">{benefit}</p>
-          </div>
-        ))}
-      </div>
-      
-      <!-- Before/After Comparison -->
-      <div class="bg-gradient-to-r from-red-50 to-green-50 rounded-2xl p-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-          <div class="text-center">
-            <div class="bg-red-100 rounded-xl p-6 mb-4">
-              <h3 class="text-xl font-bold text-red-800 mb-4">Without Professional Website</h3>
-              <ul class="text-red-700 space-y-2 text-left">
-                <li>• Losing customers to competitors</li>
-                <li>• No online credibility</li>
-                <li>• Missing sales opportunities</li>
-                <li>• Poor mobile experience</li>
-              </ul>
-            </div>
-          </div>
-          <div class="text-center">
-            <div class="bg-green-100 rounded-xl p-6 mb-4">
-              <h3 class="text-xl font-bold text-green-800 mb-4">With TechCorp Website</h3>
-              <ul class="text-green-700 space-y-2 text-left">
-                <li>• Attract more customers online</li>
-                <li>• Build trust and credibility</li>
-                <li>• Convert visitors to customers</li>
-                <li>• Perfect on all devices</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Features Section -->
-  <section id="features" class="py-16 bg-secondary-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.websiteSetup.features.title}
-        </h2>
-        <p class="text-xl text-secondary-600">Everything you need for online success</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {t.websiteSetup.features.items.map((feature, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
-            <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">{feature.title.split(' ')[0]}</div>
-            <h3 class="text-xl font-bold text-secondary-900 mb-2">
-              {feature.title.substring(2)}
-            </h3>
-            <p class="text-secondary-600 mb-4">{feature.description}</p>
-            <div class="bg-blue-50 p-3 rounded-lg border-l-4 border-blue-500">
-              <p class="text-blue-800 text-sm font-medium">
-                💡 {feature.benefit}
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Portfolio Section -->
-  <section id="portfolio" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.websiteSetup.portfolio.title}
-        </h2>
-        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
-          {t.websiteSetup.portfolio.subtitle}
-        </p>
-      </div>
-
-      <!-- Projects Slider -->
+      <!-- Right Content - Website Preview -->
       <div class="relative">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {t.websiteSetup.portfolio.projects.map((project, index) => (
-            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden" key={index}>
-              <div class="relative h-48 overflow-hidden">
-                <img
-                  src={project.image}
-                  alt={project.description}
-                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                <div class="absolute bottom-4 left-4 right-4">
-                  <h3 class="text-xl font-bold text-white mb-1">{project.title}</h3>
-                  <p class="text-blue-200 text-sm font-medium">{project.type}</p>
-                </div>
-              </div>
-              <div class="p-6">
-                <p class="text-secondary-600 mb-4">{project.description}</p>
-                <div class="space-y-2">
-                  <h4 class="font-semibold text-secondary-900 text-sm">Results Achieved:</h4>
-                  {project.results.map((result, resultIndex) => (
-                    <div class="flex items-center text-sm" key={resultIndex}>
-                      <TrendingUp className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />
-                      <span class="text-secondary-700">{result}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <div class="bg-white rounded-2xl shadow-2xl overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-300">
+          <!-- Browser Chrome -->
+          <div class="bg-gray-100 px-4 py-3 flex items-center">
+            <div class="flex space-x-2 mr-4">
+              <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+              <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+              <div class="w-3 h-3 bg-green-500 rounded-full"></div>
             </div>
-          ))}
+            <div class="bg-white rounded px-4 py-1 text-xs text-gray-600 flex-1">
+              www.your-website-address.com
+            </div>
+          </div>
+          
+          <!-- Website Content -->
+          <div class="p-6 bg-gradient-to-br from-blue-50 to-white">
+            <div class="text-center mb-4">
+              <div class="w-20 h-8 bg-blue-600 rounded mx-auto mb-3"></div>
+              <div class="h-4 bg-gray-200 rounded mb-2"></div>
+              <div class="h-3 bg-gray-300 rounded w-3/4 mx-auto"></div>
+            </div>
+            
+            <div class="grid grid-cols-3 gap-3 mb-4">
+              <div class="h-16 bg-blue-100 rounded"></div>
+              <div class="h-16 bg-green-100 rounded"></div>
+              <div class="h-16 bg-purple-100 rounded"></div>
+            </div>
+            
+            <div class="text-center">
+              <div class="text-xs text-gray-600 mb-2">📱 Mobile Compatible</div>
+              <div class="text-xs text-gray-600 mb-2">⚡ Fast Loading</div>
+              <div class="text-xs text-gray-600">🔍 SEO Optimized</div>
+            </div>
+          </div>
         </div>
-
-        <!-- Portfolio CTA -->
-        <div class="text-center">
-          <div class="bg-gradient-to-r from-primary-50 to-blue-50 rounded-2xl p-8 max-w-4xl mx-auto">
-            <h3 class="text-2xl font-bold text-secondary-900 mb-4">
-              {t.websiteSetup.portfolio.cta}
-            </h3>
-            <p class="text-secondary-600 mb-6 max-w-2xl mx-auto">
-              Like these successful projects, you can also have a professional website that will make your business stand out in the digital world.
-            </p>
-            <a
-              href="#form"
-              class="inline-flex items-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105 shadow-lg hover:shadow-xl"
-            >
-              {t.websiteSetup.portfolio.ctaButton}
-              <ArrowRight className="ml-2 w-5 h-5" />
-            </a>
+        
+        <!-- Mobile Preview -->
+        <div class="absolute -bottom-8 -right-8 w-24 h-40 bg-white rounded-lg shadow-xl overflow-hidden border-4 border-gray-300">
+          <div class="bg-blue-600 h-2"></div>
+          <div class="p-2 space-y-1">
+            <div class="h-2 bg-gray-200 rounded"></div>
+            <div class="h-1 bg-gray-300 rounded"></div>
+            <div class="h-8 bg-blue-100 rounded"></div>
+            <div class="h-1 bg-gray-300 rounded"></div>
           </div>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Process Section -->
-  <section id="process" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.websiteSetup.process.title}
+<!-- Scarcity Banner -->
+<section class="bg-red-600 text-white py-3">
+  <div class="max-w-7xl mx-auto px-4 text-center">
+    <p class="text-sm md:text-base font-semibold">
+      🔥 Special 20% discount for first 15 businesses creating website this month! 
+      <span class="font-bold">Only 9 slots left!</span>
+    </p>
+  </div>
+</section>
+
+<!-- Problem-Solution Section -->
+<section id="solution" class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <!-- Problem -->
+      <div>
+        <div class="text-red-600 font-semibold mb-4">❌ Problems You're Experiencing Now</div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+          Don't you have a website? Is it not mobile compatible?
         </h2>
-        <p class="text-xl text-secondary-600">From concept to launch in 5 simple steps</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {t.websiteSetup.process.steps.map((step, index) => (
-          <div class="relative" key={index}>
-            <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-blue-600 relative">
-              <div class="flex items-center mb-4">
-                <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                  {index + 1}
-                </div>
-                <div class="text-2xl">{step.title.split(' ')[0]}</div>
-              </div>
-              <h3 class="text-lg font-bold text-secondary-900 mb-2">
-                {step.title.substring(2)}
-              </h3>
-              <p class="text-secondary-600">{step.description}</p>
+        
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-red-600 rounded-full"></div>
             </div>
-            {index < t.websiteSetup.process.steps.length - 1 && (
-              <div class="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-blue-300 transform -translate-y-1/2"></div>
-            )}
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Customers can't find you online</h3>
+              <p class="text-gray-600">Your business doesn't appear when searched on Google, you're losing customers to competitors</p>
+            </div>
           </div>
-        ))}
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-red-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Old website doesn't bring business</h3>
+              <p class="text-gray-600">Your current site is not mobile compatible, visitors leave immediately</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-red-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-red-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Falling behind in digital competition</h3>
+              <p class="text-gray-600">While your competitors make online sales, you're just watching</p>
+            </div>
+          </div>
+        </div>
       </div>
       
-      <!-- Process Guarantee -->
-      <div class="mt-12 text-center">
-        <div class="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6 max-w-2xl mx-auto">
-          <h3 class="text-xl font-bold text-secondary-900 mb-2">Our Promise to You</h3>
-          <p class="text-secondary-600 mb-4">If you're not completely satisfied with your website, we'll revise it until you love it - at no extra cost.</p>
-          <div class="flex items-center justify-center">
-            <Shield className="w-5 h-5 text-green-600 mr-2" />
-            <span class="text-green-600 font-semibold">100% Satisfaction Guarantee</span>
+      <!-- Solution -->
+      <div>
+        <div class="text-green-600 font-semibold mb-4">✅ TechCorp's Solution</div>
+        <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-8">
+          Have a modern, fast and SEO optimized website
+        </h2>
+        
+        <div class="space-y-6">
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Be found on Google</h3>
+              <p class="text-gray-600">Rank at the top with SEO optimized website, find more customers</p>
+            </div>
           </div>
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Perfect on every device</h3>
+              <p class="text-gray-600">Perfect view on mobile, tablet and computer with responsive design</p>
+            </div>
+          </div>
+          
+          <div class="flex items-start">
+            <div class="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center mr-4 mt-1">
+              <div class="w-3 h-3 bg-green-600 rounded-full"></div>
+            </div>
+            <div>
+              <h3 class="text-lg font-semibold text-gray-900 mb-2">Convert visitors to customers</h3>
+              <p class="text-gray-600">Convert your visitors to customers with conversion-focused design</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="mt-8">
+          <a href="#form" class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+            💻 Start your professional website right now →
+          </a>
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Packages Section -->
-  <section id="packages" class="py-16 bg-secondary-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.websiteSetup.packages.title}
-        </h2>
-        <p class="text-xl text-secondary-600 max-w-3xl mx-auto">
-          {t.websiteSetup.packages.subtitle}
-        </p>
-      </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {t.websiteSetup.packages.items.map((packageItem, index) => (
-          <div class={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${packageItem.popular ? 'border-2 border-primary-600 relative ring-4 ring-primary-100' : ''}`} key={index}>
-            {packageItem.popular && (
-              <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div class="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium">
-                  Most Popular
-                </div>
-              </div>
-            )}
-            <div class="text-center mb-6">
-              <div class="text-4xl mb-2">{packageItem.title.split(' ')[0]}</div>
-              <h3 class="text-2xl font-bold text-secondary-900 mb-2">
-                {packageItem.title.substring(2)}
-              </h3>
-              <div class="text-3xl font-bold text-primary-600 mb-2">{packageItem.price}</div>
-              <p class="text-secondary-600 text-sm mb-4">{packageItem.duration}</p>
-              <p class="text-secondary-600 text-sm">{packageItem.ideal}</p>
-            </div>
-            <ul class="space-y-3 mb-8">
-              {packageItem.features.map((feature, featureIndex) => (
-                <li class="flex items-start" key={featureIndex}>
-                  <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
-                  <span class="text-secondary-700">{feature}</span>
-                </li>
-              ))}
-            </ul>
-            <a
-              href="#form"
-              class={`w-full inline-flex items-center justify-center px-6 py-3 font-semibold rounded-lg transition-all duration-200 ${packageItem.popular ? 'bg-primary-600 text-white hover:bg-primary-700' : 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200'}`}
-            >
-              Get Quote
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </a>
-          </div>
-        ))}
+<!-- Features & Benefits -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        🚀 What You'll Get in Your Website
+      </h2>
+      <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+        Not only looks good, but grows your business
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Feature 1 -->
+      <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+        <div class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">📱</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Mobile Responsive Design</h3>
+        <p class="text-gray-600 mb-4">Perfect view on all devices</p>
+        <div class="bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-semibold inline-block">
+          Don't miss your mobile visitors
+        </div>
       </div>
       
-      <!-- Package Comparison -->
-      <div class="mt-12 text-center">
-        <div class="bg-blue-50 rounded-xl p-6 max-w-2xl mx-auto">
-          <h3 class="text-xl font-bold text-secondary-900 mb-2">Need Help Choosing?</h3>
-          <p class="text-secondary-600 mb-4">Our free consultation will help you select the perfect package for your business needs</p>
-          <a href="#form" class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-colors">
-            Get Free Consultation
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </a>
+      <!-- Feature 2 -->
+      <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+        <div class="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">🚀</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Fast Loading</h3>
+        <p class="text-gray-600 mb-4">Pages that open in 3 seconds</p>
+        <div class="bg-green-600 text-white px-3 py-1 rounded-full text-sm font-semibold inline-block">
+          Your visitors don't wait, they see content immediately
+        </div>
+      </div>
+      
+      <!-- Feature 3 -->
+      <div class="bg-gradient-to-br from-purple-50 to-purple-100 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+        <div class="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">🔍</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">SEO Optimization</h3>
+        <p class="text-gray-600 mb-4">Top ranking on Google</p>
+        <div class="bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold inline-block">
+          More customers find you
+        </div>
+      </div>
+      
+      <!-- Feature 4 -->
+      <div class="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+        <div class="w-16 h-16 bg-orange-600 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">🛡️</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Secure Hosting</h3>
+        <p class="text-gray-600 mb-4">SSL certificate and daily backup</p>
+        <div class="bg-orange-600 text-white px-3 py-1 rounded-full text-sm font-semibold inline-block">
+          Your site is secure and accessible 24/7
+        </div>
+      </div>
+      
+      <!-- Feature 5 -->
+      <div class="bg-gradient-to-br from-pink-50 to-pink-100 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+        <div class="w-16 h-16 bg-pink-600 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">📊</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Google Analytics</h3>
+        <p class="text-gray-600 mb-4">Detailed visitor analysis</p>
+        <div class="bg-pink-600 text-white px-3 py-1 rounded-full text-sm font-semibold inline-block">
+          Understand customer behaviors
+        </div>
+      </div>
+      
+      <!-- Feature 6 -->
+      <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-2xl p-8 hover:shadow-lg transition-shadow">
+        <div class="w-16 h-16 bg-red-600 rounded-xl flex items-center justify-center mb-6">
+          <span class="text-2xl">🎯</span>
+        </div>
+        <h3 class="text-xl font-bold text-gray-900 mb-4">Contact Form</h3>
+        <p class="text-gray-600 mb-4">Automatic lead collection</p>
+        <div class="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-semibold inline-block">
+          Potential customers reach you directly
         </div>
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- Testimonials Section -->
-  <section id="testimonials" class="py-16 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
-          {t.websiteSetup.testimonials.title}
-        </h2>
-        <p class="text-xl text-secondary-600">Success stories from happy clients</p>
+<!-- Pricing Packages -->
+<section id="packages" class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        💼 Our Website Packages
+      </h2>
+      <p class="text-xl text-gray-600">
+        Package options suitable for your needs
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <!-- Basic Package -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 bg-blue-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">💼</span>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Basic Package</h3>
+          <div class="text-3xl font-bold text-blue-600 mb-2">Get Price Quote</div>
+          <p class="text-gray-600">Ideal for small businesses</p>
+        </div>
+        
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">5 page website</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Mobile responsive design</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Basic SEO optimization</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Contact form</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">1 year hosting included</span>
+          </div>
+        </div>
+        
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600">⏱️ Delivery: 2 weeks</div>
+        </div>
+        
+        <a href="#form" class="w-full inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors">
+          Get Quote
+        </a>
       </div>
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {t.websiteSetup.testimonials.items.map((testimonial, index) => (
-          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative" key={index}>
-            <div class="absolute top-4 right-4 text-4xl text-blue-200">"</div>
-            <div class="mb-6">
-              <div class="flex items-center mb-4">
-                <div class="w-12 h-12 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold mr-4">
-                  {testimonial.company.charAt(0)}
-                </div>
-                <div>
-                  <h4 class="font-bold text-secondary-900">{testimonial.company}</h4>
-                  <p class="text-secondary-600 text-sm">{testimonial.person}</p>
-                </div>
+      
+      <!-- Standard Package - Popular -->
+      <div class="bg-white rounded-2xl shadow-xl p-8 border-2 border-green-200 relative hover:shadow-2xl transition-shadow">
+        <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
+          <div class="bg-green-600 text-white px-4 py-2 rounded-full text-sm font-semibold">
+            Most Popular
+          </div>
+        </div>
+        
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 bg-green-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">🚀</span>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Standard Package</h3>
+          <div class="text-3xl font-bold text-green-600 mb-2">Get Price Quote</div>
+          <p class="text-gray-600">For growing businesses</p>
+        </div>
+        
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">10 page website</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Custom design</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Advanced SEO optimization</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Blog system</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Social media integration</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Live support widget</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">1 year hosting + SSL</span>
+          </div>
+        </div>
+        
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600">⏱️ Delivery: 2-3 weeks</div>
+        </div>
+        
+        <a href="#form" class="w-full inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-colors">
+          Get Quote
+        </a>
+      </div>
+      
+      <!-- Premium Package -->
+      <div class="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-shadow">
+        <div class="text-center mb-8">
+          <div class="w-16 h-16 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
+            <span class="text-2xl">⭐</span>
+          </div>
+          <h3 class="text-2xl font-bold text-gray-900 mb-2">Premium Package</h3>
+          <div class="text-3xl font-bold text-purple-600 mb-2">Get Price Quote</div>
+          <p class="text-gray-600">For corporate solutions</p>
+        </div>
+        
+        <div class="space-y-3 mb-8">
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Unlimited pages</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">E-commerce ready</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Multi-language support</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Advanced analytics</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">CRM integration</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">Custom features</span>
+          </div>
+          <div class="flex items-center">
+            <span class="text-green-600 mr-3">✓</span>
+            <span class="text-gray-700">2 year hosting + premium SSL</span>
+          </div>
+        </div>
+        
+        <div class="text-center mb-6">
+          <div class="text-sm text-gray-600">⏱️ Delivery: 3-4 weeks</div>
+        </div>
+        
+        <a href="#form" class="w-full inline-flex items-center justify-center px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg hover:bg-purple-700 transition-colors">
+          Get Quote
+        </a>
+      </div>
+    </div>
+    
+    <div class="text-center mt-12">
+      <div class="bg-yellow-100 border border-yellow-300 rounded-lg p-6 max-w-2xl mx-auto">
+        <p class="text-lg font-semibold text-gray-900 mb-2">
+          💰 20% discount opportunity in all packages!
+        </p>
+        <p class="text-gray-700">
+          Special campaign for those who apply this month
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Process Steps -->
+<section class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        📋 Our Proven Process
+      </h2>
+      <p class="text-xl text-gray-600">
+        Own your professional website in 5 steps
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8">
+      <!-- Step 1 -->
+      <div class="text-center">
+        <div class="w-16 h-16 bg-blue-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">1</div>
+        <h3 class="text-lg font-bold text-gray-900 mb-3">🔍 Free Website Analysis</h3>
+        <p class="text-gray-600 text-sm">We analyze your current situation</p>
+      </div>
+      
+      <!-- Step 2 -->
+      <div class="text-center">
+        <div class="w-16 h-16 bg-green-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">2</div>
+        <h3 class="text-lg font-bold text-gray-900 mb-3">🎯 Strategy Development</h3>
+        <p class="text-gray-600 text-sm">Target audience and content strategy</p>
+      </div>
+      
+      <!-- Step 3 -->
+      <div class="text-center">
+        <div class="w-16 h-16 bg-purple-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">3</div>
+        <h3 class="text-lg font-bold text-gray-900 mb-3">🎨 Design & Approval</h3>
+        <p class="text-gray-600 text-sm">Custom design for your brand</p>
+      </div>
+      
+      <!-- Step 4 -->
+      <div class="text-center">
+        <div class="w-16 h-16 bg-orange-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">4</div>
+        <h3 class="text-lg font-bold text-gray-900 mb-3">💻 Development & Test</h3>
+        <p class="text-gray-600 text-sm">Coding and optimization</p>
+      </div>
+      
+      <!-- Step 5 -->
+      <div class="text-center">
+        <div class="w-16 h-16 bg-red-600 text-white rounded-xl flex items-center justify-center mx-auto mb-4 text-2xl font-bold">5</div>
+        <h3 class="text-lg font-bold text-gray-900 mb-3">🚀 Launch & Training</h3>
+        <p class="text-gray-600 text-sm">Live launch and management training</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Portfolio Section -->
+<section id="portfolio" class="py-20 bg-gray-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        📊 Our Successful Projects
+      </h2>
+      <p class="text-xl text-gray-600">
+        Real customer websites and results
+      </p>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <!-- Portfolio Item 1 -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+        <div class="h-48 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center relative">
+          <div class="text-center">
+            <!-- E-commerce Logo -->
+            <div class="w-24 h-24 bg-white rounded-xl shadow-lg flex items-center justify-center mx-auto mb-3 border-2 border-blue-200">
+              <div class="text-center">
+                <div class="text-blue-600 text-2xl font-bold mb-1">TS</div>
+                <div class="w-8 h-1 bg-blue-600 rounded mx-auto"></div>
               </div>
-              <blockquote class="text-secondary-700 italic mb-4 text-lg">
-                "{testimonial.quote}"
-              </blockquote>
             </div>
-            <div class="space-y-2">
-              <h5 class="font-semibold text-secondary-900 mb-2">Results Achieved:</h5>
-              {testimonial.results.map((result, resultIndex) => (
-                <div class="flex items-center text-sm" key={resultIndex}>
-                  <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
-                  <span class="text-secondary-700">{result}</span>
-                </div>
-              ))}
+            <div class="text-sm font-medium text-blue-700 bg-blue-200 px-3 py-1 rounded-full">E-commerce Site</div>
+          </div>
+          <!-- Decorative elements -->
+          <div class="absolute top-4 right-4 w-8 h-8 bg-blue-200 rounded-full opacity-50"></div>
+          <div class="absolute bottom-4 left-4 w-6 h-6 bg-blue-300 rounded-full opacity-60"></div>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">TechStore Online</h3>
+          <p class="text-gray-600 mb-4">E-commerce website</p>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Online sales</span>
+              <span class="text-green-600 font-bold">+300%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Mobile visitors</span>
+              <span class="text-green-600 font-bold">+250%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Page speed</span>
+              <span class="text-green-600 font-bold">2.1 sec</span>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Urgency CTA Section -->
-  <section class="py-16 bg-gradient-to-br from-blue-600 to-purple-800 relative overflow-hidden">
-    <div class="absolute inset-0 bg-black/20"></div>
-    <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-48 -mt-48"></div>
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="max-w-3xl mx-auto">
-        <h2 class="text-3xl font-bold text-white mb-4">
-          {t.websiteSetup.cta.title}
-        </h2>
-        <p class="text-xl text-blue-100 mb-8">
-          {t.websiteSetup.cta.subtitle}
-        </p>
-        <div class="bg-orange-500 text-white px-6 py-3 rounded-full text-lg font-semibold mb-8 inline-flex items-center">
-          <Clock className="w-5 h-5 mr-2" />
-          {t.websiteSetup.cta.urgency}
-        </div>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a
-            href="#form"
-            class="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-blue-50 transition-all duration-200 transform hover:scale-105"
-          >
-            {t.websiteSetup.cta.primaryCta}
-            <ArrowRight className="ml-2 w-5 h-5" />
-          </a>
-          <a
-            href="https://wa.me/905555555555"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-semibold rounded-lg hover:bg-green-700 transition-all duration-200"
-          >
-            <MessageCircle className="mr-2 w-5 h-5" />
-            {t.websiteSetup.cta.whatsappCta}
-          </a>
-          <a
-            href="tel:+905555555555"
-            class="inline-flex items-center px-8 py-4 bg-orange-600 text-white font-semibold rounded-lg hover:bg-orange-700 transition-all duration-200"
-          >
-            <Phone className="mr-2 w-5 h-5" />
-            {t.websiteSetup.cta.phoneCta}
-          </a>
         </div>
       </div>
+      
+      <!-- Portfolio Item 2 -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+        <div class="h-48 bg-gradient-to-br from-green-50 to-green-100 flex items-center justify-center relative">
+          <div class="text-center">
+            <!-- Corporate Logo -->
+            <div class="w-24 h-24 bg-white rounded-xl shadow-lg flex items-center justify-center mx-auto mb-3 border-2 border-green-200">
+              <div class="text-center">
+                <div class="text-green-600 text-xl font-bold mb-1">🌱</div>
+                <div class="text-green-600 text-xs font-semibold">GREEN</div>
+              </div>
+            </div>
+            <div class="text-sm font-medium text-green-700 bg-green-200 px-3 py-1 rounded-full">Corporate Website</div>
+          </div>
+          <!-- Decorative elements -->
+          <div class="absolute top-4 right-4 w-8 h-8 bg-green-200 rounded-full opacity-50"></div>
+          <div class="absolute bottom-4 left-4 w-6 h-6 bg-green-300 rounded-full opacity-60"></div>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">GreenEnergy Ltd.</h3>
+          <p class="text-gray-600 mb-4">Corporate website</p>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Lead increase</span>
+              <span class="text-green-600 font-bold">+180%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Google ranking</span>
+              <span class="text-green-600 font-bold">1st page</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Page speed</span>
+              <span class="text-green-600 font-bold">1.8 sec</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Portfolio Item 3 -->
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow">
+        <div class="h-48 bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center relative">
+          <div class="text-center">
+            <!-- Restaurant Logo -->
+            <div class="w-24 h-24 bg-white rounded-xl shadow-lg flex items-center justify-center mx-auto mb-3 border-2 border-orange-200">
+              <div class="text-center">
+                <div class="text-orange-600 text-2xl mb-1">🍽️</div>
+                <div class="text-orange-600 text-xs font-bold">LEZZET</div>
+              </div>
+            </div>
+            <div class="text-sm font-medium text-orange-700 bg-orange-200 px-3 py-1 rounded-full">Restaurant Website</div>
+          </div>
+          <!-- Decorative elements -->
+          <div class="absolute top-4 right-4 w-8 h-8 bg-orange-200 rounded-full opacity-50"></div>
+          <div class="absolute bottom-4 left-4 w-6 h-6 bg-orange-300 rounded-full opacity-60"></div>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Lezzet Durağı</h3>
+          <p class="text-gray-600 mb-4">Restaurant & online ordering</p>
+          <div class="space-y-2">
+            <div class="flex justify-between">
+              <span class="text-gray-600">Online orders</span>
+              <span class="text-green-600 font-bold">+400%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Table reservations</span>
+              <span class="text-green-600 font-bold">+150%</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-gray-600">Page speed</span>
+              <span class="text-green-600 font-bold">2.3 sec</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-  </section>
-
-  <!-- Form Section -->
-  <section id="form" class="py-16 bg-secondary-50">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <WebsiteSetupForm translations={t} lang={lang} client:load />
-    </div>
-  </section>
-
-  <!-- Sticky CTA -->
-  <div class="fixed bottom-6 right-6 z-50">
-    <div class="flex flex-col gap-2">
-      <a
-        href="https://wa.me/905555555555"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="flex items-center justify-center w-16 h-16 bg-green-600 text-white rounded-full shadow-lg hover:bg-green-700 transition-all duration-200 transform hover:scale-110"
-        title="WhatsApp"
-      >
-        <MessageCircle className="w-6 h-6" />
-      </a>
-      <a
-        href="#form"
-        class="flex items-center justify-center w-16 h-16 bg-primary-600 text-white rounded-full shadow-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-110 text-xs font-semibold"
-        title="Get Offer"
-      >
-        Get Offer
+    
+    <div class="text-center mt-12">
+      <a href="#form" class="inline-flex items-center px-8 py-4 bg-blue-600 text-white font-bold rounded-lg hover:bg-blue-700 transition-colors text-lg">
+        🎯 Let's Do It For You Too
       </a>
     </div>
   </div>
+</section>
+
+<!-- Website Form Section -->
+<section id="form" class="py-20 bg-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <WebsiteSetupForm 
+      translations={translations}
+      lang="en"
+      client:load 
+    />
+  </div>
+</section>
+
+<!-- FAQ Section -->
+<section id="faq" class="py-20 bg-gray-50">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+        ❓ Frequently Asked Questions
+      </h2>
+      <p class="text-xl text-gray-600">
+        What you're curious about website setup
+      </p>
+    </div>
+    
+    <div class="space-y-6">
+      <!-- FAQ Item 1 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">How long do you deliver my website?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Average 2 weeks for standard projects. Complex projects can take 5-6 weeks. We give you a clear timeline at the beginning of the project and provide regular updates throughout the process.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 2 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Can I make changes later?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Yes, we provide modification and update service after delivery. Small changes are free, we provide service at reasonable prices for major changes. We also train you for site management.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 3 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Will it be mobile compatible?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Yes, all our websites work perfectly on mobile devices. Responsive design is applied as standard. Delivered tested on mobile, tablet and computer.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 4 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Is SEO included?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Yes, basic SEO optimization is included in all packages. Meta tags, sitemap, fast loading, Google Analytics setup is done as standard. We have separate service options for advanced SEO.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 5 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">Are hosting and domain included?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">Hosting is included, domain is priced separately according to your preference. 1 year hosting free, SSL certificate included. We choose the domain name together and register it on your behalf.</p>
+          </div>
+        </details>
+      </div>
+      
+      <!-- FAQ Item 6 -->
+      <div class="bg-white rounded-lg shadow-md">
+        <details class="group">
+          <summary class="flex justify-between items-center p-6 cursor-pointer">
+            <h3 class="text-lg font-semibold text-gray-900">How are prices determined?</h3>
+            <svg class="w-5 h-5 text-gray-500 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </summary>
+          <div class="px-6 pb-6">
+            <p class="text-gray-600">We make custom pricing according to project scope. According to factors such as number of pages, special features, design complexity. Fill out the form, let us prepare a custom proposal for you.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Trust Signals -->
+<section class="py-20 bg-blue-600 text-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl md:text-4xl font-bold mb-4">
+        📊 Statistics & Reliability
+      </h2>
+    </div>
+    
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 items-center text-center">
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">🎯</span>
+        </div>
+        <div class="text-2xl font-bold mb-1">50+</div>
+        <div class="text-sm">Successful Website Projects</div>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">⭐</span>
+        </div>
+        <div class="text-2xl font-bold mb-1">100%</div>
+        <div class="text-sm">Customer Satisfaction</div>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">⚡</span>
+        </div>
+        <div class="text-2xl font-bold mb-1">2-6</div>
+        <div class="text-sm">Weeks Delivery</div>
+      </div>
+      
+      <div class="flex flex-col items-center">
+        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+          <span class="text-2xl">🛡️</span>
+        </div>
+        <div class="text-2xl font-bold mb-1">24/7</div>
+        <div class="text-sm">Technical Support</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="py-20 bg-gradient-to-br from-green-400 via-green-500 to-blue-500 text-white">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="text-3xl md:text-4xl font-bold mb-6">
+      🚀 Don't Fall Behind While Your Competitors Go Digital!
+    </h2>
+    <p class="text-xl mb-8">
+      Every day you wait, more customers escape to your competitors. 
+      Get ahead immediately with your professional website!
+    </p>
+    
+    <div class="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+      <a href="#form" class="inline-flex items-center px-8 py-4 bg-white text-gray-900 font-bold rounded-lg hover:bg-gray-100 transition-colors text-lg">
+        🎯 Get Quote Now
+      </a>
+      <a href="https://wa.me/905555555555" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors text-lg">
+        💬 Ask on WhatsApp
+      </a>
+    </div>
+    
+    <div class="text-sm opacity-90">
+      ⏰ 20% discount for those who apply this month • 🆓 Analysis is completely free
+    </div>
+  </div>
+</section>
+
+<!-- Sticky WhatsApp Button -->
+<div class="fixed bottom-6 right-6 z-50">
+  <a 
+    href="https://wa.me/905555555555?text=Hello,%20I%20would%20like%20to%20get%20information%20about%20website%20setup." 
+    target="_blank" 
+    rel="noopener noreferrer"
+    class="flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 animate-pulse"
+    aria-label="Contact via WhatsApp"
+  >
+    <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.893 3.488"/>
+    </svg>
+  </a>
+</div>
+
 </Layout>
 
 <style>
-  .bg-grid-secondary-100 {
-    background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.4'%3E%3Ccircle cx='30' cy='30' r='1.5'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  /* Smooth scroll for anchor links */
+  html {
+    scroll-behavior: smooth;
   }
   
+  /* Custom animations */
   @keyframes float {
-    0%, 100% { transform: translateY(0px); }
-    50% { transform: translateY(-20px); }
+    0%, 100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
   }
   
-  @keyframes fade-in {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  @keyframes slide-up {
-    from { opacity: 0; transform: translateY(50px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  
-  .animate-float {
+  .float-animation {
     animation: float 6s ease-in-out infinite;
   }
   
-  .animate-fade-in {
-    animation: fade-in 1s ease-out;
+  /* Hover effects for portfolio items */
+  .portfolio-card {
+    transition: all 0.3s ease;
   }
   
-  .animate-slide-up {
-    animation: slide-up 1s ease-out 0.3s both;
+  .portfolio-card:hover {
+    transform: translateY(-8px);
+  }
+  
+  /* Pulse effect for urgency elements */
+  @keyframes pulse-glow {
+    0%, 100% {
+      box-shadow: 0 0 5px rgba(239, 68, 68, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 20px rgba(239, 68, 68, 0.8);
+    }
+  }
+  
+  .pulse-urgency {
+    animation: pulse-glow 2s infinite;
+  }
+  
+  /* Browser mockup styles */
+  .browser-mockup {
+    border-radius: 8px 8px 0 0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Custom spacing for features grid */
+  .features-grid {
+    gap: 2rem;
+  }
+  
+  @media (max-width: 768px) {
+    .features-grid {
+      gap: 1.5rem;
+    }
+  }
+  
+  /* Progress indicator for process steps */
+  .process-step {
+    position: relative;
+  }
+  
+  .process-step:not(:last-child):after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -50%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(to right, #3b82f6, #10b981);
+    transform: translateY(-50%);
+  }
+  
+  @media (max-width: 768px) {
+    .process-step:after {
+      display: none;
+    }
   }
 </style>
