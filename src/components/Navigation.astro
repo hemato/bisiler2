@@ -2,6 +2,7 @@
 import { getLangFromUrl } from '../i18n/utils';
 import LanguageToggle from './LanguageToggle';
 import { COMPANY_INFO } from '../config/company';
+import { getRoute, getRouteKey } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 const currentPath = Astro.url.pathname;
@@ -81,15 +82,15 @@ const landingNavigation = {
   ]
 };
 
-// Regular navigation
+// Regular navigation using centralized routes
 const navigation = [
-  { name: t.nav.home, href: lang === 'en' ? '/en' : '/' },
-  { name: t.nav.about, href: lang === 'en' ? '/en/about' : '/hakkimizda' },
-  { name: t.nav.services, href: lang === 'en' ? '/en/services' : '/hizmetlerimiz' },
-  { name: t.nav.references, href: lang === 'en' ? '/en/references' : '/referanslar' },
-  { name: t.nav.faq, href: lang === 'en' ? '/en/faq' : '/sss' },
-  { name: t.nav.blog, href: lang === 'en' ? '/en/blog' : '/blog' },
-  { name: t.nav.contact, href: lang === 'en' ? '/en/contact' : '/iletisim' }
+  { name: t.nav.home, href: getRoute(lang, 'home') },
+  { name: t.nav.about, href: getRoute(lang, 'about') },
+  { name: t.nav.services, href: getRoute(lang, 'services') },
+  { name: t.nav.references, href: getRoute(lang, 'references') },
+  { name: t.nav.faq, href: getRoute(lang, 'faq') },
+  { name: t.nav.blog, href: getRoute(lang, 'blog') },
+  { name: t.nav.contact, href: getRoute(lang, 'contact') }
 ];
 
 // Determine navigation based on current path
@@ -99,7 +100,7 @@ const navItems = isLandingPage && landingNavigation[currentPage]
   : navigation;
 
 // Logo link - for landing pages, link to current page, otherwise to home
-const logoHref = isLandingPage ? currentPath : (lang === 'en' ? '/en' : '/');
+const logoHref = isLandingPage ? currentPath : getRoute(lang, 'home');
 ---
 
 <header class="bg-white shadow-sm sticky top-0 z-50">

@@ -1,38 +1,11 @@
 import { useState } from 'react';
 import { Globe } from 'lucide-react';
+import { getLocalizedRoute } from '../utils/routes';
 
 interface LanguageToggleProps {
   currentLang: string;
   pathname: string;
 }
-
-// URL mapping between Turkish and English slugs
-const urlMapping = {
-  // Turkish to English
-  '/hakkimizda': '/en/about',
-  '/hizmetlerimiz': '/en/services',
-  '/referanslar': '/en/references',
-  '/iletisim': '/en/contact',
-  '/blog': '/en/blog',
-  '/sss': '/en/faq',
-  '/gizlilik-politikasi': '/en/privacy',
-  '/crm-danismanligi': '/en/crm-consulting',
-  '/web-sitesi-kurulumu': '/en/website-setup',
-  '/': '/en/',
-  
-  // English to Turkish
-  '/en/about': '/hakkimizda',
-  '/en/services': '/hizmetlerimiz',
-  '/en/references': '/referanslar',
-  '/en/contact': '/iletisim',
-  '/en/blog': '/blog',
-  '/en/faq': '/sss',
-  '/en/privacy': '/gizlilik-politikasi',
-  '/en/crm-consulting': '/crm-danismanligi',
-  '/en/website-setup': '/web-sitesi-kurulumu',
-  '/en/': '/',
-  '/en': '/'
-};
 
 export default function LanguageToggle({ currentLang, pathname }: LanguageToggleProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -40,16 +13,8 @@ export default function LanguageToggle({ currentLang, pathname }: LanguageToggle
   const toggleLanguage = () => {
     const newLang = currentLang === 'tr' ? 'en' : 'tr';
     
-    // Use URL mapping for proper slug conversion
-    let newPath = pathname;
-    
-    if (currentLang === 'tr') {
-      // Turkish to English
-      newPath = urlMapping[pathname as keyof typeof urlMapping] || `/en${pathname}`;
-    } else {
-      // English to Turkish
-      newPath = urlMapping[pathname as keyof typeof urlMapping] || pathname.replace('/en', '');
-    }
+    // Use centralized route system for proper slug conversion
+    const newPath = getLocalizedRoute(pathname, newLang);
     
     window.location.href = newPath;
   };

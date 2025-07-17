@@ -4,6 +4,7 @@ import { Linkedin, Mail, Phone } from 'lucide-react';
 import { COMPANY_INFO } from '../config/company';
 import { CONTACT_INFO } from '../config/contact';
 import { DOMAIN_CONFIG, getRouteUrl } from '../config/domain';
+import { getRoute } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -41,10 +42,10 @@ const currentYear = new Date().getFullYear();
       <div>
         <h4 class="text-lg font-semibold text-white mb-4">Hızlı Bağlantılar</h4>
         <ul class="space-y-2">
-          <li><a href={lang === 'en' ? '/en/services' : '/hizmetlerimiz'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.services}</a></li>
-          <li><a href={lang === 'en' ? '/en/about' : '/hakkimizda'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.about}</a></li>
-          <li><a href={lang === 'en' ? '/en/references' : '/referanslar'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.references}</a></li>
-          <li><a href={lang === 'en' ? '/en/contact' : '/iletisim'} class="text-secondary-300 hover:text-white transition-colors">{t.nav.contact}</a></li>
+          <li><a href={getRoute(lang, 'services')} class="text-secondary-300 hover:text-white transition-colors">{t.nav.services}</a></li>
+          <li><a href={getRoute(lang, 'about')} class="text-secondary-300 hover:text-white transition-colors">{t.nav.about}</a></li>
+          <li><a href={getRoute(lang, 'references')} class="text-secondary-300 hover:text-white transition-colors">{t.nav.references}</a></li>
+          <li><a href={getRoute(lang, 'contact')} class="text-secondary-300 hover:text-white transition-colors">{t.nav.contact}</a></li>
         </ul>
       </div>
 
@@ -65,7 +66,7 @@ const currentYear = new Date().getFullYear();
           © {currentYear} {COMPANY_INFO.name}. {t.footer.rights}
         </p>
         <div class="flex space-x-6 mt-4 md:mt-0">
-          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Gizlilik Politikası</a>
+          <a href={getRoute(lang, 'privacy')} class="text-secondary-400 hover:text-white text-sm transition-colors">Gizlilik Politikası</a>
           <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Çerez Politikası</a>
           <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Kullanım Şartları</a>
         </div>
