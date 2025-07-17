@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 import { generateFAQSchema, generateBreadcrumbSchema } from '../utils/structured-data';
+import { CONTACT_ACTIONS } from '../config/contact';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -90,7 +91,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
             {lang === 'en' ? 'Contact Us' : 'İletişime Geçin'}
           </a>
           <a
-            href="tel:+902121234567"
+            href={CONTACT_ACTIONS.phone.action}
             class="inline-flex items-center px-6 py-3 border-2 border-primary-600 text-primary-600 font-semibold rounded-lg hover:bg-primary-600 hover:text-white transition-all duration-200"
           >
             {lang === 'en' ? 'Call Now' : 'Hemen Arayın'}

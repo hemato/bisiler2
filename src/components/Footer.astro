@@ -1,6 +1,9 @@
 ---
 import { getLangFromUrl } from '../i18n/utils';
 import { Linkedin, Mail, Phone } from 'lucide-react';
+import { COMPANY_INFO } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
+import { DOMAIN_CONFIG, getRouteUrl } from '../config/domain';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -17,18 +20,18 @@ const currentYear = new Date().getFullYear();
     <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
       <!-- Company Info -->
       <div class="md:col-span-2">
-        <h3 class="text-2xl font-bold text-white mb-4">TechCorp</h3>
+        <h3 class="text-2xl font-bold text-white mb-4">{COMPANY_INFO.name}</h3>
         <p class="text-secondary-300 mb-6 max-w-md">
           {t.footer.description}
         </p>
         <div class="flex space-x-4">
-          <a href="#" class="text-secondary-400 hover:text-white transition-colors">
+          <a href={CONTACT_INFO.social.linkedin} class="text-secondary-400 hover:text-white transition-colors">
             <Linkedin className="w-5 h-5" />
           </a>
-          <a href="mailto:info@techcorp.com" class="text-secondary-400 hover:text-white transition-colors">
+          <a href={`mailto:${CONTACT_INFO.email.primary}`} class="text-secondary-400 hover:text-white transition-colors">
             <Mail className="w-5 h-5" />
           </a>
-          <a href="tel:+902121234567" class="text-secondary-400 hover:text-white transition-colors">
+          <a href={`tel:${CONTACT_INFO.phone.primary.replace(/\s/g, '')}`} class="text-secondary-400 hover:text-white transition-colors">
             <Phone className="w-5 h-5" />
           </a>
         </div>
@@ -49,9 +52,9 @@ const currentYear = new Date().getFullYear();
       <div>
         <h4 class="text-lg font-semibold text-white mb-4">İletişim</h4>
         <div class="space-y-2 text-secondary-300">
-          <p>info@techcorp.com</p>
-          <p>+90 212 123 45 67</p>
-          <p>İstanbul, Türkiye</p>
+          <p>{CONTACT_INFO.email.primary}</p>
+          <p>{CONTACT_INFO.phone.primary}</p>
+          <p>{CONTACT_INFO.address.city}, {CONTACT_INFO.address.countryName[lang]}</p>
         </div>
       </div>
     </div>
@@ -59,7 +62,7 @@ const currentYear = new Date().getFullYear();
     <div class="border-t border-secondary-800 mt-12 pt-8">
       <div class="flex flex-col md:flex-row justify-between items-center">
         <p class="text-secondary-400 text-sm">
-          © {currentYear} TechCorp. {t.footer.rights}
+          © {currentYear} {COMPANY_INFO.name}. {t.footer.rights}
         </p>
         <div class="flex space-x-6 mt-4 md:mt-0">
           <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Gizlilik Politikası</a>

@@ -1,18 +1,9 @@
 import emailjs from '@emailjs/browser';
-
-// EmailJS configuration
-const EMAILJS_SERVICE_ID = 'service_su0px4o'; // You'll replace this with actual service ID
-const EMAILJS_USER_ID = '4oHjUgCkeANtR0_ob'; // You'll replace this with actual public key
-
-// Template IDs
-const TEMPLATES = {
-  TR_RESPONSE: 'template_v9wtw99', // You'll replace with actual template ID
-  EN_RESPONSE: 'template_v9wtw99', // You'll replace with actual template ID
-  ADMIN_NOTIFICATION: 'template_2gqnorr' // You'll replace with actual template ID
-};
+import { EMAIL_CONFIG, SERVICE_NAMES } from '../config/email';
+import type { FormType } from '../config/email';
 
 // Initialize EmailJS
-emailjs.init(EMAILJS_USER_ID);
+emailjs.init(EMAIL_CONFIG.service.userId);
 
 interface FormData {
   name: string;
@@ -30,22 +21,8 @@ interface FormData {
 
 // Get service name based on form type and language
 function getServiceName(formType: string, language: string): string {
-  const serviceNames: Record<string, Record<string, string>> = {
-    'contact': {
-      tr: 'Genel İletişim',
-      en: 'General Contact'
-    },
-    'crm-consulting': {
-      tr: 'CRM Danışmanlığı',
-      en: 'CRM Consulting'
-    },
-    'website-setup': {
-      tr: 'Web Sitesi Kurulumu',
-      en: 'Website Setup'
-    }
-  };
-
-  return serviceNames[formType]?.[language] || serviceNames['contact']?.[language] || 'General Contact';
+  const serviceName = SERVICE_NAMES[formType as keyof typeof SERVICE_NAMES];
+  return serviceName?.[language as keyof typeof serviceName] || SERVICE_NAMES.contact[language as keyof typeof SERVICE_NAMES.contact] || 'General Contact';
 }
 
 
@@ -87,7 +64,7 @@ function createFormDetails(formData: FormData): string {
 // Send email to customer
 export async function sendCustomerEmail(formData: FormData): Promise<boolean> {
   try {
-    const templateId = formData.language === 'tr' ? TEMPLATES.TR_RESPONSE : TEMPLATES.EN_RESPONSE;
+    const templateId = EMAIL_CONFIG.templates[formData.language].customerResponse;
     
     // Using standard EmailJS parameter names
     const emailParams = {
@@ -99,7 +76,7 @@ export async function sendCustomerEmail(formData: FormData): Promise<boolean> {
       message: createFormDetails(formData)
     };
 
-    await emailjs.send(EMAILJS_SERVICE_ID, templateId, emailParams);
+    await emailjs.send(EMAIL_CONFIG.service.serviceId, templateId, emailParams);
     return true;
   } catch (error) {
     console.error('Customer email sending failed:', error);
@@ -112,7 +89,7 @@ export async function sendAdminEmail(formData: FormData): Promise<boolean> {
   try {
     // Using exact parameter names from your EmailJS template
     const emailParams = {
-      email: 'emre.hemato.1995@gmail.com', // Admin email address
+      email: EMAIL_CONFIG.recipients.admin,
       customer_name: formData.name,
       customer_email: formData.email,
       company: formData.company || 'Belirtilmemiş',
@@ -122,7 +99,7 @@ export async function sendAdminEmail(formData: FormData): Promise<boolean> {
       form_details: createFormDetails(formData)
     };
 
-    await emailjs.send(EMAILJS_SERVICE_ID, TEMPLATES.ADMIN_NOTIFICATION, emailParams);
+    await emailjs.send(EMAIL_CONFIG.service.serviceId, EMAIL_CONFIG.templates[formData.language].adminNotification, emailParams);
     return true;
   } catch (error) {
     console.error('Admin email sending failed:', error);

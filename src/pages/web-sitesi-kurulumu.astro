@@ -2,12 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import WebsiteSetupForm from '../components/WebsiteSetupForm.tsx';
 import translations from '../i18n/tr.json';
+import { CONTACT_ACTIONS } from '../config/contact';
+import { DOMAIN_CONFIG } from '../config/domain';
 ---
 
 <Layout 
   title="Web Sitesi Kurulumu | Profesyonel Web Siteniz 2 Haftada Hazır"
   description="Modern tasarım, hızlı loading, SEO uyumlu web sitesi kurulumu. Mobil uyumlu responsive tasarım, Google'da üst sıralarda çıkma garantisi. Bu ay %20 indirim!"
-  canonical="https://techcorp.com.tr/web-sitesi-kurulumu"
+  canonical={`${DOMAIN_CONFIG.baseUrl}/web-sitesi-kurulumu`}
   isLandingPage={true}
   hideFooter={true}
 >
@@ -859,7 +861,7 @@ import translations from '../i18n/tr.json';
       <a href="#form" class="inline-flex items-center px-8 py-4 bg-white text-gray-900 font-bold rounded-lg hover:bg-gray-100 transition-colors text-lg">
         🎯 Hemen Teklif Al
       </a>
-      <a href="https://wa.me/905555555555" target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors text-lg">
+      <a href={CONTACT_ACTIONS.whatsapp.url} target="_blank" rel="noopener noreferrer" class="inline-flex items-center px-8 py-4 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-colors text-lg">
         💬 WhatsApp'tan Sor
       </a>
     </div>
@@ -873,7 +875,7 @@ import translations from '../i18n/tr.json';
 <!-- Sticky WhatsApp Button -->
 <div class="fixed bottom-6 right-6 z-50">
   <a 
-    href="https://wa.me/905555555555?text=Merhaba,%20web%20sitesi%20kurulumu%20hakkında%20bilgi%20almak%20istiyorum." 
+    href={`${CONTACT_ACTIONS.whatsapp.url}?text=Merhaba,%20web%20sitesi%20kurulumu%20hakkında%20bilgi%20almak%20istiyorum.`}
     target="_blank" 
     rel="noopener noreferrer"
     class="flex items-center justify-center w-16 h-16 bg-green-500 hover:bg-green-600 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-110 animate-pulse"

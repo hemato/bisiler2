@@ -8,6 +8,9 @@ import {
   generateWebsiteSchema,
   injectStructuredData
 } from '../utils/structured-data';
+import { COMPANY_INFO } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
+import { DOMAIN_CONFIG, getUrl, getCanonicalUrl } from '../config/domain';
 
 export interface Props {
   title: string;
@@ -35,10 +38,10 @@ const organizationSchema = generateOrganizationSchema(lang);
 const websiteSchema = generateWebsiteSchema(lang);
 
 // Default images for social media
-const defaultOgImage = ogImage || '/og-image.jpg';
-const defaultTwitterImage = twitterImage || ogImage || '/twitter-image.jpg';
-const siteUrl = 'https://techcorp.com'; // Bu URL'yi gerçek domain ile değiştirin
-const canonicalUrl = canonical || Astro.url.href;
+const defaultOgImage = ogImage || DOMAIN_CONFIG.images.ogImage;
+const defaultTwitterImage = twitterImage || ogImage || DOMAIN_CONFIG.images.twitterImage;
+const canonicalUrl = canonical || getCanonicalUrl(Astro.url.pathname);
+const siteUrl = DOMAIN_CONFIG.baseUrl;
 ---
 
 <!DOCTYPE html>
@@ -47,7 +50,7 @@ const canonicalUrl = canonical || Astro.url.href;
     <meta charset="UTF-8" />
     <meta name="description" content={description || t.site.description} />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href={DOMAIN_CONFIG.images.favicon} />
     <meta name="generator" content={Astro.generator} />
     
     <!-- SEO Meta Tags -->
@@ -59,7 +62,7 @@ const canonicalUrl = canonical || Astro.url.href;
     <meta property="og:description" content={description || t.site.description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:site_name" content="TechCorp" />
+    <meta property="og:site_name" content={COMPANY_INFO.name} />
     <meta property="og:image" content={new URL(defaultOgImage, siteUrl).href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -70,16 +73,16 @@ const canonicalUrl = canonical || Astro.url.href;
     
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@techcorp" />
-    <meta name="twitter:creator" content="@techcorp" />
+    <meta name="twitter:site" content={CONTACT_INFO.social.twitterHandle} />
+    <meta name="twitter:creator" content={CONTACT_INFO.social.twitterHandle} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description || t.site.description} />
     <meta name="twitter:image" content={new URL(defaultTwitterImage, siteUrl).href} />
-    <meta name="twitter:image:alt" content={`${title} - TechCorp`} />
+    <meta name="twitter:image:alt" content={`${title} - ${COMPANY_INFO.name}`} />
     
     <!-- Additional SEO Meta Tags -->
     <meta name="robots" content="index, follow" />
-    <meta name="author" content="TechCorp" />
+    <meta name="author" content={COMPANY_INFO.name} />
     <meta name="language" content={lang === 'en' ? 'English' : 'Turkish'} />
     <meta name="revisit-after" content="7 days" />
     

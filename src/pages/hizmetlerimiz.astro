@@ -4,6 +4,7 @@ import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Globe, Settings, Zap, Search, Users, BarChart3, CheckCircle, ArrowRight } from 'lucide-react';
 import ServicesCtaSection from '../components/ServicesCtaSection.astro';
 import { generateServiceSchema, generateBreadcrumbSchema } from '../utils/structured-data';
+import { COMPANY_INFO } from '../config/company';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -27,7 +28,7 @@ const servicesSchema = {
     description: service.description,
     provider: {
       '@type': 'Organization',
-      name: 'TechCorp'
+      name: COMPANY_INFO.name
     }
   }))
 };
@@ -241,7 +242,7 @@ const detailedServices = [
 ---
 
 <Layout
-  title={`${t.nav.services} | TechCorp`}
+  title={`${t.nav.services} | ${COMPANY_INFO.name}`}
   description={t.services.metaDescription}
   structuredData={[breadcrumbSchema, servicesSchema]}
 >

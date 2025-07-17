@@ -1,4 +1,7 @@
-User-agent: *
+import { DOMAIN_CONFIG } from '../config/domain';
+
+export async function GET() {
+  const robotsContent = `User-agent: *
 Allow: /
 
 # Disallow admin and private areas (future use)
@@ -7,7 +10,7 @@ Disallow: /api/
 Disallow: /_astro/
 
 # Allow all search engines to access sitemap
-Sitemap: https://techcorp.com/sitemap.xml
+Sitemap: ${DOMAIN_CONFIG.baseUrl}/sitemap.xml
 
 # Crawl-delay for respectful crawling
 Crawl-delay: 1
@@ -29,4 +32,13 @@ User-agent: MJ12bot
 Disallow: /
 
 User-agent: DotBot
-Disallow: /
+Disallow: /`;
+
+  return new Response(robotsContent, {
+    status: 200,
+    headers: {
+      'Content-Type': 'text/plain',
+      'Cache-Control': 'public, max-age=86400', // Cache for 24 hours
+    },
+  });
+}

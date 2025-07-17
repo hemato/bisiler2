@@ -4,6 +4,8 @@ import ContactForm from '../components/ContactForm';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Mail, Phone, MapPin } from 'lucide-react';
 import { generateContactPageSchema, generateLocalBusinessSchema } from '../utils/structured-data';
+import { COMPANY_INFO } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -14,7 +16,7 @@ const localBusinessSchema = generateLocalBusinessSchema(lang);
 ---
 
 <Layout 
-  title={`${t.nav.contact} | TechCorp`}
+  title={`${t.nav.contact} | ${COMPANY_INFO.name}`}
   description={t.contact.metaDescription}
 >
   <!-- Contact Page Schema -->
@@ -50,8 +52,8 @@ const localBusinessSchema = generateLocalBusinessSchema(lang);
                 <h3 class="text-lg font-semibold text-secondary-900">
                   {lang === 'en' ? 'Email' : 'E-posta'}
                 </h3>
-                <p class="text-secondary-600">info@techcorp.com</p>
-                <p class="text-secondary-600">support@techcorp.com</p>
+                <p class="text-secondary-600">{CONTACT_INFO.email.primary}</p>
+                <p class="text-secondary-600">{CONTACT_INFO.email.support}</p>
               </div>
             </div>
 
@@ -63,8 +65,8 @@ const localBusinessSchema = generateLocalBusinessSchema(lang);
                 <h3 class="text-lg font-semibold text-secondary-900">
                   {lang === 'en' ? 'Phone' : 'Telefon'}
                 </h3>
-                <p class="text-secondary-600">+90 212 123 45 67</p>
-                <p class="text-secondary-600">+90 533 123 45 67</p>
+                <p class="text-secondary-600">{CONTACT_INFO.phone.primary}</p>
+                <p class="text-secondary-600">{CONTACT_INFO.phone.mobile}</p>
               </div>
             </div>
 
@@ -77,9 +79,8 @@ const localBusinessSchema = generateLocalBusinessSchema(lang);
                   {lang === 'en' ? 'Address' : 'Adres'}
                 </h3>
                 <p class="text-secondary-600">
-                  Maslak Mahallesi<br>
-                  Büyükdere Caddesi No: 123<br>
-                  34485 Sarıyer/İstanbul
+                  {CONTACT_INFO.address.street}<br>
+                  {CONTACT_INFO.address.postalCode} {CONTACT_INFO.address.district}/{CONTACT_INFO.address.city}
                 </p>
               </div>
             </div>

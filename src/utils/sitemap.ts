@@ -1,7 +1,9 @@
 import type { APIRoute } from 'astro';
 
 // Site configuration
-const SITE_URL = 'https://techcorp.com'; // Bu URL'yi gerçek domain ile değiştirin
+import { DOMAIN_CONFIG } from '../config/domain';
+
+const SITE_URL = DOMAIN_CONFIG.baseUrl;
 
 // All available pages with their priorities and change frequencies
 const pages = [

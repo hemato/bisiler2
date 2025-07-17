@@ -2,6 +2,8 @@
 import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
+import { COMPANY_INFO } from '../config/company';
+import { DOMAIN_CONFIG } from '../config/domain';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -14,7 +16,7 @@ const blogPosts = [
       ? 'Learn how to choose the right CRM system for your small or medium business. Key features, pricing models and implementation tips.'
       : 'Küçük ve orta ölçekli işletmeniz için doğru CRM sistemini nasıl seçeceğinizi öğrenin. Temel özellikler, fiyatlandırma modelleri ve uygulama ipuçları.',
     date: '2024-01-15',
-    author: 'TechCorp Team',
+    author: `${COMPANY_INFO.name} Team`,
     category: 'CRM',
     readTime: lang === 'en' ? '5 min' : '5 dk',
     image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -27,7 +29,7 @@ const blogPosts = [
       ? 'Discover how to automate your sales processes using Zapier. From lead capture to customer follow-up, streamline everything.'
       : 'Zapier kullanarak satış süreçlerinizi nasıl otomatikleştireceğinizi keşfedin. Lead yakalamadan müşteri takibine kadar her şeyi kolaylaştırın.',
     date: '2024-01-10',
-    author: 'TechCorp Team',
+    author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Automation' : 'Otomasyon',
     readTime: lang === 'en' ? '7 min' : '7 dk',
     image: 'https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -40,7 +42,7 @@ const blogPosts = [
       ? 'Essential SEO strategies for corporate websites. Technical optimization, content strategy and performance measurement.'
       : 'Kurumsal web siteleri için temel SEO stratejileri. Teknik optimizasyon, içerik stratejisi ve performans ölçümü.',
     date: '2024-01-05',
-    author: 'TechCorp Team',
+    author: `${COMPANY_INFO.name} Team`,
     category: 'SEO',
     readTime: lang === 'en' ? '6 min' : '6 dk',
     image: 'https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -53,7 +55,7 @@ const blogPosts = [
       ? 'Real success stories from our clients\' digital transformation journeys. Challenges, solutions and results.'
       : 'Müşterilerimizin dijital dönüşüm yolculuklarından gerçek başarı hikayeleri. Zorluklar, çözümler ve sonuçlar.',
     date: '2023-12-28',
-    author: 'TechCorp Team',
+    author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Case Study' : 'Vaka Analizi',
     readTime: lang === 'en' ? '8 min' : '8 dk',
     image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -66,7 +68,7 @@ const blogPosts = [
       ? 'Learn how to integrate web forms with CRM systems effectively. Data validation, automation and user experience tips.'
       : 'Web formlarını CRM sistemleriyle etkili şekilde nasıl entegre edeceğinizi öğrenin. Veri doğrulama, otomasyon ve kullanıcı deneyimi ipuçları.',
     date: '2023-12-20',
-    author: 'TechCorp Team',
+    author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Integration' : 'Entegrasyon',
     readTime: lang === 'en' ? '4 min' : '4 dk',
     image: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -79,7 +81,7 @@ const blogPosts = [
       ? 'Effective strategies for managing customer data. GDPR compliance, data security and analytics insights.'
       : 'Müşteri verilerini yönetmek için etkili stratejiler. GDPR uyumluluğu, veri güvenliği ve analitik içgörüler.',
     date: '2023-12-15',
-    author: 'TechCorp Team',
+    author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Data Management' : 'Veri Yönetimi',
     readTime: lang === 'en' ? '6 min' : '6 dk',
     image: 'https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=800',
@@ -92,7 +94,7 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
 ---
 
 <Layout 
-  title={`${t.nav.blog} | TechCorp`}
+  title={`${t.nav.blog} | ${COMPANY_INFO.name}`}
   description={t.blog.metaDescription}
 >
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">

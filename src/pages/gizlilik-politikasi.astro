@@ -2,12 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Shield, Lock, Eye, FileText, AlertCircle } from 'lucide-react';
+import { COMPANY_INFO } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
 ---
 
-<Layout title={`${lang === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'} | TechCorp`}>
+<Layout title={`${lang === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'} | ${COMPANY_INFO.name}`}>
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
@@ -36,8 +38,8 @@ const t = await getTranslations(lang);
                 <h2 class="text-2xl font-bold text-secondary-900">1. Data Controller</h2>
               </div>
               <p class="text-secondary-700 leading-relaxed">
-                TechCorp is the data controller for the personal data we collect and process. 
-                You can contact us at info@techcorp.com for any questions regarding your personal data.
+                {COMPANY_INFO.name} is the data controller for the personal data we collect and process. 
+                You can contact us at {CONTACT_INFO.email.primary} for any questions regarding your personal data.
               </p>
             </section>
 
@@ -121,7 +123,7 @@ const t = await getTranslations(lang);
               <h2 class="text-2xl font-bold text-secondary-900 mb-4">7. Contact</h2>
               <p class="text-secondary-700 leading-relaxed">
                 For any questions about this privacy policy or your personal data, 
-                please contact us at: <a href="mailto:privacy@techcorp.com" class="text-primary-600 hover:underline">privacy@techcorp.com</a>
+                please contact us at: <a href={`mailto:${CONTACT_INFO.email.privacy}`} class="text-primary-600 hover:underline">{CONTACT_INFO.email.privacy}</a>
               </p>
             </section>
 
@@ -140,8 +142,8 @@ const t = await getTranslations(lang);
                 <h2 class="text-2xl font-bold text-secondary-900">1. Veri Sorumlusu</h2>
               </div>
               <p class="text-secondary-700 leading-relaxed">
-                TechCorp, topladığımız ve işlediğimiz kişisel veriler için veri sorumlusudur. 
-                Kişisel verilerinizle ilgili her türlü soru için info@techcorp.com adresinden bize ulaşabilirsiniz.
+                {COMPANY_INFO.name}, topladığımız ve işlediğimiz kişisel veriler için veri sorumlusudur. 
+                Kişisel verilerinizle ilgili her türlü soru için {CONTACT_INFO.email.primary} adresinden bize ulaşabilirsiniz.
               </p>
             </section>
 
@@ -224,7 +226,7 @@ const t = await getTranslations(lang);
               <h2 class="text-2xl font-bold text-secondary-900 mb-4">7. İletişim</h2>
               <p class="text-secondary-700 leading-relaxed">
                 Bu gizlilik politikası veya kişisel verileriniz hakkında sorularınız için 
-                lütfen bizimle iletişime geçin: <a href="mailto:privacy@techcorp.com" class="text-primary-600 hover:underline">privacy@techcorp.com</a>
+                lütfen bizimle iletişime geçin: <a href={`mailto:${CONTACT_INFO.email.privacy}`} class="text-primary-600 hover:underline">{CONTACT_INFO.email.privacy}</a>
               </p>
             </section>
 

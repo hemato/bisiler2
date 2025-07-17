@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Send, CheckCircle, User, Mail, Phone, Building, Users, Database, Target, Zap, Calendar, MessageSquare } from 'lucide-react';
 import { sendEmails, detectLanguage, detectPageSource } from '../utils/email';
+import { CONTACT_ACTIONS, PRIVACY_LINKS } from '../config/contact';
 
 interface CRMConsultingFormProps {
   translations: {
@@ -143,7 +144,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
             {lang === 'en' ? 'Send Another Request' : 'Başka Talep Gönder'}
           </button>
           <a
-            href="https://wa.me/905555555555"
+            href={CONTACT_ACTIONS.whatsapp.url}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors"
@@ -380,14 +381,14 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
             {lang === 'en' ? (
               <>
                 I have read and accept the{' '}
-                <a href="/en/privacy" target="_blank" className="text-primary-600 hover:underline">
+                <a href={PRIVACY_LINKS.en} target="_blank" className="text-primary-600 hover:underline">
                   Privacy Policy
                 </a>
                 {' '}and consent to the processing of my personal data. *
               </>
             ) : (
               <>
-                <a href="/gizlilik-politikasi" target="_blank" className="text-primary-600 hover:underline">
+                <a href={PRIVACY_LINKS.tr} target="_blank" className="text-primary-600 hover:underline">
                   Gizlilik Politikası
                 </a>
                 'nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum. *

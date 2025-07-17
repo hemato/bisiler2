@@ -7,6 +7,7 @@ import ReferencesSection from '../components/ReferencesSection.astro';
 import HomeContactForm from '../components/HomeContactForm.astro';
 import ServicesCtaSection from '../components/ServicesCtaSection.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
+import { STATS_SECTIONS } from '../config/company';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -26,18 +27,12 @@ const t = await getTranslations(lang);
   <section class="py-20 bg-primary-600">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-        <div class="text-white">
-          <div class="text-4xl font-bold mb-2">50+</div>
-          <div class="text-primary-100">Tamamlanan Proje</div>
-        </div>
-        <div class="text-white">
-          <div class="text-4xl font-bold mb-2">100%</div>
-          <div class="text-primary-100">Müşteri Memnuniyeti</div>
-        </div>
-        <div class="text-white">
-          <div class="text-4xl font-bold mb-2">24/7</div>
-          <div class="text-primary-100">Teknik Destek</div>
-        </div>
+        {STATS_SECTIONS.homepage[lang].map((stat) => (
+          <div class="text-white">
+            <div class="text-4xl font-bold mb-2">{stat.value}</div>
+            <div class="text-primary-100">{stat.label}</div>
+          </div>
+        ))}
       </div>
     </div>
   </section>

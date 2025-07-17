@@ -1,4 +1,7 @@
 // Structured Data (JSON-LD) utilities for SEO
+import { COMPANY_INFO, COMPANY_STATS } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../config/domain';
 
 export interface OrganizationSchema {
   '@context': string;
@@ -63,39 +66,31 @@ export function generateOrganizationSchema(lang: string = 'tr'): OrganizationSch
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'TechCorp',
-    url: 'https://techcorp.com',
-    logo: 'https://techcorp.com/logo.png',
-    description: lang === 'en' 
-      ? 'Technical consulting and CRM solutions to enhance your digital processes.'
-      : 'Dijital süreçlerinizi güçlendiren CRM çözümleri ve teknik danışmanlık hizmetleri.',
+    name: COMPANY_INFO.name,
+    url: DOMAIN_CONFIG.baseUrl,
+    logo: getUrl(DOMAIN_CONFIG.images.logo),
+    description: COMPANY_INFO.description[lang as keyof typeof COMPANY_INFO.description],
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Maslak Mahallesi Büyükdere Caddesi No: 123',
-      addressLocality: 'İstanbul',
-      postalCode: '34485',
-      addressCountry: 'TR'
+      streetAddress: CONTACT_INFO.address.street,
+      addressLocality: CONTACT_INFO.address.city,
+      postalCode: CONTACT_INFO.address.postalCode,
+      addressCountry: CONTACT_INFO.address.country
     },
     contactPoint: {
       '@type': 'ContactPoint',
-      telephone: '+90-212-123-45-67',
+      telephone: CONTACT_INFO.phone.formatted.primary,
       contactType: 'customer service',
       availableLanguage: ['Turkish', 'English']
     },
     sameAs: [
-      'https://linkedin.com/company/techcorp',
-      'https://twitter.com/techcorp'
+      CONTACT_INFO.social.linkedin,
+      CONTACT_INFO.social.twitter
     ],
-    foundingDate: '2019',
-    numberOfEmployees: '10-50',
-    areaServed: ['Turkey', 'Europe'],
-    serviceType: [
-      'CRM Consulting',
-      'Web Development',
-      'Business Automation',
-      'SEO Services',
-      'Technical Consulting'
-    ]
+    foundingDate: COMPANY_INFO.foundingYear,
+    numberOfEmployees: COMPANY_INFO.employeeCount,
+    areaServed: COMPANY_INFO.serviceAreas[lang as keyof typeof COMPANY_INFO.serviceAreas],
+    serviceType: COMPANY_INFO.services[lang as keyof typeof COMPANY_INFO.services]
   };
 }
 
@@ -103,15 +98,13 @@ export function generateWebsiteSchema(lang: string = 'tr'): WebsiteSchema {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'TechCorp',
-    url: 'https://techcorp.com',
-    description: lang === 'en'
-      ? 'Technical consulting and CRM solutions company'
-      : 'Teknik danışmanlık ve CRM çözümleri şirketi',
+    name: COMPANY_INFO.name,
+    url: DOMAIN_CONFIG.baseUrl,
+    description: COMPANY_INFO.description[lang as keyof typeof COMPANY_INFO.description],
     inLanguage: ['tr', 'en'],
     publisher: {
       '@type': 'Organization',
-      name: 'TechCorp'
+      name: COMPANY_INFO.name
     }
   };
 }
@@ -128,10 +121,10 @@ export function generateServiceSchema(
     description: serviceDescription,
     provider: {
       '@type': 'Organization',
-      name: 'TechCorp',
-      url: 'https://techcorp.com'
+      name: COMPANY_INFO.name,
+      url: DOMAIN_CONFIG.baseUrl
     },
-    areaServed: 'Turkey',
+    areaServed: COMPANY_INFO.serviceAreas[lang as keyof typeof COMPANY_INFO.serviceAreas][0],
     serviceType: 'Professional Service',
     offers: {
       '@type': 'Offer',
@@ -149,7 +142,7 @@ export function generateBreadcrumbSchema(breadcrumbs: Array<{name: string, url: 
       '@type': 'ListItem',
       position: index + 1,
       name: crumb.name,
-      item: `https://techcorp.com${crumb.url}`
+      item: getUrl(crumb.url)
     }))
   };
 }
@@ -265,25 +258,27 @@ export function generateReviewSchema(
 }
 
 export function generateContactPageSchema(lang: string = 'tr'): ContactPageSchema {
+  const contactUrl = lang === 'en' ? DOMAIN_CONFIG.routes.en.contact : DOMAIN_CONFIG.routes.tr.contact;
+  
   return {
     '@context': 'https://schema.org',
     '@type': 'ContactPage',
-    name: lang === 'en' ? 'Contact Us - TechCorp' : 'İletişim - TechCorp',
-    url: `https://techcorp.com${lang === 'en' ? '/en/contact' : '/iletisim'}`,
+    name: `${lang === 'en' ? 'Contact Us' : 'İletişim'} - ${COMPANY_INFO.name}`,
+    url: getUrl(contactUrl),
     description: lang === 'en'
-      ? 'Contact TechCorp for technical consulting and CRM solutions'
-      : 'Teknik danışmanlık ve CRM çözümleri için TechCorp ile iletişime geçin',
+      ? `Contact ${COMPANY_INFO.name} for technical consulting and CRM solutions`
+      : `Teknik danışmanlık ve CRM çözümleri için ${COMPANY_INFO.name} ile iletişime geçin`,
     mainEntity: {
       '@type': 'Organization',
-      name: 'TechCorp',
-      telephone: '+90-212-123-45-67',
-      email: 'info@techcorp.com',
+      name: COMPANY_INFO.name,
+      telephone: CONTACT_INFO.phone.formatted.primary,
+      email: CONTACT_INFO.email.primary,
       address: {
         '@type': 'PostalAddress',
-        streetAddress: 'Maslak Mahallesi Büyükdere Caddesi No: 123',
-        addressLocality: 'İstanbul',
-        postalCode: '34485',
-        addressCountry: 'TR'
+        streetAddress: CONTACT_INFO.address.street,
+        addressLocality: CONTACT_INFO.address.city,
+        postalCode: CONTACT_INFO.address.postalCode,
+        addressCountry: CONTACT_INFO.address.country
       }
     }
   };
@@ -293,30 +288,28 @@ export function generateLocalBusinessSchema(lang: string = 'tr'): LocalBusinessS
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    name: 'TechCorp',
-    description: lang === 'en'
-      ? 'Technical consulting and CRM solutions company in Istanbul'
-      : 'İstanbul\'da teknik danışmanlık ve CRM çözümleri şirketi',
-    url: 'https://techcorp.com',
-    telephone: '+90-212-123-45-67',
-    email: 'info@techcorp.com',
+    name: COMPANY_INFO.name,
+    description: COMPANY_INFO.description[lang as keyof typeof COMPANY_INFO.description],
+    url: DOMAIN_CONFIG.baseUrl,
+    telephone: CONTACT_INFO.phone.formatted.primary,
+    email: CONTACT_INFO.email.primary,
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'Maslak Mahallesi Büyükdere Caddesi No: 123',
-      addressLocality: 'İstanbul',
-      postalCode: '34485',
-      addressCountry: 'TR'
+      streetAddress: CONTACT_INFO.address.street,
+      addressLocality: CONTACT_INFO.address.city,
+      postalCode: CONTACT_INFO.address.postalCode,
+      addressCountry: CONTACT_INFO.address.country
     },
     geo: {
       '@type': 'GeoCoordinates',
-      latitude: '41.1079',
-      longitude: '29.0106'
+      latitude: CONTACT_INFO.coordinates.latitude,
+      longitude: CONTACT_INFO.coordinates.longitude
     },
     openingHours: [
       'Mo-Fr 09:00-18:00'
     ],
     priceRange: lang === 'en' ? 'Contact for pricing' : 'Fiyat için iletişime geçin',
-    areaServed: ['Istanbul', 'Turkey', 'Europe']
+    areaServed: COMPANY_INFO.serviceAreas[lang as keyof typeof COMPANY_INFO.serviceAreas]
   };
 }
 

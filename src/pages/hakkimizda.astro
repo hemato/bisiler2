@@ -2,13 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Award, Users, CheckCircle, ArrowRight } from 'lucide-react';
+import { COMPANY_INFO, STATS_SECTIONS } from '../config/company';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
 ---
 
 <Layout 
-  title={`${t.nav.about} | TechCorp`}
+  title={`${t.nav.about} | ${COMPANY_INFO.name}`}
   description={t.about.metaDescription}
 >
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
@@ -38,30 +39,12 @@ const t = await getTranslations(lang);
           </div>
           
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-              <div class="text-3xl font-bold text-primary-600 mb-2">5+</div>
-              <div class="text-secondary-700">
-                {lang === 'en' ? 'Years Experience' : 'Yıl Deneyim'}
+            {STATS_SECTIONS.about[lang].map((stat) => (
+              <div class="bg-white p-6 rounded-lg shadow-sm">
+                <div class="text-3xl font-bold text-primary-600 mb-2">{stat.value}</div>
+                <div class="text-secondary-700">{stat.label}</div>
               </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-              <div class="text-3xl font-bold text-primary-600 mb-2">50+</div>
-              <div class="text-secondary-700">
-                {lang === 'en' ? 'Happy Clients' : 'Mutlu Müşteri'}
-              </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-              <div class="text-3xl font-bold text-primary-600 mb-2">100+</div>
-              <div class="text-secondary-700">
-                {lang === 'en' ? 'Projects Completed' : 'Proje Tamamlandı'}
-              </div>
-            </div>
-            <div class="bg-white p-6 rounded-lg shadow-sm">
-              <div class="text-3xl font-bold text-primary-600 mb-2">24/7</div>
-              <div class="text-secondary-700">
-                {lang === 'en' ? 'Support' : 'Destek'}
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
