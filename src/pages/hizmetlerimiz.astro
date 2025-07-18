@@ -5,14 +5,15 @@ import { Globe, Settings, Zap, Search, Users, BarChart3, CheckCircle, ArrowRight
 import ServicesCtaSection from '../components/ServicesCtaSection.astro';
 import { generateServiceSchema, generateBreadcrumbSchema } from '../utils/structured-data';
 import { COMPANY_INFO } from '../config/company';
+import { getRoute } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
 
 // Generate breadcrumb structured data
 const breadcrumbs = [
-  { name: lang === 'en' ? 'Home' : 'Anasayfa', url: lang === 'en' ? '/en' : '/' },
-  { name: t.nav.services, url: lang === 'en' ? '/en/services' : '/services' }
+  { name: t.nav.home || (lang === 'en' ? 'Home' : 'Anasayfa'), url: getRoute(lang, 'home') },
+  { name: t.nav.services, url: getRoute(lang, 'services') }
 ];
 
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
@@ -303,7 +304,7 @@ const detailedServices = [
                   </div>
                   
                   <a
-                    href={lang === 'en' ? '/en/contact' : '/iletisim'}
+                    href={getRoute(lang, 'contact')}
                     class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105"
                   >
                     {lang === 'en' ? 'Get Quote' : 'Teklif Al'}

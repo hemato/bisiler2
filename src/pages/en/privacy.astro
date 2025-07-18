@@ -1,5 +1,134 @@
 ---
-import PrivacyPage from '../gizlilik-politikasi.astro';
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl } from '../../i18n/utils';
+import { COMPANY_INFO } from '../../config/company';
+import { CONTACT_INFO } from '../../config/contact';
+import { DOMAIN_CONFIG } from '../../config/domain';
+
+const lang = getLangFromUrl(Astro.url);
+
+const hreflang = [
+  { lang: 'tr', url: `${DOMAIN_CONFIG.baseUrl}/gizlilik-politikasi` },
+  { lang: 'en', url: `${DOMAIN_CONFIG.baseUrl}/en/privacy` }
+];
+
+const breadcrumbs = [
+  { name: 'Home', url: '/en' },
+  { name: 'Privacy Policy', url: '/en/privacy' }
+];
 ---
 
-<PrivacyPage />
+<Layout 
+  title="Privacy Policy - TechCorp"
+  description="TechCorp privacy policy. Detailed information about the protection, processing and use of your personal data."
+  hreflang={hreflang}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="prose prose-lg max-w-none">
+        <h1>Privacy Policy</h1>
+        
+        <p class="lead">
+          This privacy policy explains how we, as {COMPANY_INFO.name}, collect, 
+          use and protect your personal data.
+        </p>
+
+        <h2>1. Data Controller</h2>
+        <p>
+          <strong>Company:</strong> {COMPANY_INFO.legalName}<br>
+          <strong>Address:</strong> {CONTACT_INFO.address.full.en}<br>
+          <strong>Email:</strong> {CONTACT_INFO.email.privacy}<br>
+          <strong>Phone:</strong> {CONTACT_INFO.phone.primary}
+        </p>
+
+        <h2>2. Personal Data Collected</h2>
+        <p>The following personal data is collected on our website:</p>
+        <ul>
+          <li><strong>Contact Information:</strong> Name, surname, email address, phone number</li>
+          <li><strong>Company Information:</strong> Company name, position, industry</li>
+          <li><strong>Service Information:</strong> Requested service type, project details</li>
+          <li><strong>Technical Information:</strong> IP address, cookie information, browser information</li>
+        </ul>
+
+        <h2>3. Data Collection Purposes</h2>
+        <p>Your personal data is collected for the following purposes:</p>
+        <ul>
+          <li>Responding to your service requests and questions</li>
+          <li>Providing quotations and pricing information</li>
+          <li>Project management and customer relations</li>
+          <li>Fulfilling our legal obligations</li>
+          <li>Improving website performance</li>
+        </ul>
+
+        <h2>4. Data Sharing</h2>
+        <p>
+          Your personal data is not shared with third parties without your explicit consent. 
+          The following situations are exceptions:
+        </p>
+        <ul>
+          <li>Legal obligations</li>
+          <li>Service providers (EmailJS, Google Analytics, etc.)</li>
+          <li>Limited sharing with our business partners</li>
+        </ul>
+
+        <h2>5. Data Security</h2>
+        <p>
+          Your personal data is protected with appropriate technical and administrative measures:
+        </p>
+        <ul>
+          <li>SSL encryption</li>
+          <li>Secure server infrastructure</li>
+          <li>Access control and authorization</li>
+          <li>Regular security updates</li>
+        </ul>
+
+        <h2>6. Cookies</h2>
+        <p>
+          Cookies are used on our website to improve user experience:
+        </p>
+        <ul>
+          <li><strong>Essential Cookies:</strong> Required for the website to function</li>
+          <li><strong>Analytics Cookies:</strong> Performance analysis with Google Analytics</li>
+          <li><strong>Marketing Cookies:</strong> Advertising campaigns and tracking</li>
+        </ul>
+
+        <h2>7. Your Rights</h2>
+        <p>Under GDPR and local data protection laws, you have the following rights:</p>
+        <ul>
+          <li>To learn whether your personal data is being processed</li>
+          <li>To request information about your personal data</li>
+          <li>To request correction of your personal data</li>
+          <li>To request deletion of your personal data</li>
+          <li>To object to the transfer of your personal data to third parties</li>
+        </ul>
+
+        <h2>8. Data Retention Period</h2>
+        <p>
+          Your personal data is deleted when the purpose of collection is eliminated or 
+          when legal retention periods expire.
+        </p>
+
+        <h2>9. Contact</h2>
+        <p>
+          You can contact us for questions about our privacy policy:
+        </p>
+        <ul>
+          <li><strong>Email:</strong> {CONTACT_INFO.email.privacy}</li>
+          <li><strong>Phone:</strong> {CONTACT_INFO.phone.primary}</li>
+          <li><strong>Mail:</strong> {CONTACT_INFO.address.full.en}</li>
+        </ul>
+
+        <h2>10. Policy Updates</h2>
+        <p>
+          This privacy policy may be updated when necessary. Important changes 
+          will be announced on our website.
+        </p>
+
+        <p class="text-sm text-gray-600 mt-8">
+          <strong>Last Updated:</strong> {new Date().toLocaleDateString('en-US')}
+        </p>
+      </div>
+    </div>
+  </div>
+</Layout>

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Award, Users, CheckCircle, ArrowRight } from 'lucide-react';
 import { COMPANY_INFO, STATS_SECTIONS } from '../config/company';
+import { getRoute } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -51,8 +52,9 @@ const t = await getTranslations(lang);
         <div class="relative">
           <img
             src="https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=800"
-            alt="About us"
+            alt={lang === 'en' ? 'TechCorp expert team working on CRM and web development projects' : 'TechCorp uzman ekibi CRM ve web geliştirme projeleri üzerinde çalışırken'}
             class="rounded-2xl shadow-2xl w-full"
+            loading="lazy"
           />
         </div>
       </div>
@@ -196,13 +198,13 @@ const t = await getTranslations(lang);
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
         <a
-          href={lang === 'en' ? '/en/contact' : '/iletisim'}
+          href={getRoute(lang, 'contact')}
           class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
         >
           {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}
         </a>
         <a
-          href={lang === 'en' ? '/en/services' : '/hizmetlerimiz'}
+          href={getRoute(lang, 'services')}
           class="inline-flex items-center px-8 py-4 border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-primary-600 transition-all duration-200"
         >
           {lang === 'en' ? 'View Services' : 'Hizmetleri Görüntüle'}

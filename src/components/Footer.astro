@@ -40,7 +40,9 @@ const currentYear = new Date().getFullYear();
 
       <!-- Quick Links -->
       <div>
-        <h4 class="text-lg font-semibold text-white mb-4">Hızlı Bağlantılar</h4>
+        <h4 class="text-lg font-semibold text-white mb-4">
+          {lang === 'en' ? 'Quick Links' : 'Hızlı Bağlantılar'}
+        </h4>
         <ul class="space-y-2">
           <li><a href={getRoute(lang, 'services')} class="text-secondary-300 hover:text-white transition-colors">{t.nav.services}</a></li>
           <li><a href={getRoute(lang, 'about')} class="text-secondary-300 hover:text-white transition-colors">{t.nav.about}</a></li>
@@ -51,7 +53,9 @@ const currentYear = new Date().getFullYear();
 
       <!-- Contact Info -->
       <div>
-        <h4 class="text-lg font-semibold text-white mb-4">İletişim</h4>
+        <h4 class="text-lg font-semibold text-white mb-4">
+          {lang === 'en' ? 'Contact' : 'İletişim'}
+        </h4>
         <div class="space-y-2 text-secondary-300">
           <p>{CONTACT_INFO.email.primary}</p>
           <p>{CONTACT_INFO.phone.primary}</p>
@@ -66,9 +70,15 @@ const currentYear = new Date().getFullYear();
           © {currentYear} {COMPANY_INFO.name}. {t.footer.rights}
         </p>
         <div class="flex space-x-6 mt-4 md:mt-0">
-          <a href={getRoute(lang, 'privacy')} class="text-secondary-400 hover:text-white text-sm transition-colors">Gizlilik Politikası</a>
-          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Çerez Politikası</a>
-          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">Kullanım Şartları</a>
+          <a href={getRoute(lang, 'privacy')} class="text-secondary-400 hover:text-white text-sm transition-colors">
+            {lang === 'en' ? 'Privacy Policy' : 'Gizlilik Politikası'}
+          </a>
+          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">
+            {lang === 'en' ? 'Cookie Policy' : 'Çerez Politikası'}
+          </a>
+          <a href="#" class="text-secondary-400 hover:text-white text-sm transition-colors">
+            {lang === 'en' ? 'Terms of Service' : 'Kullanım Şartları'}
+          </a>
         </div>
       </div>
     </div>

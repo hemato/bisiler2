@@ -96,17 +96,20 @@ export const PRIVACY_LINKS = {
   en: '/en/privacy'
 };
 
-// Route Mappings for consistent navigation
-export const ROUTE_MAPPINGS = {
-  home: { tr: '/', en: '/en' },
-  about: { tr: '/hakkimizda', en: '/en/about' },
-  services: { tr: '/hizmetlerimiz', en: '/en/services' },
-  references: { tr: '/referanslar', en: '/en/references' },
-  contact: { tr: '/iletisim', en: '/en/contact' },
-  faq: { tr: '/sss', en: '/en/faq' },
-  blog: { tr: '/blog', en: '/en/blog' },
-  privacy: { tr: '/gizlilik-politikasi', en: '/en/privacy' }
-};
+// Import routes from centralized config
+import { getRoute } from '../utils/routes';
+
+// Route Mappings for consistent navigation - now dynamic
+export const getRouteMapping = (lang: 'tr' | 'en') => ({
+  home: getRoute(lang, 'home'),
+  about: getRoute(lang, 'about'),
+  services: getRoute(lang, 'services'),
+  references: getRoute(lang, 'references'),
+  contact: getRoute(lang, 'contact'),
+  faq: getRoute(lang, 'faq'),
+  blog: getRoute(lang, 'blog'),
+  privacy: getRoute(lang, 'privacy')
+});
 
 // Contact Form Configuration
 export const CONTACT_FORM = {

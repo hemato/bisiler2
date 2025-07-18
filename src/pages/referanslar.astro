@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Building2, TrendingUp, CheckCircle, Globe, Users, Zap, Calendar, Award } from 'lucide-react';
 import { generateReviewSchema } from '../utils/structured-data';
+import { getRoute } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -259,7 +260,7 @@ const reviewSchemas = detailedReferences.map((reference, index) =>
         }
       </p>
       <a
-        href={lang === 'en' ? '/en/contact' : '/iletisim'}
+        href={getRoute(lang, 'contact')}
         class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
       >
         {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}

@@ -1,6 +1,7 @@
 import emailjs from '@emailjs/browser';
 import { EMAIL_CONFIG, SERVICE_NAMES } from '../config/email';
 import type { FormType } from '../config/email';
+import { trackFormSubmit, getStoredUTMParameters } from '../config/analytics';
 
 // Initialize EmailJS
 emailjs.init(EMAIL_CONFIG.service.userId);
@@ -112,11 +113,61 @@ export async function sendEmails(formData: FormData): Promise<{ success: boolean
   const customerEmailSent = await sendCustomerEmail(formData);
   const adminEmailSent = await sendAdminEmail(formData);
   
-  return {
+  const result = {
     success: customerEmailSent && adminEmailSent,
     customerEmailSent,
     adminEmailSent
   };
+  
+  // Track successful form submissions
+  if (result.success) {
+    const utmParams = getStoredUTMParameters();
+    
+    // Prepare tracking data
+    const trackingData = {
+      form_type: formData.formType,
+      page_source: formData.pageSource,
+      language: formData.language,
+      service_category: formData.services?.join(', ') || 'general',
+      company: formData.company || 'not_specified',
+      ...utmParams
+    };
+    
+    // Track form submission
+    trackFormSubmit(formData.formType, trackingData);
+    
+    // Track Facebook Pixel event
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'Lead', {
+        content_category: formData.formType,
+        content_name: formData.pageSource,
+        value: 100,
+        currency: 'TRY',
+        custom_form_type: formData.formType,
+        custom_language: formData.language,
+        custom_utm_source: utmParams.source,
+        custom_utm_medium: utmParams.medium,
+        custom_utm_campaign: utmParams.campaign
+      });
+    }
+    
+    // Track Google Tag Manager event
+    if (typeof window !== 'undefined' && window.dataLayer) {
+      window.dataLayer.push({
+        event: 'form_submission',
+        form_type: formData.formType,
+        page_source: formData.pageSource,
+        language: formData.language,
+        utm_source: utmParams.source,
+        utm_medium: utmParams.medium,
+        utm_campaign: utmParams.campaign,
+        contact_method: 'form',
+        conversion_value: 100
+      });
+    }
+  }
+  
+  return result;
 }
 
 // Detect language from URL or form data
@@ -131,24 +182,49 @@ export function detectLanguage(): 'tr' | 'en' {
 export function detectPageSource(): string {
   if (typeof window !== 'undefined') {
     const pathname = window.location.pathname;
+    const isEnglish = pathname.includes('/en');
     
-    // Define page mappings
-    const pageMap: Record<string, string> = {
-      '/': 'Ana Sayfa (TR)',
-      '/en': 'Home Page (EN)',
-      '/iletisim': 'İletişim Sayfası (TR)',
-      '/en/contact': 'Contact Page (EN)',
-      '/crm-danismanligi': 'CRM Danışmanlığı LP (TR)',
-      '/crm-danismanligi-v2': 'CRM Danışmanlığı LP v2 (TR)',
-      '/en/crm-consulting': 'CRM Consulting LP (EN)',
-      '/en/crm-consulting-v2': 'CRM Consulting LP v2 (EN)',
-      '/web-sitesi-kurulumu': 'Web Sitesi Kurulumu LP (TR)',
-      '/web-sitesi-kurulumu-v2': 'Web Sitesi Kurulumu LP v2 (TR)',
-      '/en/website-setup': 'Website Setup LP (EN)',
-      '/en/website-setup-v2': 'Website Setup LP v2 (EN)'
+    // Dynamic page mapping based on pathname analysis
+    const getPageName = (path: string, lang: 'tr' | 'en'): string => {
+      // Remove language prefix for analysis
+      const cleanPath = path.replace('/en', '') || '/';
+      
+      const pageNames = {
+        tr: {
+          '/': 'Ana Sayfa (TR)',
+          '/hakkimizda': 'Hakkımızda Sayfası (TR)',
+          '/hizmetlerimiz': 'Hizmetlerimiz Sayfası (TR)',
+          '/referanslar': 'Referanslar Sayfası (TR)',
+          '/iletisim': 'İletişim Sayfası (TR)',
+          '/sss': 'SSS Sayfası (TR)',
+          '/blog': 'Blog Sayfası (TR)',
+          '/gizlilik-politikasi': 'Gizlilik Politikası (TR)',
+          '/crm-danismanligi': 'CRM Danışmanlığı LP (TR)',
+          '/crm-danismanligi-v2': 'CRM Danışmanlığı LP v2 (TR)',
+          '/web-sitesi-kurulumu': 'Web Sitesi Kurulumu LP (TR)',
+          '/web-sitesi-kurulumu-v2': 'Web Sitesi Kurulumu LP v2 (TR)'
+        },
+        en: {
+          '/': 'Home Page (EN)',
+          '/about': 'About Page (EN)',
+          '/services': 'Services Page (EN)',
+          '/references': 'References Page (EN)',
+          '/contact': 'Contact Page (EN)',
+          '/faq': 'FAQ Page (EN)',
+          '/blog': 'Blog Page (EN)',
+          '/privacy': 'Privacy Policy (EN)',
+          '/crm-consulting': 'CRM Consulting LP (EN)',
+          '/crm-consulting-v2': 'CRM Consulting LP v2 (EN)',
+          '/website-setup': 'Website Setup LP (EN)',
+          '/website-setup-v2': 'Website Setup LP v2 (EN)'
+        }
+      };
+      
+      const pages = pageNames[lang];
+      return (pages as any)[cleanPath] || `Unknown Page: ${path}`;
     };
     
-    return pageMap[pathname] || `Unknown Page: ${pathname}`;
+    return getPageName(pathname, isEnglish ? 'en' : 'tr');
   }
   
   return 'Unknown Page';

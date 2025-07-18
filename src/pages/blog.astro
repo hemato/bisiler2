@@ -4,6 +4,7 @@ import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
 import { COMPANY_INFO } from '../config/company';
 import { DOMAIN_CONFIG } from '../config/domain';
+import { getRoute } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);

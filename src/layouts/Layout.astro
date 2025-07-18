@@ -2,6 +2,7 @@
 import { getLangFromUrl } from '../i18n/utils';
 import Navigation from '../components/Navigation.astro';
 import Footer from '../components/Footer.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
 import CookieBanner from '../components/CookieBanner';
 import {
   generateOrganizationSchema,
@@ -11,6 +12,9 @@ import {
 import { COMPANY_INFO } from '../config/company';
 import { CONTACT_INFO } from '../config/contact';
 import { DOMAIN_CONFIG, getUrl, getCanonicalUrl } from '../config/domain';
+import { getRouteKey, generateHrefLang, getRoute } from '../utils/routes';
+import { generateBreadcrumbSchema } from '../utils/structured-data';
+import { ANALYTICS_CONFIG } from '../config/analytics';
 
 export interface Props {
   title: string;
@@ -22,9 +26,11 @@ export interface Props {
   isHomepage?: boolean;
   hideFooter?: boolean;
   isLandingPage?: boolean;
+  hreflang?: Array<{lang: string, url: string}>;
+  breadcrumbs?: Array<{name: string, url: string}>;
 }
 
-const { title, description, structuredData, ogImage, twitterImage, canonical, isHomepage = false, hideFooter = false, isLandingPage = false } = Astro.props;
+const { title, description, structuredData, ogImage, twitterImage, canonical, isHomepage = false, hideFooter = false, isLandingPage = false, hreflang, breadcrumbs } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 
 const translations = lang === 'en'
@@ -32,6 +38,21 @@ const translations = lang === 'en'
   : await import('../i18n/tr.json');
 
 const t = translations.default;
+
+// Auto-generate hreflang if not provided
+const currentRouteKey = getRouteKey(Astro.url.pathname);
+const autoHreflang = currentRouteKey ? generateHrefLang(currentRouteKey) : null;
+const hreflangData = hreflang || autoHreflang;
+
+// Auto-generate breadcrumbs if not provided
+const autoBreadcrumbs = currentRouteKey ? [
+  { name: t.nav.home || (lang === 'en' ? 'Home' : 'Anasayfa'), url: getRoute(lang, 'home') },
+  ...(currentRouteKey !== 'home' ? [{ name: title, url: Astro.url.pathname }] : [])
+] : null;
+const breadcrumbData = breadcrumbs || autoBreadcrumbs;
+
+// Generate breadcrumb structured data
+const breadcrumbSchema = breadcrumbData ? generateBreadcrumbSchema(breadcrumbData) : null;
 
 // Generate default structured data
 const organizationSchema = generateOrganizationSchema(lang);
@@ -56,6 +77,11 @@ const siteUrl = DOMAIN_CONFIG.baseUrl;
     <!-- SEO Meta Tags -->
     <title>{title}</title>
     <link rel="canonical" href={canonicalUrl} />
+    
+    <!-- Hreflang Tags -->
+    {hreflangData && hreflangData.map(({ lang: hrefLang, url }) => (
+      <link rel="alternate" hreflang={hrefLang} href={url} />
+    ))}
     
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content={title} />
@@ -91,9 +117,91 @@ const siteUrl = DOMAIN_CONFIG.baseUrl;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
     
+    <!-- Preload critical font for better performance -->
+    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2" crossorigin />
+    
+    <!-- DNS prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://images.pexels.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.google-analytics.com" />
+    <link rel="dns-prefetch" href="https://connect.facebook.net" />
+    
+    <!-- Analytics Scripts -->
+    {ANALYTICS_CONFIG.gtm.enabled && (
+      <>
+        <!-- Google Tag Manager -->
+        <script define:vars={{ gtmId: ANALYTICS_CONFIG.gtm.containerId }}>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',gtmId);
+        </script>
+      </>
+    )}
+    
+    {ANALYTICS_CONFIG.ga4.enabled && (
+      <>
+        <!-- Google Analytics 4 -->
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${ANALYTICS_CONFIG.ga4.measurementId}`}></script>
+        <script define:vars={{
+          measurementId: ANALYTICS_CONFIG.ga4.measurementId,
+          anonymizeIp: ANALYTICS_CONFIG.ga4.anonymizeIp,
+          debugMode: ANALYTICS_CONFIG.ga4.debugMode,
+          isLandingPage: isLandingPage,
+          isHomepage: isHomepage
+        }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          
+          gtag('config', measurementId, {
+            anonymize_ip: anonymizeIp,
+            debug_mode: debugMode,
+            page_title: document.title,
+            page_location: window.location.href,
+            page_language: document.documentElement.lang || 'tr',
+            custom_map: {
+              'custom_parameter_1': 'page_type',
+              'custom_parameter_2': 'form_type',
+              'custom_parameter_3': 'campaign_source'
+            }
+          });
+          
+          // Track page view
+          gtag('event', 'page_view', {
+            page_title: document.title,
+            page_location: window.location.href,
+            page_language: document.documentElement.lang || 'tr',
+            page_type: isLandingPage ? 'landing' : 'regular',
+            is_homepage: isHomepage
+          });
+        </script>
+      </>
+    )}
+    
+    {ANALYTICS_CONFIG.fbPixel.enabled && (
+      <>
+        <!-- Facebook Pixel -->
+        <script define:vars={{ fbPixelId: ANALYTICS_CONFIG.fbPixel.pixelId }}>
+          !function(f,b,e,v,n,t,s)
+          {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+          n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+          if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+          n.queue=[];t=b.createElement(e);t.async=!0;
+          t.src=v;s=b.getElementsByTagName(e)[0];
+          s.parentNode.insertBefore(t,s)}(window, document,'script',
+          'https://connect.facebook.net/en_US/fbevents.js');
+          fbq('init', 1234567890123456);
+          fbq('track', 'PageView');
+        </script>
+      </>
+    )}
+    
     <!-- Structured Data (JSON-LD) -->
     {isHomepage && <Fragment set:html={injectStructuredData(organizationSchema)} />}
     {isHomepage && <Fragment set:html={injectStructuredData(websiteSchema)} />}
+    {breadcrumbSchema && <Fragment set:html={injectStructuredData(breadcrumbSchema)} />}
     {structuredData && (
       Array.isArray(structuredData)
         ? structuredData.map(schema => <Fragment set:html={injectStructuredData(schema)} />)
@@ -101,7 +209,66 @@ const siteUrl = DOMAIN_CONFIG.baseUrl;
     )}
   </head>
   <body class="font-sans">
+    <!-- Google Tag Manager (noscript) -->
+    {ANALYTICS_CONFIG.gtm.enabled && (
+      <noscript><iframe src={`https://www.googletagmanager.com/ns.html?id=${ANALYTICS_CONFIG.gtm.containerId}`}
+      height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    )}
+
+    <noscript><img height="1" width="1" style="display:none"
+          src={`https://www.facebook.com/tr?id=${ANALYTICS_CONFIG.fbPixel.pixelId}&ev=PageView&noscript=1`}
+    /></noscript>
+
+    <!-- UTM Parameter Tracking -->
+    <script>
+      // Store UTM parameters and track page load
+      (function() {
+        if (typeof window !== 'undefined') {
+          // Store UTM parameters
+          const urlParams = new URLSearchParams(window.location.search);
+          const utmParams = {
+            source: urlParams.get('utm_source') || 'direct',
+            medium: urlParams.get('utm_medium') || 'none',
+            campaign: urlParams.get('utm_campaign') || 'none',
+            term: urlParams.get('utm_term') || 'none',
+            content: urlParams.get('utm_content') || 'none'
+          };
+          
+          // Store in sessionStorage for later use
+          sessionStorage.setItem('utm_parameters', JSON.stringify(utmParams));
+          
+          // Track UTM parameters with GA4
+          if (window.gtag) {
+            window.gtag('event', 'page_view_with_utm', {
+              utm_source: utmParams.source,
+              utm_medium: utmParams.medium,
+              utm_campaign: utmParams.campaign,
+              utm_term: utmParams.term,
+              utm_content: utmParams.content
+            });
+          }
+          
+          // Track with Facebook Pixel
+          if (window.fbq) {
+            window.fbq('track', 'ViewContent', {
+              content_category: 'page_view',
+              utm_source: utmParams.source,
+              utm_medium: utmParams.medium,
+              utm_campaign: utmParams.campaign
+            });
+          }
+        }
+      })();
+    </script>
+    
     <Navigation isLandingPage={isLandingPage} />
+    {breadcrumbData && !isLandingPage && (
+      <div class="bg-secondary-50 border-b border-secondary-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+          <Breadcrumb items={breadcrumbData} />
+        </div>
+      </div>
+    )}
     <main>
       <slot />
     </main>

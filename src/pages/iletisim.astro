@@ -6,6 +6,7 @@ import { Mail, Phone, MapPin } from 'lucide-react';
 import { generateContactPageSchema, generateLocalBusinessSchema } from '../utils/structured-data';
 import { COMPANY_INFO } from '../config/company';
 import { CONTACT_INFO } from '../config/contact';
+import { getRoute } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -195,7 +196,7 @@ const localBusinessSchema = generateLocalBusinessSchema(lang);
 
       <div class="text-center mt-12">
         <a
-          href={lang === 'en' ? '/en/faq' : '/sss'}
+          href={getRoute(lang, 'faq')}
           class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200"
         >
           {lang === 'en' ? 'View All FAQs' : 'Tüm SSS\'leri Görüntüle'}

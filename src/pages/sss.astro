@@ -1,9 +1,11 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
-import { ChevronDown, HelpCircle } from 'lucide-react';
 import { generateFAQSchema, generateBreadcrumbSchema } from '../utils/structured-data';
+import { COMPANY_INFO } from '../config/company';
 import { CONTACT_ACTIONS } from '../config/contact';
+import { getRoute } from '../utils/routes';
+import { HelpCircle, ChevronDown } from 'lucide-react';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
@@ -18,8 +20,8 @@ const faqSchema = generateFAQSchema(
 
 // Generate breadcrumb structured data
 const breadcrumbs = [
-  { name: lang === 'en' ? 'Home' : 'Anasayfa', url: lang === 'en' ? '/en' : '/' },
-  { name: t.nav.faq, url: lang === 'en' ? '/en/faq' : '/sss' }
+  { name: t.nav.home || (lang === 'en' ? 'Home' : 'Anasayfa'), url: getRoute(lang, 'home') },
+  { name: t.nav.faq, url: getRoute(lang, 'faq') }
 ];
 
 const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
@@ -85,7 +87,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
         </p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
-            href={lang === 'en' ? '/en/contact' : '/iletisim'}
+            href={getRoute(lang, 'contact')}
             class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105"
           >
             {lang === 'en' ? 'Contact Us' : 'İletişime Geçin'}
@@ -106,7 +108,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
         </h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           <a
-            href={lang === 'en' ? '/en/services' : '/hizmetlerimiz'}
+            href={getRoute(lang, 'services')}
             class="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200 group"
           >
             <h3 class="text-lg font-semibold text-secondary-900 mb-2 group-hover:text-primary-600 transition-colors">
@@ -121,7 +123,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
           </a>
 
           <a
-            href={lang === 'en' ? '/en/about' : '/hakkimizda'}
+            href={getRoute(lang, 'about')}
             class="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200 group"
           >
             <h3 class="text-lg font-semibold text-secondary-900 mb-2 group-hover:text-primary-600 transition-colors">
@@ -136,7 +138,7 @@ const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
           </a>
 
           <a
-            href={lang === 'en' ? '/en/references' : '/referanslar'}
+            href={getRoute(lang, 'references')}
             class="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow duration-200 group"
           >
             <h3 class="text-lg font-semibold text-secondary-900 mb-2 group-hover:text-primary-600 transition-colors">
