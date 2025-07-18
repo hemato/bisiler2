@@ -115,7 +115,7 @@ const structuredData = generateStructuredData(lang);
     <p>{t.page.subtitle}</p>
     
     <!-- Dynamic CTA (Türkçe'nin güçlü yanı) -->
-    <a href={lang === 'en' ? '/en/contact' : '/contact'}>
+    <a href={lang === 'en' ? '/en/contact' : '/iletisim'}>
       {t.common.contactUs}
     </a>
   </div>

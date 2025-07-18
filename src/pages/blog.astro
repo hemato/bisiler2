@@ -3,23 +3,74 @@ import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
 import { COMPANY_INFO } from '../config/company';
-import { DOMAIN_CONFIG } from '../config/domain';
+import { blogAPI, categoriesAPI, tagsAPI, handleStrapiError } from '../utils/strapi';
+import { getMediaUrl, formatDate, calculateReadingTime } from '../config/strapi';
 import { getRoute } from '../utils/routes';
 
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
 
-const blogPosts = [
+// Get URL search params for pagination and filtering  
+const url = new URL(Astro.request.url);
+const currentPage = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
+const categoryFilter = url.searchParams.get('category');
+const tagFilter = url.searchParams.get('tag');
+const searchQuery = url.searchParams.get('search');
+
+console.log('Server-side params:', { currentPage, categoryFilter, tagFilter, searchQuery });
+
+
+let blogPosts;
+let categories;
+let tags;
+let error = null;
+
+try {
+  // Fetch blog posts with current filters
+  const blogResponse = await blogAPI.getAll({
+    page: currentPage,
+    pageSize: 6,
+    locale: lang,
+    category: categoryFilter,
+    tag: tagFilter,
+    search: searchQuery
+  });
+  
+  blogPosts = blogResponse.data;
+  const totalPages = blogResponse.meta.pagination.pageCount;
+  const totalPosts = blogResponse.meta.pagination.total;
+  
+  // Fetch categories and tags for sidebar
+  const [categoriesResponse, tagsResponse] = await Promise.all([
+    categoriesAPI.getAll(lang),
+    tagsAPI.getAll(lang)
+  ]);
+  
+  categories = categoriesResponse.data;
+  tags = tagsResponse.data;
+  
+} catch (err) {
+  error = handleStrapiError(err);
+  console.error('Blog page error:', error);
+  
+  // Fallback to empty arrays if Strapi is not available
+  blogPosts = [];
+  categories = [];
+  tags = [];
+}
+
+// Fallback blog posts if Strapi is not available
+const fallbackPosts = [
   {
     id: 1,
     title: lang === 'en' ? 'CRM Selection Guide for SMEs' : 'KOBİ\'ler için CRM Seçim Rehberi',
     excerpt: lang === 'en' 
       ? 'Learn how to choose the right CRM system for your small or medium business. Key features, pricing models and implementation tips.'
       : 'Küçük ve orta ölçekli işletmeniz için doğru CRM sistemini nasıl seçeceğinizi öğrenin. Temel özellikler, fiyatlandırma modelleri ve uygulama ipuçları.',
-    date: '2024-01-15',
+    publishedAt: '2025-07-11',
     author: `${COMPANY_INFO.name} Team`,
     category: 'CRM',
-    readTime: lang === 'en' ? '5 min' : '5 dk',
+    slug: lang === 'en' ? 'crm-selection-guide-smes' : 'kobi-crm-secim-rehberi',
     image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800',
     tags: lang === 'en' ? ['CRM', 'SME', 'Digital Transformation'] : ['CRM', 'KOBİ', 'Dijital Dönüşüm']
   },
@@ -29,10 +80,10 @@ const blogPosts = [
     excerpt: lang === 'en'
       ? 'Discover how to automate your sales processes using Zapier. From lead capture to customer follow-up, streamline everything.'
       : 'Zapier kullanarak satış süreçlerinizi nasıl otomatikleştireceğinizi keşfedin. Lead yakalamadan müşteri takibine kadar her şeyi kolaylaştırın.',
-    date: '2024-01-10',
+    publishedAt: '2025-07-04',
     author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Automation' : 'Otomasyon',
-    readTime: lang === 'en' ? '7 min' : '7 dk',
+    slug: lang === 'en' ? 'zapier-sales-automation' : 'zapier-satis-sureci-otomasyonu',
     image: 'https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800',
     tags: lang === 'en' ? ['Zapier', 'Automation', 'Sales'] : ['Zapier', 'Otomasyon', 'Satış']
   },
@@ -42,10 +93,10 @@ const blogPosts = [
     excerpt: lang === 'en'
       ? 'Essential SEO strategies for corporate websites. Technical optimization, content strategy and performance measurement.'
       : 'Kurumsal web siteleri için temel SEO stratejileri. Teknik optimizasyon, içerik stratejisi ve performans ölçümü.',
-    date: '2024-01-05',
+    publishedAt: '2025-06-27',
     author: `${COMPANY_INFO.name} Team`,
     category: 'SEO',
-    readTime: lang === 'en' ? '6 min' : '6 dk',
+    slug: lang === 'en' ? 'seo-fundamentals-corporate-websites' : 'kurumsal-web-siteleri-seo-temelleri',
     image: 'https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?auto=compress&cs=tinysrgb&w=800',
     tags: lang === 'en' ? ['SEO', 'Website', 'Digital Marketing'] : ['SEO', 'Web Sitesi', 'Dijital Pazarlama']
   },
@@ -55,10 +106,10 @@ const blogPosts = [
     excerpt: lang === 'en'
       ? 'Real success stories from our clients\' digital transformation journeys. Challenges, solutions and results.'
       : 'Müşterilerimizin dijital dönüşüm yolculuklarından gerçek başarı hikayeleri. Zorluklar, çözümler ve sonuçlar.',
-    date: '2023-12-28',
+    publishedAt: '2025-06-20',
     author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Case Study' : 'Vaka Analizi',
-    readTime: lang === 'en' ? '8 min' : '8 dk',
+    slug: lang === 'en' ? 'digital-transformation-success-stories' : 'dijital-donusum-basari-hikayeleri',
     image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
     tags: lang === 'en' ? ['Digital Transformation', 'Success Stories', 'CRM'] : ['Dijital Dönüşüm', 'Başarı Hikayeleri', 'CRM']
   },
@@ -68,10 +119,10 @@ const blogPosts = [
     excerpt: lang === 'en'
       ? 'Learn how to integrate web forms with CRM systems effectively. Data validation, automation and user experience tips.'
       : 'Web formlarını CRM sistemleriyle etkili şekilde nasıl entegre edeceğinizi öğrenin. Veri doğrulama, otomasyon ve kullanıcı deneyimi ipuçları.',
-    date: '2023-12-20',
+    publishedAt: '2025-06-13',
     author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Integration' : 'Entegrasyon',
-    readTime: lang === 'en' ? '4 min' : '4 dk',
+    slug: lang === 'en' ? 'form-integration-best-practices' : 'form-entegrasyonu-en-iyi-uygulamalar',
     image: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=800',
     tags: lang === 'en' ? ['Forms', 'Integration', 'CRM'] : ['Form', 'Entegrasyon', 'CRM']
   },
@@ -81,17 +132,24 @@ const blogPosts = [
     excerpt: lang === 'en'
       ? 'Effective strategies for managing customer data. GDPR compliance, data security and analytics insights.'
       : 'Müşteri verilerini yönetmek için etkili stratejiler. GDPR uyumluluğu, veri güvenliği ve analitik içgörüler.',
-    date: '2023-12-15',
+    publishedAt: '2025-06-06',
     author: `${COMPANY_INFO.name} Team`,
     category: lang === 'en' ? 'Data Management' : 'Veri Yönetimi',
-    readTime: lang === 'en' ? '6 min' : '6 dk',
+    slug: lang === 'en' ? 'customer-data-management-strategies' : 'musteri-veri-yonetimi-stratejileri',
     image: 'https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=800',
     tags: lang === 'en' ? ['Data Management', 'GDPR', 'Security'] : ['Veri Yönetimi', 'GDPR', 'Güvenlik']
   }
 ];
 
-const categories = [...new Set(blogPosts.map(post => post.category))];
-const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
+// Use filtered posts if no posts from Strapi
+const displayPosts = blogPosts.length > 0 ? blogPosts : fallbackPosts;
+const displayCategories = categories.length > 0 ? categories : [...new Set(fallbackPosts.map(post => post.category))];
+const displayTags = tags.length > 0 ? tags : [...new Set(fallbackPosts.flatMap(post => post.tags))];
+
+// Always show all posts for client-side pagination
+const postsPerPage = 4;
+const paginatedPosts = displayPosts;
+const totalPages = Math.ceil(displayPosts.length / postsPerPage);
 ---
 
 <Layout 
@@ -112,13 +170,26 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
         <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
           {t.blog.subtitle}
         </p>
+        
+        <!-- FILTER STATUS -->
+        {(categoryFilter || tagFilter || searchQuery) && (
+          <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+            <p class="text-blue-800">
+              <strong>Aktif Filtreler:</strong>
+              {categoryFilter && <span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Kategori: {categoryFilter}</span>}
+              {tagFilter && <span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Etiket: {tagFilter}</span>}
+              {searchQuery && <span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Arama: {searchQuery}</span>}
+              <span class="ml-2 text-blue-600">(sonuçlar yükleniyor...)</span>
+            </p>
+          </div>
+        )}
       </div>
 
       <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
         <!-- Main Content -->
         <div class="lg:col-span-3">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {blogPosts.map((post) => (
+            {paginatedPosts.map((post) => (
               <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group">
                 <div class="relative overflow-hidden">
                   <img
@@ -127,25 +198,33 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
                     class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                   />
                   <div class="absolute top-4 left-4">
-                    <span class="bg-primary-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                    <a 
+                      href={`${lang === 'en' ? '/en' : ''}/blog?category=${encodeURIComponent(post.category)}`}
+                      class="bg-primary-600 hover:bg-primary-700 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                    >
                       {post.category}
-                    </span>
+                    </a>
                   </div>
                 </div>
                 
                 <div class="p-6">
                   <div class="flex items-center text-sm text-secondary-500 mb-3">
                     <Calendar className="w-4 h-4 mr-2" />
-                    <span>{new Date(post.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'tr-TR')}</span>
+                    <span>{new Date(post.publishedAt || post.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'tr-TR')}</span>
                     <span class="mx-2">•</span>
                     <User className="w-4 h-4 mr-1" />
                     <span>{post.author}</span>
                     <span class="mx-2">•</span>
-                    <span>{post.readTime}</span>
+                    <span>{post.readTime || (lang === 'en' ? '5 min' : '5 dk')}</span>
                   </div>
                   
-                  <h2 class="text-xl font-bold text-secondary-900 mb-3 group-hover:text-primary-600 transition-colors">
-                    {post.title}
+                  <h2 class="text-xl font-bold text-secondary-900 mb-3">
+                    <a 
+                      href={`${lang === 'en' ? '/en' : ''}/blog/${post.slug || post.id}`}
+                      class="group-hover:text-primary-600 hover:text-primary-600 transition-colors"
+                    >
+                      {post.title}
+                    </a>
                   </h2>
                   
                   <p class="text-secondary-600 mb-4 leading-relaxed">
@@ -154,14 +233,17 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
                   
                   <div class="flex flex-wrap gap-2 mb-4">
                     {post.tags.slice(0, 3).map((tag) => (
-                      <span class="bg-secondary-100 text-secondary-700 px-2 py-1 rounded text-xs">
+                      <a 
+                        href={`${lang === 'en' ? '/en' : ''}/blog?tag=${encodeURIComponent(tag)}`}
+                        class="bg-secondary-100 hover:bg-primary-100 text-secondary-700 hover:text-primary-700 px-2 py-1 rounded text-xs transition-colors"
+                      >
                         {tag}
-                      </span>
+                      </a>
                     ))}
                   </div>
                   
                   <a
-                    href={`${lang === 'en' ? '/en' : ''}/blog/${post.id}`}
+                    href={`${lang === 'en' ? '/en' : ''}/blog/${post.slug || post.id}`}
                     class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors group-hover:text-primary-700"
                   >
                     {t.blog.readMore}
@@ -173,23 +255,42 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
           </div>
 
           <!-- Pagination -->
-          <div class="mt-12 flex justify-center">
-            <nav class="flex items-center space-x-2">
-              <button class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
-                {lang === 'en' ? 'Previous' : 'Önceki'}
-              </button>
-              <button class="px-3 py-2 text-sm font-medium text-white bg-primary-600 border border-primary-600 rounded-md">
-                1
-              </button>
-              <button class="px-3 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
-                2
-              </button>
-              <button class="px-3 py-2 text-sm font-medium text-secondary-700 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
-                3
-              </button>
-              <button class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50">
-                {lang === 'en' ? 'Next' : 'Sonraki'}
-              </button>
+          <div id="pagination-container" class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2" id="pagination-nav">
+              {(totalPages > 1) && (
+                <>
+                  {currentPage > 1 && (
+                    <a
+                      href={`${lang === 'en' ? '/en' : ''}/blog?page=${currentPage - 1}`}
+                      class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 transition-colors"
+                    >
+                      {lang === 'en' ? 'Previous' : 'Önceki'}
+                    </a>
+                  )}
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                    <a
+                      href={`${lang === 'en' ? '/en' : ''}/blog?page=${pageNum}`}
+                      class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                        currentPage === pageNum 
+                          ? 'text-white bg-primary-600 border border-primary-600' 
+                          : 'text-secondary-700 bg-white border border-secondary-300 hover:bg-secondary-50'
+                      }`}
+                    >
+                      {pageNum}
+                    </a>
+                  ))}
+                  
+                  {currentPage < totalPages && (
+                    <a
+                      href={`${lang === 'en' ? '/en' : ''}/blog?page=${currentPage + 1}`}
+                      class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 transition-colors"
+                    >
+                      {lang === 'en' ? 'Next' : 'Sonraki'}
+                    </a>
+                  )}
+                </>
+              )}
             </nav>
           </div>
         </div>
@@ -202,18 +303,20 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
               <h3 class="text-lg font-bold text-secondary-900 mb-4">
                 {lang === 'en' ? 'Search' : 'Arama'}
               </h3>
-              <div class="relative">
+              <form method="GET" class="relative">
                 <input
                   type="text"
+                  name="search"
+                  value={searchQuery || ''}
                   placeholder={lang === 'en' ? 'Search articles...' : 'Makale ara...'}
                   class="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                 />
-                <button class="absolute right-2 top-2 p-1 text-secondary-400 hover:text-primary-600">
+                <button type="submit" class="absolute right-2 top-2 p-1 text-secondary-400 hover:text-primary-600">
                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
                 </button>
-              </div>
+              </form>
             </div>
 
             <!-- Categories -->
@@ -222,10 +325,16 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
                 {t.blog.categories}
               </h3>
               <div class="space-y-2">
-                {categories.map((category) => (
+                <a
+                  href={`${lang === 'en' ? '/en' : ''}/blog`}
+                  class={`block py-1 transition-colors ${!categoryFilter ? 'text-primary-600 font-medium' : 'text-secondary-600 hover:text-primary-600'}`}
+                >
+                  {lang === 'en' ? 'All Categories' : 'Tüm Kategoriler'}
+                </a>
+                {displayCategories.map((category) => (
                   <a
-                    href="#"
-                    class="block text-secondary-600 hover:text-primary-600 transition-colors py-1"
+                    href={`${lang === 'en' ? '/en' : ''}/blog?category=${encodeURIComponent(category)}`}
+                    class={`block py-1 transition-colors ${categoryFilter === category ? 'text-primary-600 font-medium' : 'text-secondary-600 hover:text-primary-600'}`}
                   >
                     {category}
                   </a>
@@ -239,10 +348,10 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
                 {t.blog.tags}
               </h3>
               <div class="flex flex-wrap gap-2">
-                {allTags.map((tag) => (
+                {displayTags.map((tag) => (
                   <a
-                    href="#"
-                    class="bg-secondary-100 hover:bg-primary-100 text-secondary-700 hover:text-primary-700 px-3 py-1 rounded-full text-sm transition-colors"
+                    href={`${lang === 'en' ? '/en' : ''}/blog?tag=${encodeURIComponent(tag)}`}
+                    class={`px-3 py-1 rounded-full text-sm transition-colors ${tagFilter === tag ? 'bg-primary-100 text-primary-700' : 'bg-secondary-100 hover:bg-primary-100 text-secondary-700 hover:text-primary-700'}`}
                   >
                     {tag}
                   </a>
@@ -256,16 +365,16 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
                 {t.blog.recentPosts}
               </h3>
               <div class="space-y-4">
-                {blogPosts.slice(0, 3).map((post) => (
+                {displayPosts.slice(0, 3).map((post) => (
                   <a
-                    href={`${lang === 'en' ? '/en' : ''}/blog/${post.id}`}
+                    href={`${lang === 'en' ? '/en' : ''}/blog/${post.slug || post.id}`}
                     class="block group"
                   >
                     <h4 class="text-sm font-medium text-secondary-900 group-hover:text-primary-600 transition-colors mb-1">
                       {post.title}
                     </h4>
                     <p class="text-xs text-secondary-500">
-                      {new Date(post.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'tr-TR')}
+                      {new Date(post.publishedAt || post.date).toLocaleDateString(lang === 'en' ? 'en-US' : 'tr-TR')}
                     </p>
                   </a>
                 ))}
@@ -299,4 +408,267 @@ const allTags = [...new Set(blogPosts.flatMap(post => post.tags))];
       </div>
     </div>
   </div>
+
+  <!-- Client-side filtering and pagination script -->
+  <script>
+    // Wait for DOM to load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Get URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const categoryFilter = urlParams.get('category');
+      const tagFilter = urlParams.get('tag'); 
+      const searchQuery = urlParams.get('search');
+      const currentPage = parseInt(urlParams.get('page')) || 1;
+      
+      console.log('Client-side URL params:', { categoryFilter, tagFilter, searchQuery, currentPage });
+      
+      // Initialize pagination
+      initializePagination(currentPage, categoryFilter, tagFilter, searchQuery);
+      
+      // If there are filters, apply them
+      if (categoryFilter || tagFilter || searchQuery) {
+        applyClientSideFilters(categoryFilter, tagFilter, searchQuery);
+      }
+    });
+    
+    function initializePagination(currentPage, categoryFilter, tagFilter, searchQuery) {
+      const postsPerPage = 4;
+      const allPosts = document.querySelectorAll('article');
+      
+      // If no filters, apply pagination directly
+      if (!categoryFilter && !tagFilter && !searchQuery) {
+        paginatePosts(allPosts, currentPage, postsPerPage);
+        updatePaginationButtons(allPosts.length, currentPage, postsPerPage);
+      }
+    }
+    
+    function paginatePosts(posts, currentPage, postsPerPage) {
+      const startIndex = (currentPage - 1) * postsPerPage;
+      const endIndex = startIndex + postsPerPage;
+      
+      posts.forEach((post, index) => {
+        if (index >= startIndex && index < endIndex) {
+          post.style.display = 'block';
+        } else {
+          post.style.display = 'none';
+        }
+      });
+      
+      console.log(`Showing posts ${startIndex + 1}-${Math.min(endIndex, posts.length)} of ${posts.length}`);
+    }
+    
+    function updatePaginationButtons(totalPosts, currentPage, postsPerPage) {
+      const totalPages = Math.ceil(totalPosts / postsPerPage);
+      const paginationNav = document.getElementById('pagination-nav');
+      
+      if (!paginationNav || totalPages <= 1) return;
+      
+      // Clear existing pagination
+      paginationNav.innerHTML = '';
+      
+      const lang = window.location.pathname.startsWith('/en') ? 'en' : 'tr';
+      const basePath = lang === 'en' ? '/en/blog' : '/blog';
+      
+      // Previous button
+      if (currentPage > 1) {
+        const prevButton = document.createElement('a');
+        prevButton.href = `${basePath}?page=${currentPage - 1}`;
+        prevButton.className = 'px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 transition-colors';
+        prevButton.textContent = lang === 'en' ? 'Previous' : 'Önceki';
+        paginationNav.appendChild(prevButton);
+      }
+      
+      // Page numbers
+      for (let i = 1; i <= totalPages; i++) {
+        const pageButton = document.createElement('a');
+        pageButton.href = `${basePath}?page=${i}`;
+        pageButton.className = `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+          currentPage === i 
+            ? 'text-white bg-primary-600 border border-primary-600' 
+            : 'text-secondary-700 bg-white border border-secondary-300 hover:bg-secondary-50'
+        }`;
+        pageButton.textContent = i.toString();
+        paginationNav.appendChild(pageButton);
+      }
+      
+      // Next button
+      if (currentPage < totalPages) {
+        const nextButton = document.createElement('a');
+        nextButton.href = `${basePath}?page=${currentPage + 1}`;
+        nextButton.className = 'px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 transition-colors';
+        nextButton.textContent = lang === 'en' ? 'Next' : 'Sonraki';
+        paginationNav.appendChild(nextButton);
+      }
+    }
+    
+    function applyClientSideFilters(categoryFilter, tagFilter, searchQuery) {
+      // Update sidebar active states first
+      updateSidebarActiveStates(categoryFilter, tagFilter, searchQuery);
+      
+      // Get all blog post articles
+      const posts = document.querySelectorAll('article');
+      let visibleCount = 0;
+      
+      console.log('Applying filters:', { categoryFilter, tagFilter, searchQuery });
+      console.log('Found posts:', posts.length);
+      
+      posts.forEach(post => {
+        let shouldShow = true;
+        
+        // Get post data from DOM
+        const categoryElement = post.querySelector('.bg-primary-600');
+        const titleElement = post.querySelector('h2');
+        const excerptElement = post.querySelector('p.text-secondary-600');
+        const tagElements = post.querySelectorAll('a[href*="tag="]');
+        
+        if (!categoryElement || !titleElement || !excerptElement) {
+          return;
+        }
+        
+        const postCategory = categoryElement.textContent.trim();
+        const postTitle = titleElement.textContent.trim();
+        const postExcerpt = excerptElement.textContent.trim();
+        const postTags = Array.from(tagElements).map(el => el.textContent.trim());
+        
+        console.log('Post data:', { postCategory, postTitle, postTags });
+        
+        // Apply category filter
+        if (categoryFilter && postCategory !== categoryFilter) {
+          shouldShow = false;
+          console.log('Category filter failed:', postCategory, '!==', categoryFilter);
+        }
+        
+        // Apply tag filter
+        if (tagFilter && !postTags.includes(tagFilter)) {
+          shouldShow = false;
+          console.log('Tag filter failed:', postTags, 'does not include', tagFilter);
+        }
+        
+        // Apply search filter
+        if (searchQuery) {
+          const searchText = searchQuery.toLowerCase();
+          const matchesTitle = postTitle.toLowerCase().includes(searchText);
+          const matchesExcerpt = postExcerpt.toLowerCase().includes(searchText);
+          const matchesCategory = postCategory.toLowerCase().includes(searchText);
+          const matchesTags = postTags.some(tag => tag.toLowerCase().includes(searchText));
+          
+          if (!matchesTitle && !matchesExcerpt && !matchesCategory && !matchesTags) {
+            shouldShow = false;
+            console.log('Search filter failed for:', searchQuery);
+          }
+        }
+        
+        // Show/hide post
+        if (shouldShow) {
+          post.style.display = 'block';
+          visibleCount++;
+        } else {
+          post.style.display = 'none';
+        }
+      });
+      
+      console.log('Visible posts after filtering:', visibleCount);
+      
+      // Update debug info if it exists
+      const debugInfo = document.querySelector('.bg-yellow-100');
+      if (debugInfo) {
+        const filteredPostsP = debugInfo.querySelector('p:nth-child(10)');
+        if (filteredPostsP) {
+          filteredPostsP.textContent = `Filtered Posts: ${visibleCount}`;
+        }
+      }
+      
+      // Show filter status
+      showFilterStatus(categoryFilter, tagFilter, searchQuery, visibleCount);
+    }
+    
+    function updateSidebarActiveStates(categoryFilter, tagFilter, searchQuery) {
+      console.log('Updating sidebar states:', { categoryFilter, tagFilter, searchQuery });
+      
+      // Update Categories
+      const categoryLinks = document.querySelectorAll('[href*="/blog"]:not([href*="tag="]):not([href*="search="]), [href*="/blog?category="]');
+      categoryLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        const isAllCategories = href === '/blog' || href === '/en/blog';
+        const linkCategory = href.includes('category=') ? decodeURIComponent(href.split('category=')[1].split('&')[0]) : null;
+        
+        // Remove existing classes
+        link.classList.remove('text-primary-600', 'font-medium', 'text-secondary-600');
+        
+        if (isAllCategories && !categoryFilter) {
+          // "All Categories" should be active only when no category filter
+          link.classList.add('text-primary-600', 'font-medium');
+        } else if (linkCategory && linkCategory === categoryFilter) {
+          // Specific category should be active when it matches filter
+          link.classList.add('text-primary-600', 'font-medium');
+        } else {
+          // Inactive state
+          link.classList.add('text-secondary-600');
+        }
+      });
+      
+      // Update Tags
+      const tagLinks = document.querySelectorAll('[href*="tag="]');
+      tagLinks.forEach(link => {
+        const href = link.getAttribute('href');
+        const linkTag = href.includes('tag=') ? decodeURIComponent(href.split('tag=')[1].split('&')[0]) : null;
+        
+        // Remove existing classes
+        link.classList.remove('bg-primary-100', 'text-primary-700', 'bg-secondary-100', 'text-secondary-700');
+        
+        if (linkTag && linkTag === tagFilter) {
+          // Active tag
+          link.classList.add('bg-primary-100', 'text-primary-700');
+        } else {
+          // Inactive tag
+          link.classList.add('bg-secondary-100', 'text-secondary-700');
+        }
+      });
+      
+      console.log('Sidebar states updated successfully');
+    }
+    
+    function showFilterStatus(categoryFilter, tagFilter, searchQuery, resultCount) {
+      // Remove existing filter status
+      const existingStatus = document.querySelector('.filter-status');
+      if (existingStatus) {
+        existingStatus.remove();
+      }
+      
+      if (!categoryFilter && !tagFilter && !searchQuery) {
+        return;
+      }
+      
+      // Create filter status element
+      const statusDiv = document.createElement('div');
+      statusDiv.className = 'filter-status mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm';
+      
+      let statusHTML = '<p class="text-blue-800"><strong>Aktif Filtreler:</strong>';
+      
+      if (categoryFilter) {
+        statusHTML += `<span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Kategori: ${categoryFilter}</span>`;
+      }
+      
+      if (tagFilter) {
+        statusHTML += `<span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Etiket: ${tagFilter}</span>`;
+      }
+      
+      if (searchQuery) {
+        statusHTML += `<span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Arama: ${searchQuery}</span>`;
+      }
+      
+      statusHTML += `<span class="ml-2 text-blue-600">(${resultCount} sonuç)</span></p>`;
+      
+      statusDiv.innerHTML = statusHTML;
+      
+      // Insert after debug info or after subtitle
+      const debugInfo = document.querySelector('.bg-yellow-100');
+      const subtitle = document.querySelector('.text-xl.text-secondary-600');
+      const insertAfter = debugInfo || subtitle;
+      
+      if (insertAfter && insertAfter.parentNode) {
+        insertAfter.parentNode.insertBefore(statusDiv, insertAfter.nextSibling);
+      }
+    }
+  </script>
 </Layout>
