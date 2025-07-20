@@ -1,6 +1,6 @@
 ---
 import { getLangFromUrl } from '../i18n/utils';
-import ContactFormComponent from './ContactFormComponent';
+import ContactForm from './ContactForm';
 
 const lang = getLangFromUrl(Astro.url);
 
@@ -26,7 +26,7 @@ const t = translations.default;
     </div>
 
     <div class="bg-white rounded-2xl shadow-xl p-8">
-      <ContactFormComponent translations={t} client:load />
+      <ContactForm translations={t} client:load />
     </div>
   </div>
 </section>

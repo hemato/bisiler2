@@ -17,42 +17,6 @@ export const DOMAIN_CONFIG = {
     assets: 'https://techcorp.com/assets'
   },
 
-  // Route Configuration
-  routes: {
-    tr: {
-      home: '/',
-      about: '/hakkimizda',
-      services: '/hizmetlerimiz',
-      references: '/referanslar',
-      faq: '/sss',
-      blog: '/blog',
-      contact: '/iletisim',
-      privacy: '/gizlilik-politikasi',
-      landingPages: {
-        crmConsulting: '/crm-danismanligi',
-        crmConsultingV2: '/crm-danismanligi-v2',
-        websiteSetup: '/web-sitesi-kurulumu',
-        websiteSetupV2: '/web-sitesi-kurulumu-v2'
-      }
-    },
-    en: {
-      home: '/en',
-      about: '/en/about',
-      services: '/en/services',
-      references: '/en/references',
-      faq: '/en/faq',
-      blog: '/en/blog',
-      contact: '/en/contact',
-      privacy: '/en/privacy',
-      landingPages: {
-        crmConsulting: '/en/crm-consulting',
-        crmConsultingV2: '/en/crm-consulting-v2',
-        websiteSetup: '/en/website-setup',
-        websiteSetupV2: '/en/website-setup-v2'
-      }
-    }
-  },
-
   // Default Images
   images: {
     logo: '/logo.png',
@@ -97,19 +61,21 @@ export const DOMAIN_CONFIG = {
   }
 };
 
+// Import routes from centralized config
+import { getRoute } from '../utils/routes';
+import type { RouteKey, Language } from '../config/routes';
+
 // URL Helper Functions
 export const getUrl = (path: string = '') => {
   return `${DOMAIN_CONFIG.baseUrl}${path}`;
 };
 
-export const getRouteUrl = (routeName: keyof Omit<typeof DOMAIN_CONFIG.routes.tr, 'landingPages'>, lang: 'tr' | 'en' = 'tr') => {
-  const routes = DOMAIN_CONFIG.routes[lang];
-  return getUrl(routes[routeName] as string);
+export const getRouteUrl = (routeName: RouteKey, lang: Language = 'tr') => {
+  return getUrl(getRoute(lang, routeName));
 };
 
-export const getLandingPageUrl = (pageName: keyof typeof DOMAIN_CONFIG.routes.tr.landingPages, lang: 'tr' | 'en' = 'tr') => {
-  const landingPages = DOMAIN_CONFIG.routes[lang].landingPages;
-  return getUrl(landingPages[pageName]);
+export const getLandingPageUrl = (routeName: RouteKey, lang: Language = 'tr') => {
+  return getUrl(getRoute(lang, routeName));
 };
 
 // Canonical URL helper

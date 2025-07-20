@@ -1,62 +1,79 @@
 // Performance optimization utilities
-export interface PerformanceConfig {
-  enableMetrics: boolean;
-  enableLazyLoading: boolean;
-  enablePreloading: boolean;
-  enableCompression: boolean;
-  enableCaching: boolean;
+export interface PerformanceMetrics {
+  lcp?: number; // Largest Contentful Paint
+  fid?: number; // First Input Delay  
+  cls?: number; // Cumulative Layout Shift
+  fcp?: number; // First Contentful Paint
+  ttfb?: number; // Time to First Byte
 }
 
-export const PERFORMANCE_CONFIG: PerformanceConfig = {
-  enableMetrics: true,
+export interface OptimizationConfig {
+  enableLazyLoading: boolean;
+  enableImageOptimization: boolean;
+  enableCriticalCSS: boolean;
+  enableCodeSplitting: boolean;
+  preloadCriticalResources: boolean;
+}
+
+// Default optimization configuration
+export const DEFAULT_OPTIMIZATION_CONFIG: OptimizationConfig = {
   enableLazyLoading: true,
-  enablePreloading: true,
-  enableCompression: true,
-  enableCaching: true
+  enableImageOptimization: true,
+  enableCriticalCSS: true,
+  enableCodeSplitting: true,
+  preloadCriticalResources: true
 };
 
-// Core Web Vitals tracking
-export interface WebVitalsMetrics {
-  FCP: number; // First Contentful Paint
-  LCP: number; // Largest Contentful Paint
-  FID: number; // First Input Delay
-  CLS: number; // Cumulative Layout Shift
-  TTFB: number; // Time to First Byte
-}
+// Critical resources that should be preloaded
+export const CRITICAL_RESOURCES = {
+  fonts: [
+    'https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2'
+  ],
+  scripts: [],
+  styles: []
+};
 
 // Performance monitoring
 export class PerformanceMonitor {
-  private metrics: Partial<WebVitalsMetrics> = {};
+  private metrics: PerformanceMetrics = {};
   private observers: PerformanceObserver[] = [];
 
   constructor() {
-    if (typeof window !== 'undefined' && PERFORMANCE_CONFIG.enableMetrics) {
+    if (typeof window !== 'undefined') {
       this.initializeObservers();
     }
   }
 
-  private initializeObservers() {
+  private initializeObservers(): void {
     // Largest Contentful Paint
     if ('PerformanceObserver' in window) {
       const lcpObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1] as PerformanceEntry;
-        this.metrics.LCP = lastEntry.startTime;
-        this.reportMetric('LCP', lastEntry.startTime);
+        const lastEntry = entries[entries.length - 1] as any;
+        this.metrics.lcp = lastEntry.startTime;
       });
-      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
-      this.observers.push(lcpObserver);
+
+      try {
+        lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+        this.observers.push(lcpObserver);
+      } catch (e) {
+        console.warn('LCP observer not supported');
+      }
 
       // First Input Delay
       const fidObserver = new PerformanceObserver((list) => {
         const entries = list.getEntries();
         entries.forEach((entry: any) => {
-          this.metrics.FID = entry.processingStart - entry.startTime;
-          this.reportMetric('FID', entry.processingStart - entry.startTime);
+          this.metrics.fid = entry.processingStart - entry.startTime;
         });
       });
-      fidObserver.observe({ entryTypes: ['first-input'] });
-      this.observers.push(fidObserver);
+
+      try {
+        fidObserver.observe({ entryTypes: ['first-input'] });
+        this.observers.push(fidObserver);
+      } catch (e) {
+        console.warn('FID observer not supported');
+      }
 
       // Cumulative Layout Shift
       const clsObserver = new PerformanceObserver((list) => {
@@ -67,321 +84,363 @@ export class PerformanceMonitor {
             clsValue += entry.value;
           }
         });
-        this.metrics.CLS = clsValue;
-        this.reportMetric('CLS', clsValue);
+        this.metrics.cls = clsValue;
       });
-      clsObserver.observe({ entryTypes: ['layout-shift'] });
-      this.observers.push(clsObserver);
-    }
 
-    // First Contentful Paint
-    if ('performance' in window && 'getEntriesByType' in performance) {
-      const observer = new PerformanceObserver((list) => {
-        const entries = list.getEntries();
-        entries.forEach((entry) => {
-          if (entry.name === 'first-contentful-paint') {
-            this.metrics.FCP = entry.startTime;
-            this.reportMetric('FCP', entry.startTime);
-          }
-        });
-      });
-      observer.observe({ entryTypes: ['paint'] });
-      this.observers.push(observer);
-    }
-
-    // Time to First Byte
-    window.addEventListener('load', () => {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
-      if (navigation) {
-        this.metrics.TTFB = navigation.responseStart - navigation.requestStart;
-        this.reportMetric('TTFB', navigation.responseStart - navigation.requestStart);
+      try {
+        clsObserver.observe({ entryTypes: ['layout-shift'] });
+        this.observers.push(clsObserver);
+      } catch (e) {
+        console.warn('CLS observer not supported');
       }
+    }
+
+    // Navigation timing metrics
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        const perfData = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        if (perfData) {
+          this.metrics.fcp = perfData.responseStart - perfData.fetchStart;
+          this.metrics.ttfb = perfData.responseStart - perfData.requestStart;
+        }
+      }, 0);
     });
   }
 
-  private reportMetric(name: string, value: number) {
-    // Report to Google Analytics
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'web_vitals', {
-        event_category: 'performance',
-        event_label: name,
-        value: Math.round(value),
-        custom_parameter_1: name,
-        custom_parameter_2: 'web_vitals'
-      });
-    }
-
-    // Report to console for debugging
-    if (PERFORMANCE_CONFIG.enableMetrics) {
-      console.log(`[Performance] ${name}: ${value}ms`);
-    }
-  }
-
-  public getMetrics(): Partial<WebVitalsMetrics> {
+  getMetrics(): PerformanceMetrics {
     return { ...this.metrics };
   }
 
-  public disconnect() {
+  disconnect(): void {
     this.observers.forEach(observer => observer.disconnect());
     this.observers = [];
   }
-}
 
-// Lazy loading utilities
-export interface LazyLoadOptions {
-  rootMargin: string;
-  threshold: number;
-  enableNativeLoading: boolean;
-}
+  // Send metrics to analytics
+  sendMetrics(endpoint?: string): void {
+    if (!endpoint) return;
 
-export const LAZY_LOAD_CONFIG: LazyLoadOptions = {
-  rootMargin: '50px',
-  threshold: 0.1,
-  enableNativeLoading: true
-};
-
-export class LazyLoader {
-  private observer: IntersectionObserver | null = null;
-  private elements: Set<Element> = new Set();
-
-  constructor(options: Partial<LazyLoadOptions> = {}) {
-    const config = { ...LAZY_LOAD_CONFIG, ...options };
+    const metrics = this.getMetrics();
     
-    if (typeof window !== 'undefined' && 'IntersectionObserver' in window) {
-      this.observer = new IntersectionObserver(
-        this.handleIntersection.bind(this),
-        {
-          rootMargin: config.rootMargin,
-          threshold: config.threshold
-        }
-      );
-    }
-  }
-
-  private handleIntersection(entries: IntersectionObserverEntry[]) {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        this.loadElement(entry.target);
-        this.observer?.unobserve(entry.target);
-        this.elements.delete(entry.target);
-      }
-    });
-  }
-
-  private loadElement(element: Element) {
-    if (element instanceof HTMLImageElement) {
-      const dataSrc = element.dataset.src;
-      if (dataSrc) {
-        element.src = dataSrc;
-        element.classList.add('loaded');
-      }
-    } else if (element instanceof HTMLIFrameElement) {
-      const dataSrc = element.dataset.src;
-      if (dataSrc) {
-        element.src = dataSrc;
-      }
-    }
-  }
-
-  public observe(element: Element) {
-    if (this.observer) {
-      this.observer.observe(element);
-      this.elements.add(element);
-    }
-  }
-
-  public disconnect() {
-    if (this.observer) {
-      this.observer.disconnect();
-      this.elements.clear();
+    // Use sendBeacon for reliability
+    if ('sendBeacon' in navigator) {
+      navigator.sendBeacon(endpoint, JSON.stringify(metrics));
+    } else {
+      // Fallback to fetch
+      fetch(endpoint, {
+        method: 'POST',
+        body: JSON.stringify(metrics),
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        keepalive: true
+      }).catch(console.error);
     }
   }
 }
 
-// Critical resource preloading
-export interface PreloadResource {
-  href: string;
-  as: 'script' | 'style' | 'image' | 'font' | 'fetch';
-  type?: string;
-  crossorigin?: boolean;
-  integrity?: string;
-}
+// Resource loading utilities
+export const resourceLoader = {
+  // Preload critical resources
+  preloadResource(href: string, as: string, type?: string): void {
+    if (typeof document === 'undefined') return;
 
-export const CRITICAL_RESOURCES: PreloadResource[] = [
-  {
-    href: 'https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2',
-    as: 'font',
-    type: 'font/woff2',
-    crossorigin: true
-  }
-];
+    const existing = document.querySelector(`link[href="${href}"]`);
+    if (existing) return;
 
-export function preloadCriticalResources() {
-  if (typeof document === 'undefined') return;
-
-  CRITICAL_RESOURCES.forEach(resource => {
     const link = document.createElement('link');
     link.rel = 'preload';
-    link.href = resource.href;
-    link.as = resource.as;
-    
-    if (resource.type) link.type = resource.type;
-    if (resource.crossorigin) link.crossOrigin = 'anonymous';
-    if (resource.integrity) link.integrity = resource.integrity;
+    link.href = href;
+    link.as = as;
+    if (type) link.type = type;
+    link.crossOrigin = 'anonymous';
     
     document.head.appendChild(link);
-  });
-}
+  },
 
-// Cache management
-export interface CacheConfig {
-  version: string;
-  ttl: number; // Time to live in milliseconds
-  maxSize: number; // Maximum cache size in bytes
-}
+  // Prefetch resources for future navigation
+  prefetchResource(href: string): void {
+    if (typeof document === 'undefined') return;
 
-export const CACHE_CONFIG: CacheConfig = {
-  version: '1.0.0',
-  ttl: 24 * 60 * 60 * 1000, // 24 hours
-  maxSize: 10 * 1024 * 1024 // 10MB
+    const existing = document.querySelector(`link[href="${href}"]`);
+    if (existing) return;
+
+    const link = document.createElement('link');
+    link.rel = 'prefetch';
+    link.href = href;
+    
+    document.head.appendChild(link);
+  },
+
+  // DNS prefetch for external domains
+  dnsPrefetch(domain: string): void {
+    if (typeof document === 'undefined') return;
+
+    const existing = document.querySelector(`link[href="${domain}"]`);
+    if (existing) return;
+
+    const link = document.createElement('link');
+    link.rel = 'dns-prefetch';
+    link.href = domain;
+    
+    document.head.appendChild(link);
+  },
+
+  // Preconnect to important external origins
+  preconnect(origin: string, crossorigin = false): void {
+    if (typeof document === 'undefined') return;
+
+    const existing = document.querySelector(`link[href="${origin}"]`);
+    if (existing) return;
+
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = origin;
+    if (crossorigin) link.crossOrigin = 'anonymous';
+    
+    document.head.appendChild(link);
+  }
 };
 
-export class CacheManager {
-  private cache: Map<string, { data: any; timestamp: number; size: number }> = new Map();
-  private totalSize: number = 0;
+// Image lazy loading utility
+export const imageLoader = {
+  // Intersection Observer for lazy loading
+  lazyObserver: null as IntersectionObserver | null,
 
-  constructor(private config: CacheConfig = CACHE_CONFIG) {}
+  initLazyLoading(): void {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
 
-  public set(key: string, data: any): void {
-    const size = this.calculateSize(data);
-    const timestamp = Date.now();
-    
-    // Remove expired entries
-    this.cleanup();
-    
-    // Remove old entry if exists
-    if (this.cache.has(key)) {
-      this.totalSize -= this.cache.get(key)!.size;
-    }
-    
-    // Check if we need to make space
-    while (this.totalSize + size > this.config.maxSize && this.cache.size > 0) {
-      this.evictOldest();
-    }
-    
-    this.cache.set(key, { data, timestamp, size });
-    this.totalSize += size;
-  }
-
-  public get(key: string): any | null {
-    const entry = this.cache.get(key);
-    if (!entry) return null;
-    
-    // Check if expired
-    if (Date.now() - entry.timestamp > this.config.ttl) {
-      this.cache.delete(key);
-      this.totalSize -= entry.size;
-      return null;
-    }
-    
-    return entry.data;
-  }
-
-  private cleanup(): void {
-    const now = Date.now();
-    const expired: string[] = [];
-    
-    this.cache.forEach((entry, key) => {
-      if (now - entry.timestamp > this.config.ttl) {
-        expired.push(key);
+    this.lazyObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            const dataSrc = img.dataset.src;
+            
+            if (dataSrc) {
+              img.src = dataSrc;
+              img.removeAttribute('data-src');
+              this.lazyObserver?.unobserve(img);
+            }
+          }
+        });
+      },
+      {
+        rootMargin: '50px 0px', // Load images 50px before they come into view
+        threshold: 0.01
       }
-    });
-    
-    expired.forEach(key => {
-      const entry = this.cache.get(key)!;
-      this.cache.delete(key);
-      this.totalSize -= entry.size;
-    });
-  }
+    );
 
-  private evictOldest(): void {
-    let oldestKey = '';
-    let oldestTime = Infinity;
-    
-    this.cache.forEach((entry, key) => {
-      if (entry.timestamp < oldestTime) {
-        oldestTime = entry.timestamp;
-        oldestKey = key;
-      }
-    });
-    
-    if (oldestKey) {
-      const entry = this.cache.get(oldestKey)!;
-      this.cache.delete(oldestKey);
-      this.totalSize -= entry.size;
+    // Observe all images with data-src
+    const lazyImages = document.querySelectorAll('img[data-src]');
+    lazyImages.forEach(img => this.lazyObserver?.observe(img));
+  },
+
+  // Add image to lazy loading queue
+  observeImage(img: HTMLImageElement): void {
+    if (this.lazyObserver) {
+      this.lazyObserver.observe(img);
     }
   }
+};
 
-  private calculateSize(data: any): number {
-    // Rough estimation of object size
-    return JSON.stringify(data).length * 2; // 2 bytes per character
-  }
+// Code splitting utilities
+export const codeSplitting = {
+  // Dynamic import with error handling
+  async loadModule<T>(
+    importFn: () => Promise<T>,
+    fallback?: () => T,
+    retries = 3
+  ): Promise<T> {
+    for (let i = 0; i < retries; i++) {
+      try {
+        return await importFn();
+      } catch (error) {
+        if (i === retries - 1) {
+          console.error('Failed to load module after retries:', error);
+          if (fallback) {
+            return fallback();
+          }
+          throw error;
+        }
+        // Wait before retry with exponential backoff
+        await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
+      }
+    }
+    throw new Error('Module loading failed');
+  },
 
-  public clear(): void {
-    this.cache.clear();
-    this.totalSize = 0;
-  }
-
-  public getStats(): { size: number; count: number; totalSize: number } {
-    return {
-      size: this.cache.size,
-      count: this.cache.size,
-      totalSize: this.totalSize
+  // Load component only when needed
+  async loadComponent(componentName: string): Promise<any> {
+    const components: Record<string, () => Promise<any>> = {
+      'ContactForm': () => import('../components/ContactForm'),
+      'CRMConsultingForm': () => import('../components/CRMConsultingForm'),
+      'WebsiteSetupForm': () => import('../components/WebsiteSetupForm')
     };
+
+    const loader = components[componentName];
+    if (!loader) {
+      throw new Error(`Component ${componentName} not found`);
+    }
+
+    return this.loadModule(loader);
   }
+};
+
+// Critical CSS utilities
+export const criticalCSS = {
+  // Extract critical CSS for above-the-fold content
+  extractCritical(): string[] {
+    if (typeof document === 'undefined') return [];
+
+    const criticalElements = document.querySelectorAll(
+      'header, nav, main > section:first-child, .hero, .above-fold'
+    );
+
+    const criticalClasses: string[] = [];
+    criticalElements.forEach(element => {
+      const classes = Array.from(element.classList);
+      criticalClasses.push(...classes);
+    });
+
+    return [...new Set(criticalClasses)];
+  },
+
+  // Inline critical CSS
+  inlineCritical(css: string): void {
+    if (typeof document === 'undefined') return;
+
+    const style = document.createElement('style');
+    style.textContent = css;
+    document.head.appendChild(style);
+  }
+};
+
+// Bundle analyzer utilities (for development)
+export const bundleAnalyzer = {
+  // Analyze bundle size
+  analyzeBundleSize(): void {
+    if (typeof window === 'undefined') return;
+
+    const scripts = Array.from(document.querySelectorAll('script[src]'));
+    const styles = Array.from(document.querySelectorAll('link[rel="stylesheet"]'));
+
+    console.group('📦 Bundle Analysis');
+    console.log('Scripts:', scripts.length);
+    console.log('Stylesheets:', styles.length);
+    
+    // Log largest scripts
+    scripts.forEach((script: any) => {
+      if (script.src) {
+        fetch(script.src)
+          .then(response => response.text())
+          .then(text => {
+            console.log(`${script.src}: ${(text.length / 1024).toFixed(2)}KB`);
+          })
+          .catch(() => {});
+      }
+    });
+    
+    console.groupEnd();
+  },
+
+  // Check for unused CSS
+  checkUnusedCSS(): void {
+    if (typeof document === 'undefined') return;
+
+    const allRules: string[] = [];
+    const usedRules: string[] = [];
+
+    // Get all CSS rules
+    Array.from(document.styleSheets).forEach(sheet => {
+      try {
+        Array.from(sheet.cssRules || []).forEach((rule: any) => {
+          if (rule.selectorText) {
+            allRules.push(rule.selectorText);
+            try {
+              if (document.querySelector(rule.selectorText)) {
+                usedRules.push(rule.selectorText);
+              }
+            } catch (e) {
+              // Invalid selector
+            }
+          }
+        });
+      } catch (e) {
+        // CORS or other issues with stylesheet
+      }
+    });
+
+    const unusedRules = allRules.filter(rule => !usedRules.includes(rule));
+    console.log(`📊 CSS Usage: ${usedRules.length}/${allRules.length} rules used`);
+    console.log('🗑️ Unused rules:', unusedRules.slice(0, 10));
+  }
+};
+
+// Performance optimization initialization
+export function initPerformanceOptimizations(config: Partial<OptimizationConfig> = {}): PerformanceMonitor {
+  const fullConfig = { ...DEFAULT_OPTIMIZATION_CONFIG, ...config };
+  const monitor = new PerformanceMonitor();
+
+  if (typeof window !== 'undefined') {
+    // Initialize lazy loading
+    if (fullConfig.enableLazyLoading) {
+      imageLoader.initLazyLoading();
+    }
+
+    // Preload critical resources
+    if (fullConfig.preloadCriticalResources) {
+      // Preload critical font
+      CRITICAL_RESOURCES.fonts.forEach(font => {
+        resourceLoader.preloadResource(font, 'font', 'font/woff2');
+      });
+
+      // DNS prefetch for external domains
+      resourceLoader.dnsPrefetch('//fonts.googleapis.com');
+      resourceLoader.dnsPrefetch('//fonts.gstatic.com');
+      resourceLoader.dnsPrefetch('//images.pexels.com');
+    }
+
+    // Send performance metrics after page load
+    window.addEventListener('load', () => {
+      setTimeout(() => {
+        // Send metrics to analytics endpoint if configured
+        // monitor.sendMetrics('/api/analytics/performance');
+      }, 5000);
+    });
+  }
+
+  return monitor;
 }
 
-// Initialize performance monitoring
-export const performanceMonitor = new PerformanceMonitor();
-export const lazyLoader = new LazyLoader();
-export const cacheManager = new CacheManager();
-
-// Performance best practices
-export const PERFORMANCE_TIPS = {
-  images: {
-    formats: ['webp', 'avif', 'jpg', 'png'],
-    sizes: 'Use responsive images with srcset',
-    loading: 'Use loading="lazy" for below-the-fold images',
-    compression: 'Optimize images to 80-90% quality'
-  },
-  fonts: {
-    preload: 'Preload critical fonts',
-    display: 'Use font-display: swap',
-    subset: 'Use font subsets for better performance'
-  },
-  scripts: {
-    async: 'Use async/defer for non-critical scripts',
-    bundling: 'Bundle and minify JavaScript',
-    treeshaking: 'Remove unused code'
-  },
-  css: {
-    critical: 'Inline critical CSS',
-    minification: 'Minify CSS files',
-    unused: 'Remove unused CSS'
+// Utility to measure function performance
+export function measurePerformance<T>(
+  fn: () => T,
+  label?: string
+): T {
+  const start = performance.now();
+  const result = fn();
+  const end = performance.now();
+  
+  if (label) {
+    console.log(`⏱️ ${label}: ${(end - start).toFixed(2)}ms`);
   }
-};
+  
+  return result;
+}
 
-// Export utilities for global use
-export default {
-  PerformanceMonitor,
-  LazyLoader,
-  CacheManager,
-  performanceMonitor,
-  lazyLoader,
-  cacheManager,
-  preloadCriticalResources,
-  PERFORMANCE_CONFIG,
-  LAZY_LOAD_CONFIG,
-  CACHE_CONFIG,
-  PERFORMANCE_TIPS
-};
+// Async version
+export async function measureAsyncPerformance<T>(
+  fn: () => Promise<T>,
+  label?: string
+): Promise<T> {
+  const start = performance.now();
+  const result = await fn();
+  const end = performance.now();
+  
+  if (label) {
+    console.log(`⏱️ ${label}: ${(end - start).toFixed(2)}ms`);
+  }
+  
+  return result;
+}

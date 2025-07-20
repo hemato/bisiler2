@@ -15,6 +15,7 @@ import { DOMAIN_CONFIG, getUrl, getCanonicalUrl } from '../config/domain';
 import { getRouteKey, generateHrefLang, getRoute } from '../utils/routes';
 import { generateBreadcrumbSchema } from '../utils/structured-data';
 import { ANALYTICS_CONFIG } from '../config/analytics';
+import { securityHeaders, cspUtils } from '../utils/security';
 
 export interface Props {
   title: string;
@@ -58,11 +59,17 @@ const breadcrumbSchema = breadcrumbData ? generateBreadcrumbSchema(breadcrumbDat
 const organizationSchema = generateOrganizationSchema(lang);
 const websiteSchema = generateWebsiteSchema(lang);
 
+// Generate security nonce (only in production)
+const securityNonce = import.meta.env.PROD ? cspUtils.generateNonce() : null;
+
 // Default images for social media
 const defaultOgImage = ogImage || DOMAIN_CONFIG.images.ogImage;
 const defaultTwitterImage = twitterImage || ogImage || DOMAIN_CONFIG.images.twitterImage;
 const canonicalUrl = canonical || getCanonicalUrl(Astro.url.pathname);
 const siteUrl = DOMAIN_CONFIG.baseUrl;
+
+// Generate security headers for meta tags (only in production)
+const securityMetaTags = import.meta.env.PROD ? securityHeaders.generateMetaTags(securityNonce) : '';
 ---
 
 <!DOCTYPE html>
@@ -111,6 +118,9 @@ const siteUrl = DOMAIN_CONFIG.baseUrl;
     <meta name="author" content={COMPANY_INFO.name} />
     <meta name="language" content={lang === 'en' ? 'English' : 'Turkish'} />
     <meta name="revisit-after" content="7 days" />
+    
+    <!-- Security Headers -->
+    <Fragment set:html={securityMetaTags} />
     
     <!-- Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />

@@ -2,6 +2,7 @@
 import { COMPANY_INFO, COMPANY_STATS } from '../config/company';
 import { CONTACT_INFO } from '../config/contact';
 import { DOMAIN_CONFIG, getUrl } from '../config/domain';
+import { getRoute } from './routes';
 
 export interface OrganizationSchema {
   '@context': string;
@@ -110,28 +111,58 @@ export function generateWebsiteSchema(lang: string = 'tr'): WebsiteSchema {
 }
 
 export function generateServiceSchema(
-  serviceName: string, 
-  serviceDescription: string, 
+  service: {
+    name: string;
+    description: string;
+    provider?: string;
+    offers?: {
+      '@type': string;
+      price?: string;
+      priceCurrency?: string;
+      availability?: string;
+    };
+    areaServed?: string | string[];
+    serviceType?: string;
+    category?: string;
+    aggregateRating?: {
+      '@type': string;
+      ratingValue: string;
+      reviewCount: string;
+    };
+  },
   lang: string = 'tr'
 ): ServiceSchema {
-  return {
+  const baseService = {
     '@context': 'https://schema.org',
     '@type': 'Service',
-    name: serviceName,
-    description: serviceDescription,
+    name: service.name,
+    description: service.description,
     provider: {
       '@type': 'Organization',
-      name: COMPANY_INFO.name,
+      name: service.provider || COMPANY_INFO.name,
       url: DOMAIN_CONFIG.baseUrl
     },
-    areaServed: COMPANY_INFO.serviceAreas[lang as keyof typeof COMPANY_INFO.serviceAreas][0],
-    serviceType: 'Professional Service',
-    offers: {
+    areaServed: service.areaServed || COMPANY_INFO.serviceAreas[lang as keyof typeof COMPANY_INFO.serviceAreas][0],
+    serviceType: service.serviceType || 'Professional Service',
+    offers: service.offers || {
       '@type': 'Offer',
       availability: 'https://schema.org/InStock',
       priceRange: lang === 'en' ? 'Contact for pricing' : 'Fiyat için iletişime geçin'
     }
   };
+
+  // Add optional enhanced properties
+  const enhanced: any = { ...baseService };
+  
+  if (service.category) {
+    enhanced.category = service.category;
+  }
+  
+  if (service.aggregateRating) {
+    enhanced.aggregateRating = service.aggregateRating;
+  }
+
+  return enhanced;
 }
 
 export function generateBreadcrumbSchema(breadcrumbs: Array<{name: string, url: string}>) {
@@ -147,19 +178,44 @@ export function generateBreadcrumbSchema(breadcrumbs: Array<{name: string, url: 
   };
 }
 
-export function generateFAQSchema(faqs: Array<{question: string, answer: string}>) {
-  return {
+export function generateFAQSchema(faqs: Array<{question: string, answer: string}>, options?: {
+  author?: string;
+  datePublished?: string;
+  mainEntity?: {
+    name?: string;
+    description?: string;
+  };
+}) {
+  const baseSchema = {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
-    mainEntity: faqs.map(faq => ({
+    mainEntity: faqs.map((faq, index) => ({
       '@type': 'Question',
       name: faq.question,
       acceptedAnswer: {
         '@type': 'Answer',
-        text: faq.answer
-      }
+        text: faq.answer,
+        ...(options?.author && {
+          author: {
+            '@type': 'Organization',
+            name: options.author
+          }
+        }),
+        ...(options?.datePublished && { datePublished: options.datePublished })
+      },
+      position: index + 1
     }))
   };
+
+  // Add enhanced properties if provided
+  if (options?.mainEntity) {
+    return {
+      ...baseSchema,
+      ...options.mainEntity
+    };
+  }
+
+  return baseSchema;
 }
 
 export interface ReviewSchema {
@@ -258,7 +314,7 @@ export function generateReviewSchema(
 }
 
 export function generateContactPageSchema(lang: string = 'tr'): ContactPageSchema {
-  const contactUrl = lang === 'en' ? DOMAIN_CONFIG.routes.en.contact : DOMAIN_CONFIG.routes.tr.contact;
+  const contactUrl = getRoute(lang as 'tr' | 'en', 'contact');
   
   return {
     '@context': 'https://schema.org',

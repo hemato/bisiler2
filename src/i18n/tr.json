@@ -210,6 +210,7 @@
     "form": {
       "name": "Ad Soyad",
       "email": "E-posta",
+      "phone": "Telefon Numarası",
       "company": "Kurum Adı",
       "services": "İlgilendiğiniz Hizmetler",
       "message": "Mesajınız",

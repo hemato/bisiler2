@@ -7,6 +7,8 @@ import {
   type StrapiResponse, 
   type StrapiSingleResponse 
 } from '../config/strapi';
+import { strapiCache, httpCache } from './cache';
+import { createError } from './error-handler';
 
 // Generic fetch function for Strapi API
 async function fetchFromStrapi<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
@@ -311,54 +313,100 @@ export const handleStrapiError = (error: any) => {
   return new StrapiError(`Strapi API Error: ${error.message}`);
 };
 
-// Cache utilities for development
-const cache = new Map<string, { data: any; timestamp: number }>();
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-export const cacheUtils = {
-  get<T>(key: string): T | null {
-    const cached = cache.get(key);
-    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-      return cached.data;
-    }
-    cache.delete(key);
-    return null;
-  },
-
-  set<T>(key: string, data: T): void {
-    cache.set(key, { data, timestamp: Date.now() });
-  },
-
-  clear(): void {
-    cache.clear();
-  }
-};
-
-// Cached versions of API functions (for development)
+// Modernized cached API functions using central cache system
 export const cachedBlogAPI = {
   async getAll(params?: Parameters<typeof blogAPI.getAll>[0]) {
-    const cacheKey = `blog-posts-${JSON.stringify(params)}`;
-    const cached = cacheUtils.get<StrapiResponse<StrapiBlogPost[]>>(cacheKey);
+    const cacheKey = `strapi:blog-posts:${JSON.stringify(params)}`;
     
-    if (cached) {
-      return cached;
-    }
-    
-    const result = await blogAPI.getAll(params);
-    cacheUtils.set(cacheKey, result);
-    return result;
+    return strapiCache.getOrSet(cacheKey, () => blogAPI.getAll(params));
   },
 
   async getBySlug(slug: string, locale?: 'tr' | 'en') {
-    const cacheKey = `blog-post-${slug}-${locale}`;
-    const cached = cacheUtils.get<StrapiSingleResponse<StrapiBlogPost>>(cacheKey);
+    const cacheKey = `strapi:blog-post:${slug}:${locale || 'all'}`;
     
-    if (cached) {
-      return cached;
-    }
+    return strapiCache.getOrSet(cacheKey, () => blogAPI.getBySlug(slug, locale));
+  },
+
+  async getRecent(limit = 5, locale?: 'tr' | 'en') {
+    const cacheKey = `strapi:blog-recent:${limit}:${locale || 'all'}`;
     
-    const result = await blogAPI.getBySlug(slug, locale);
-    cacheUtils.set(cacheKey, result);
-    return result;
+    return strapiCache.getOrSet(cacheKey, () => blogAPI.getRecent(limit, locale));
+  },
+
+  async getRelated(currentPostId: string, category: string, limit = 3, locale?: 'tr' | 'en') {
+    const cacheKey = `strapi:blog-related:${currentPostId}:${category}:${limit}:${locale || 'all'}`;
+    
+    return strapiCache.getOrSet(cacheKey, () => blogAPI.getRelated(currentPostId, category, limit, locale));
+  }
+};
+
+export const cachedCategoriesAPI = {
+  async getAll(locale?: 'tr' | 'en') {
+    const cacheKey = `strapi:categories:${locale || 'all'}`;
+    
+    return strapiCache.getOrSet(cacheKey, () => categoriesAPI.getAll(locale));
+  },
+
+  async getBySlug(slug: string, locale?: 'tr' | 'en') {
+    const cacheKey = `strapi:category:${slug}:${locale || 'all'}`;
+    
+    return strapiCache.getOrSet(cacheKey, () => categoriesAPI.getBySlug(slug, locale));
+  }
+};
+
+export const cachedTagsAPI = {
+  async getAll(locale?: 'tr' | 'en') {
+    const cacheKey = `strapi:tags:${locale || 'all'}`;
+    
+    return strapiCache.getOrSet(cacheKey, () => tagsAPI.getAll(locale));
+  },
+
+  async getBySlug(slug: string, locale?: 'tr' | 'en') {
+    const cacheKey = `strapi:tag:${slug}:${locale || 'all'}`;
+    
+    return strapiCache.getOrSet(cacheKey, () => tagsAPI.getBySlug(slug, locale));
+  }
+};
+
+// Cache invalidation utilities for Strapi content
+export const strapiCacheUtils = {
+  // Invalidate all blog-related cache
+  invalidateBlogCache() {
+    const stats = strapiCache.getStats();
+    stats.keys
+      .filter(key => key.startsWith('strapi:blog'))
+      .forEach(key => strapiCache.delete(key));
+  },
+
+  // Invalidate specific blog post cache
+  invalidateBlogPost(slug: string) {
+    const stats = strapiCache.getStats();
+    stats.keys
+      .filter(key => key.includes(`blog-post:${slug}`))
+      .forEach(key => strapiCache.delete(key));
+  },
+
+  // Invalidate category cache
+  invalidateCategoryCache() {
+    const stats = strapiCache.getStats();
+    stats.keys
+      .filter(key => key.startsWith('strapi:categor'))
+      .forEach(key => strapiCache.delete(key));
+  },
+
+  // Invalidate tag cache
+  invalidateTagCache() {
+    const stats = strapiCache.getStats();
+    stats.keys
+      .filter(key => key.startsWith('strapi:tag'))
+      .forEach(key => strapiCache.delete(key));
+  },
+
+  // Full cache invalidation
+  invalidateAll() {
+    const stats = strapiCache.getStats();
+    stats.keys
+      .filter(key => key.startsWith('strapi:'))
+      .forEach(key => strapiCache.delete(key));
   }
 };
