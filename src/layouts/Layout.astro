@@ -68,8 +68,8 @@ const defaultTwitterImage = twitterImage || ogImage || DOMAIN_CONFIG.images.twit
 const canonicalUrl = canonical || getCanonicalUrl(Astro.url.pathname);
 const siteUrl = DOMAIN_CONFIG.baseUrl;
 
-// Generate security headers for meta tags (only in production)
-const securityMetaTags = import.meta.env.PROD ? securityHeaders.generateMetaTags(securityNonce) : '';
+// Generate security headers for meta tags (disabled in production for Astro compatibility)
+const securityMetaTags = ''; // Disabled to prevent CSP conflicts with Astro hydration
 ---
 
 <!DOCTYPE html>
@@ -119,16 +119,13 @@ const securityMetaTags = import.meta.env.PROD ? securityHeaders.generateMetaTags
     <meta name="language" content={lang === 'en' ? 'English' : 'Turkish'} />
     <meta name="revisit-after" content="7 days" />
     
-    <!-- Security Headers -->
-    <Fragment set:html={securityMetaTags} />
+    <!-- Security Headers Disabled: CSP conflicts with Astro React hydration -->
+    <!-- Security should be handled at server/hosting level, not in meta tags -->
     
     <!-- Preload fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    
-    <!-- Preload critical font for better performance -->
-    <link rel="preload" as="font" type="font/woff2" href="https://fonts.gstatic.com/s/inter/v18/UcC73FwrK3iLTeHuS_fvQtMwCp50KnMa1ZL7.woff2" crossorigin />
     
     <!-- DNS prefetch for external resources -->
     <link rel="dns-prefetch" href="https://images.pexels.com" />

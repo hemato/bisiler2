@@ -51,14 +51,14 @@ export const cspUtils = {
   generateCSP(nonce?: string): string {
     const directives = [
       "default-src 'self'",
-      `script-src 'self' 'unsafe-inline' ${nonce ? `'nonce-${nonce}'` : ''} https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://js.emailjs.com`,
+      // More permissive script-src for Astro hydration - allow unsafe-eval and unsafe-inline for dev/prod compatibility
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval' ${nonce ? `'nonce-${nonce}'` : ''} https://www.googletagmanager.com https://www.google-analytics.com https://connect.facebook.net https://js.emailjs.com data:`,
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
+      "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: https: blob:",
       "media-src 'self' https:",
       "object-src 'none'",
       "frame-src 'none'",
-      "frame-ancestors 'none'",
       "connect-src 'self' https://api.emailjs.com https://www.google-analytics.com https://analytics.google.com https://your-strapi-domain.com",
       "form-action 'self'",
       "base-uri 'self'",
