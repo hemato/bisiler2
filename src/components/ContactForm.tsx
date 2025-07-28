@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, CheckCircle, User, Mail, Building, Briefcase, MessageSquare } from 'lucide-react';
 import { sendEmails, detectLanguage, detectPageSource } from '../utils/email';
 import { 
@@ -12,12 +12,24 @@ import {
   validateField,
   FORM_SCHEMAS
 } from '../utils/validation';
-import { useErrorHandler } from '../utils/error-handler';
+import { useErrorHandler, createFormErrorState } from '../utils/error-handler';
 import { Alert, Spinner, ValidatedField } from './ui';
-import { formSecurity, honeypotUtils } from '../utils/security';
+import { formSecurity, honeypotUtils, globalRateLimiter, xssProtection } from '../utils/security';
+import { trackEvent, trackFormSubmit, getUTMParameters } from '../config/analytics';
 
+// Automatic language detection
+const detectCurrentLanguage = (): 'tr' | 'en' => {
+  if (typeof window !== 'undefined') {
+    const pathname = window.location.pathname;
+    return pathname.startsWith('/en') ? 'en' : 'tr';
+  }
+  return 'tr';
+};
+
+// Enhanced interface for proper i18n support
 interface ContactFormProps {
-  translations: {
+  // Legacy support - will be deprecated
+  translations?: {
     contact: {
       form: {
         name: string;
@@ -31,9 +43,167 @@ interface ContactFormProps {
       };
     };
   };
+  // New i18n structure
+  i18n?: {
+    forms: {
+      contact: any;
+      common: any;
+      validation: any;
+      security: any;
+      analytics: any;
+    };
+  };
 }
 
-export default function ContactForm({ translations }: ContactFormProps) {
+// Default translations for fallback
+const getDefaultTranslations = (lang: 'tr' | 'en') => {
+  const translations = {
+    tr: {
+      labels: {
+        name: "Ad Soyad",
+        email: "E-posta Adresi",
+        phone: "Telefon Numarası",
+        company: "Şirket/Kurum Adı",
+        services: "İlgilendiğiniz Hizmetler",
+        message: "Mesajınız",
+        otherService: "Diğer (Belirtin)",
+        privacyAccepted: "Gizlilik Politikası"
+      },
+      placeholders: {
+        name: "Adınızı ve soyadınızı girin",
+        email: "E-posta adresinizi girin",
+        phone: "Telefon numaranızı girin",
+        company: "Şirket/kurum adınızı girin",
+        message: "Projeniz hakkında bize bilgi verin...",
+        otherService: "İhtiyaçlarınızı açıklayın..."
+      },
+      serviceOptions: [
+        "Web Sitesi Kurulumu",
+        "Form ve CRM Entegrasyonu",
+        "CRM Seçimi ve Kurulumu",
+        "Otomasyon Sistemleri",
+        "SEO ve Teknik İyileştirme",
+        "Teknik Danışmanlık",
+        "Diğer"
+      ],
+      submit: "Mesaj Gönder",
+      success: {
+        title: "Teşekkürler!",
+        message: "Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.",
+        button: "Başka Mesaj Gönder"
+      },
+      validation: {
+        fillRequired: "Lütfen tüm gerekli alanları doğru şekilde doldurun",
+        acceptPrivacy: "Devam etmek için lütfen Gizlilik Politikasını kabul edin"
+      },
+      privacy: {
+        text: "nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum.",
+        link: "Gizlilik Politikası",
+        required: "Gizlilik Politikası kabulü"
+      },
+      hints: {
+        title: "Lütfen aşağıdaki zorunlu alanları tamamlayın:",
+        name: "Ad Soyad",
+        phone: "Telefon Numarası",
+        services: "Hizmet Seçimi",
+        privacy: "Gizlilik Politikası kabulü"
+      }
+    },
+    en: {
+      labels: {
+        name: "Full Name",
+        email: "Email Address",
+        phone: "Phone Number",
+        company: "Company/Organization Name",
+        services: "Services of Interest",
+        message: "Your Message",
+        otherService: "Other (Please specify)",
+        privacyAccepted: "Privacy Policy"
+      },
+      placeholders: {
+        name: "Enter your full name",
+        email: "Enter your email address",
+        phone: "Enter your phone number",
+        company: "Enter your company/organization name",
+        message: "Tell us about your project...",
+        otherService: "Describe your needs..."
+      },
+      serviceOptions: [
+        "Website Setup",
+        "Form and CRM Integration",
+        "CRM Selection & Setup",
+        "Automation Systems",
+        "SEO & Technical Optimization",
+        "Technical Consulting",
+        "Other"
+      ],
+      submit: "Send Message",
+      success: {
+        title: "Thank You!",
+        message: "Your message has been sent successfully. We will get back to you soon.",
+        button: "Send Another Message"
+      },
+      validation: {
+        fillRequired: "Please fill in all required fields correctly",
+        acceptPrivacy: "Please accept the Privacy Policy to continue"
+      },
+      privacy: {
+        text: " and consent to the processing of my personal data.",
+        link: "Privacy Policy",
+        required: "Privacy Policy acceptance"
+      },
+      hints: {
+        title: "Please complete the following required fields:",
+        name: "Full Name",
+        phone: "Phone Number",
+        services: "Service Selection",
+        privacy: "Privacy Policy acceptance"
+      }
+    }
+  };
+  
+  return translations[lang];
+};
+
+export default function ContactForm({ translations, i18n }: ContactFormProps) {
+  // Detect current language
+  const currentLang = detectCurrentLanguage();
+  
+  // Get translations from various sources with fallbacks
+  const getTranslations = () => {
+    // Priority: i18n > legacy translations > defaults
+    if (i18n?.forms?.contact) {
+      return i18n.forms.contact;
+    }
+    
+    if (translations) {
+      // Convert legacy format to new format
+      return {
+        labels: {
+          name: translations.contact.form.name,
+          email: translations.contact.form.email,
+          phone: translations.contact.form.phone || (currentLang === 'en' ? 'Phone Number' : 'Telefon Numarası'),
+          company: translations.contact.form.company,
+          services: translations.contact.form.services,
+          message: translations.contact.form.message,
+        },
+        serviceOptions: translations.contact.form.serviceOptions,
+        submit: translations.contact.form.submit,
+        success: {
+          title: currentLang === 'en' ? 'Thank You!' : 'Teşekkürler!',
+          message: currentLang === 'en' 
+            ? 'Your message has been sent successfully. We will get back to you soon.'
+            : 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.',
+          button: currentLang === 'en' ? 'Send Another Message' : 'Başka Mesaj Gönder'
+        }
+      };
+    }
+    
+    return getDefaultTranslations(currentLang);
+  };
+
+  const t = getTranslations();
+
   // Form data state - single source of truth
   const [formData, setFormData] = useState({
     name: '',
@@ -62,21 +232,58 @@ export default function ContactForm({ translations }: ContactFormProps) {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string>('');
 
-  const lang = translations.contact.form.submit === 'Send' ? 'en' : 'tr';
   const schema = FORM_SCHEMAS.contact;
+  const errorHandler = useErrorHandler(currentLang);
+
+  // Analytics tracking
+  useEffect(() => {
+    // Track form start
+    trackEvent('form_start', {
+      form_type: 'contact',
+      page_language: currentLang,
+      utm_parameters: getUTMParameters()
+    });
+  }, [currentLang]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
     try {
-      const language = typeof window !== 'undefined' && window.location.pathname.includes('/en') ? 'en' : 'tr';
-      
       // Clear previous errors
       setFormError('');
       
+      // Security checks first
+      const identifier = 'form_submission';
+      if (!globalRateLimiter.isAllowed(identifier)) {
+        setFormError(currentLang === 'en' 
+          ? 'Too many requests. Please wait before trying again.' 
+          : 'Çok fazla istek gönderdiniz. Lütfen bekleyin.'
+        );
+        return;
+      }
+
+      // Honeypot and security validation
+      const securityValidation = formSecurity.validateSubmission(formData, {
+        checkHoneypot: true,
+        honeypotField: 'website_url'
+      });
+
+      if (!securityValidation.isValid || securityValidation.isSpam) {
+        console.warn('Security validation failed', securityValidation);
+        if (securityValidation.isSpam) {
+          await honeypotUtils.simulateProcessingDelay();
+          return;
+        }
+        setSubmitError(currentLang === 'en' ? 'Security validation failed' : 'Güvenlik doğrulaması başarısız');
+        return;
+      }
+
+      // XSS Protection
+      const sanitizedData = formSecurity.sanitizeFormData(formData);
+      
       // Priority-based validation for better UX
-      const validation = validateContactForm(formData, language);
+      const validation = validateContactForm(sanitizedData, currentLang);
       
       // Priority 1: Field validation (name, email, services)
       if (!validation.isValid) {
@@ -95,13 +302,12 @@ export default function ContactForm({ translations }: ContactFormProps) {
           }));
         });
         
-        // Show inline error message instead of alert
-        setFormError(language === 'en' 
+        setFormError(t.validation?.fillRequired || (currentLang === 'en' 
           ? 'Please fill in all required fields correctly.' 
-          : 'Lütfen tüm gerekli alanları doğru şekilde doldurun.'
+          : 'Lütfen tüm gerekli alanları doğru şekilde doldurun.')
         );
         
-        // Auto-scroll to validation hints (more detailed info)
+        // Auto-scroll to validation hints
         setTimeout(() => {
           const hintsElement = document.querySelector('[data-validation-hints]');
           if (hintsElement) {
@@ -115,14 +321,13 @@ export default function ContactForm({ translations }: ContactFormProps) {
         return;
       }
 
-      // Priority 2: Privacy validation (only if all fields are valid)
+      // Priority 2: Privacy validation
       if (!formData.privacyAccepted) {
-        setFormError(language === 'en'
+        setFormError(t.validation?.acceptPrivacy || (currentLang === 'en'
           ? 'Please accept the Privacy Policy to continue.'
-          : 'Devam etmek için lütfen Gizlilik Politikasını kabul edin.'
+          : 'Devam etmek için lütfen Gizlilik Politikasını kabul edin.')
         );
         
-        // Auto-scroll to validation hints (more detailed info)
         setTimeout(() => {
           const hintsElement = document.querySelector('[data-validation-hints]');
           if (hintsElement) {
@@ -139,24 +344,37 @@ export default function ContactForm({ translations }: ContactFormProps) {
       console.log('✅ Form validation passed');
       
       // Prepare form data for submission
+      const processedServices = formData.services.includes('Diğer') || formData.services.includes('Other')
+        ? [...formData.services.filter(s => s !== 'Diğer' && s !== 'Other'), formData.otherService].filter(Boolean)
+        : formData.services;
+
       const submitData = {
-        ...formData,
-        services: formData.services.includes('Diğer') || formData.services.includes('Other')
-          ? [...formData.services.filter(s => s !== 'Diğer' && s !== 'Other'), formData.otherService].filter(Boolean)
-          : formData.services,
+        ...sanitizedData,
+        services: processedServices,
         formType: 'contact' as const,
         pageSource: detectPageSource(),
         timestamp: new Date().toISOString(),
-        language: language as 'tr' | 'en'
+        language: currentLang,
+        utm_parameters: getUTMParameters()
       };
 
       console.log('Contact Form submitted:', submitData);
       
+      // Track form submission
+      trackFormSubmit('contact', submitData);
+      
       // Send emails
-      const emailResult = await sendEmails(submitData);
+      const emailResult = await sendEmails(submitData as any);
       
       if (emailResult.success) {
         setIsSubmitted(true);
+        
+        // Track successful completion
+        trackEvent('form_complete', {
+          form_type: 'contact',
+          page_language: currentLang,
+          success: true
+        });
         
         // Auto-scroll to success message
         setTimeout(() => {
@@ -191,16 +409,21 @@ export default function ContactForm({ translations }: ContactFormProps) {
           services: { value: '', isValid: null, error: null, touched: false }
         });
         
-        // Clear any errors
         setFormError('');
       } else {
-        // Show specific error based on what failed
-        let errorMessage = language === 'en' 
+        // Track failed submission
+        trackEvent('form_error', {
+          form_type: 'contact',
+          error_type: 'email_delivery',
+          page_language: currentLang
+        });
+        
+        let errorMessage = currentLang === 'en' 
           ? 'An error occurred while sending emails. Please try again.' 
           : 'Email gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
           
         if (!emailResult.customerEmailSent && !emailResult.adminEmailSent) {
-          errorMessage = language === 'en' 
+          errorMessage = currentLang === 'en' 
             ? 'Failed to send confirmation emails. Please contact us directly.' 
             : 'Onay emaili gönderilemedi. Lütfen direkt bizimle iletişime geçin.';
         }
@@ -210,8 +433,17 @@ export default function ContactForm({ translations }: ContactFormProps) {
       
     } catch (error) {
       console.error('Form submission error:', error);
-      const language = typeof window !== 'undefined' && window.location.pathname.includes('/en') ? 'en' : 'tr';
-      setFormError(language === 'en' ? 'An error occurred while submitting the form. Please try again.' : 'Form gönderilirken bir hata oluştu. Lütfen tekrar deneyin.');
+      
+      // Track error
+      trackEvent('form_error', {
+        form_type: 'contact',
+        error_type: 'submission',
+        error_details: error instanceof Error ? error.message : 'Unknown error',
+        page_language: currentLang
+      });
+      
+      const handledError = errorHandler.handleError(error, 'contact_form_submission');
+      setFormError(handledError.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -231,7 +463,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
     const rule = schema[name as keyof typeof schema];
     
     if (rule) {
-      const validation = validateFieldRealTime(name, value, rule, lang as 'tr' | 'en');
+      const validation = validateFieldRealTime(name, value, rule, currentLang);
       
       setFieldStates(prev => ({
         ...prev,
@@ -251,7 +483,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
     
     const rule = schema[name as keyof typeof schema];
     if (rule) {
-      const validation = validateFieldRealTime(name, value, rule, lang as 'tr' | 'en');
+      const validation = validateFieldRealTime(name, value, rule, currentLang);
       
       setFieldStates(prev => ({
         ...prev,
@@ -278,12 +510,12 @@ export default function ContactForm({ translations }: ContactFormProps) {
     // Update services field validation state
     const rule = schema.services;
     if (rule) {
-      const validation = validateFieldRealTime('services', newServices, rule, lang as 'tr' | 'en');
+      const validation = validateFieldRealTime('services', newServices, rule, currentLang);
       
       setFieldStates(prev => ({
         ...prev,
         services: {
-          value: newServices.join(', '), // Convert array to string for display
+          value: newServices.join(', '),
           isValid: validation.isValid,
           error: validation.error,
           touched: true
@@ -297,19 +529,16 @@ export default function ContactForm({ translations }: ContactFormProps) {
       <div className="text-center py-12" data-success-message>
         <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-6" />
         <h3 className="text-2xl font-bold text-secondary-900 mb-4">
-          {translations.contact.form.submit === 'Send' ? 'Thank You!' : 'Teşekkürler!'}
+          {t.success?.title}
         </h3>
         <p className="text-secondary-600 mb-8">
-          {translations.contact.form.submit === 'Send'
-            ? 'Your message has been sent successfully. We will get back to you soon.'
-            : 'Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.'
-          }
+          {t.success?.message}
         </p>
         <button
           onClick={() => setIsSubmitted(false)}
           className="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
         >
-          {translations.contact.form.submit === 'Send' ? 'Send Another Message' : 'Başka Mesaj Gönder'}
+          {t.success?.button}
         </button>
       </div>
     );
@@ -336,7 +565,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ValidatedField
           fieldState={fieldStates.name}
-          label={translations.contact.form.name}
+          label={t.labels?.name}
           required={true}
         >
           <input
@@ -346,7 +575,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
             onChange={handleChange}
             onBlur={handleBlur}
             className={getFieldValidationClasses(fieldStates.name, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-            placeholder={translations.contact.form.name}
+            placeholder={t.placeholders?.name}
             aria-describedby={fieldStates.name.error ? "name-error" : undefined}
             aria-invalid={fieldStates.name.isValid === false}
           />
@@ -354,7 +583,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
         
         <ValidatedField
           fieldState={fieldStates.email}
-          label={translations.contact.form.email}
+          label={t.labels?.email}
           required={false}
         >
           <input
@@ -364,7 +593,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
             onChange={handleChange}
             onBlur={handleBlur}
             className={getFieldValidationClasses(fieldStates.email, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-            placeholder={translations.contact.form.email}
+            placeholder={t.placeholders?.email}
             aria-describedby={fieldStates.email.error ? "email-error" : undefined}
             aria-invalid={fieldStates.email.isValid === false}
           />
@@ -374,7 +603,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <ValidatedField
           fieldState={fieldStates.company}
-          label={translations.contact.form.company}
+          label={t.labels?.company}
           required={false}
         >
           <input
@@ -384,7 +613,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
             onChange={handleChange}
             onBlur={handleBlur}
             className={getFieldValidationClasses(fieldStates.company, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-            placeholder={translations.contact.form.company}
+            placeholder={t.placeholders?.company}
             aria-describedby={fieldStates.company.error ? "company-error" : undefined}
             aria-invalid={fieldStates.company.isValid === false}
           />
@@ -392,7 +621,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
 
         <ValidatedField
           fieldState={fieldStates.phone}
-          label={translations.contact.form.phone || (translations.contact.form.submit === 'Send' ? 'Phone Number' : 'Telefon Numarası')}
+          label={t.labels?.phone}
           required={true}
         >
           <input
@@ -402,7 +631,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
             onChange={handleChange}
             onBlur={handleBlur}
             className={getFieldValidationClasses(fieldStates.phone, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-            placeholder={translations.contact.form.phone || (translations.contact.form.submit === 'Send' ? 'Phone Number' : 'Telefon Numarası')}
+            placeholder={t.placeholders?.phone}
             aria-describedby={fieldStates.phone.error ? "phone-error" : undefined}
             aria-invalid={fieldStates.phone.isValid === false}
           />
@@ -411,7 +640,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
 
       <ValidatedField
         fieldState={fieldStates.services}
-        label={translations.contact.form.services}
+        label={t.labels?.services}
         required={true}
       >
         <div className={`space-y-3 p-4 rounded-lg transition-all duration-200 ${
@@ -421,7 +650,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
             ? 'border-2 border-green-500 bg-green-50'
             : 'border border-secondary-300'
         }`}>
-          {translations.contact.form.serviceOptions.map((option) => (
+          {(t.serviceOptions || []).map((option: string) => (
             <label key={option} className="flex items-center">
               <input
                 type="checkbox"
@@ -438,7 +667,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
       {(formData.services.includes('Diğer') || formData.services.includes('Other')) && (
         <div>
           <label className="block text-sm font-medium text-secondary-700 mb-2">
-            {translations.contact.form.submit === 'Send' ? 'Please specify' : 'Lütfen belirtin'}
+            {t.labels?.otherService || (currentLang === 'en' ? 'Please specify' : 'Lütfen belirtin')}
           </label>
           <input
             type="text"
@@ -446,14 +675,14 @@ export default function ContactForm({ translations }: ContactFormProps) {
             value={formData.otherService}
             onChange={handleChange}
             className="w-full px-4 py-3 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-colors"
-            placeholder={translations.contact.form.submit === 'Send' ? 'Describe your needs...' : 'İhtiyaçlarınızı açıklayın...'}
+            placeholder={t.placeholders?.otherService}
           />
         </div>
       )}
 
       <ValidatedField
         fieldState={fieldStates.message}
-        label={translations.contact.form.message}
+        label={t.labels?.message}
         required={false}
       >
         <textarea
@@ -463,7 +692,7 @@ export default function ContactForm({ translations }: ContactFormProps) {
           onChange={handleChange}
           onBlur={handleBlur}
           className={getFieldValidationClasses(fieldStates.message, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-          placeholder={translations.contact.form.submit === 'Send' ? 'Tell us about your project...' : 'Projeniz hakkında bize bilgi verin...'}
+          placeholder={t.placeholders?.message}
           aria-describedby={fieldStates.message.error ? "message-error" : undefined}
           aria-invalid={fieldStates.message.isValid === false}
         />
@@ -480,47 +709,47 @@ export default function ContactForm({ translations }: ContactFormProps) {
         />
       </div>
 
-        <button
-          type="submit"
-          disabled={isSubmitting}
-          className="w-full flex items-center justify-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
-        >
-          {isSubmitting ? (
-            <Spinner size="sm" className="text-white" />
-          ) : (
-            <>
-              {translations.contact.form.submit}
-              <Send className="ml-2 w-5 h-5" />
-            </>
-          )}
-        </button>
-
-        {/* Form validation hints */}
-        {(isSubmitting === false) && (
-          <div className="text-sm text-secondary-500 space-y-1">
-            {(!formData.name.trim() || !formData.phone.trim() || formData.services.length === 0 || !formData.privacyAccepted) && (
-              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3" data-validation-hints>
-                <p className="text-amber-800 font-medium mb-2">
-                  {translations.contact.form.submit === 'Send' ? 'Please complete the following required fields:' : 'Lütfen aşağıdaki zorunlu alanları tamamlayın:'}
-                </p>
-                <ul className="space-y-1 text-amber-700">
-                  {!formData.name.trim() && (
-                    <li>• {translations.contact.form.name}</li>
-                  )}
-                  {!formData.phone.trim() && (
-                    <li>• {translations.contact.form.phone || (translations.contact.form.submit === 'Send' ? 'Phone Number' : 'Telefon Numarası')}</li>
-                  )}
-                  {formData.services.length === 0 && (
-                    <li>• {translations.contact.form.services}</li>
-                  )}
-                  {!formData.privacyAccepted && (
-                    <li>• {translations.contact.form.submit === 'Send' ? 'Privacy Policy acceptance' : 'Gizlilik Politikası kabulü'}</li>
-                  )}
-                </ul>
-              </div>
-            )}
-          </div>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full flex items-center justify-center px-8 py-4 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105"
+      >
+        {isSubmitting ? (
+          <Spinner size="sm" className="text-white" />
+        ) : (
+          <>
+            {t.submit}
+            <Send className="ml-2 w-5 h-5" />
+          </>
         )}
+      </button>
+
+      {/* Form validation hints */}
+      {(isSubmitting === false) && (
+        <div className="text-sm text-secondary-500 space-y-1">
+          {(!formData.name.trim() || !formData.phone.trim() || formData.services.length === 0 || !formData.privacyAccepted) && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3" data-validation-hints>
+              <p className="text-amber-800 font-medium mb-2">
+                {t.hints?.title}
+              </p>
+              <ul className="space-y-1 text-amber-700">
+                {!formData.name.trim() && (
+                  <li>• {t.hints?.name}</li>
+                )}
+                {!formData.phone.trim() && (
+                  <li>• {t.hints?.phone}</li>
+                )}
+                {formData.services.length === 0 && (
+                  <li>• {t.hints?.services}</li>
+                )}
+                {!formData.privacyAccepted && (
+                  <li>• {t.hints?.privacy}</li>
+                )}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
 
       <div className="flex items-start">
         <input
@@ -531,20 +760,20 @@ export default function ContactForm({ translations }: ContactFormProps) {
           className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2 mt-1"
         />
         <label htmlFor="privacyAccepted" className="ml-2 text-sm text-secondary-700">
-          {translations.contact.form.submit === 'Send' ? (
+          {currentLang === 'en' ? (
             <>
               I have read and accept the{' '}
               <a href="/en/privacy" target="_blank" className="text-primary-600 hover:underline">
-                Privacy Policy
+                {t.privacy?.link || 'Privacy Policy'}
               </a>
-              {' '}and consent to the processing of my personal data. *
+              {t.privacy?.text || ' and consent to the processing of my personal data.'} *
             </>
           ) : (
             <>
               <a href="/gizlilik-politikasi" target="_blank" className="text-primary-600 hover:underline">
-                Gizlilik Politikası
+                {t.privacy?.link || 'Gizlilik Politikası'}
               </a>
-              'nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum. *
+              {t.privacy?.text || 'nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum.'} *
             </>
           )}
         </label>

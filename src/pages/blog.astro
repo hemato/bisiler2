@@ -1,63 +1,118 @@
 ---
+// === COMPONENT IMPORTS ===
 import Layout from '../layouts/Layout.astro';
+import { Calendar, User, ArrowRight, BookOpen, Search, Tag, Folder } from 'lucide-react';
+
+// === I18N IMPORTS ===
 import { getLangFromUrl, getTranslations } from '../i18n/utils';
-import { Calendar, User, ArrowRight, BookOpen } from 'lucide-react';
+
+// === CONFIG IMPORTS ===
 import { COMPANY_INFO } from '../config/company';
-import { blogAPI, categoriesAPI, tagsAPI, handleStrapiError } from '../utils/strapi';
-import { getMediaUrl, formatDate, calculateReadingTime } from '../config/strapi';
+import { DOMAIN_CONFIG, getUrl } from '../config/domain';
 import { getRoute } from '../utils/routes';
 
+// === REMOVED STRAPI IMPORTS - USING STATIC DATA ===
+// import { blogAPI, categoriesAPI, tagsAPI, handleStrapiError } from '../utils/strapi';
+// import { getMediaUrl, formatDate, calculateReadingTime } from '../config/strapi';
+
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../utils/seo-advanced';
+import {
+  generateBreadcrumbSchema,
+  generateOrganizationSchema
+} from '../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../utils/security';
+
+// === CONSTANTS ===
+const BLOG_PAGE_CONFIG = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.15,
+    ANIMATION_DELAY: 200,
+    POSTS_PER_PAGE: 6
+  },
+  SEO: {
+    META_DESCRIPTION: {
+      MAX_LENGTH: 160
+    },
+    BLOG_SCHEMA: {
+      ARTICLE_SECTION: 'Technology',
+      PUBLISHER_TYPE: 'Organization'
+    }
+  },
+  CONTENT: {
+    EXCERPT_LENGTH: 150,
+    MAX_TAGS_DISPLAY: 3,
+    RECENT_POSTS_COUNT: 3
+  },
+  PAGINATION: {
+    MAX_PAGES_SHOWN: 5,
+    POSTS_PER_PAGE: 4
+  }
+};
+
+// === INITIALIZATION ===
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
 
-// Get URL search params for pagination and filtering  
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === URL PARAMETERS ===
 const url = new URL(Astro.request.url);
 const currentPage = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
-const categoryFilter = url.searchParams.get('category');
-const tagFilter = url.searchParams.get('tag');
-const searchQuery = url.searchParams.get('search');
+const categoryFilter = url.searchParams.get('category') || undefined;
+const tagFilter = url.searchParams.get('tag') || undefined;
+const searchQuery = url.searchParams.get('search') || undefined;
 
 console.log('Server-side params:', { currentPage, categoryFilter, tagFilter, searchQuery });
 
+// === TYPE DEFINITIONS ===
+let blogPosts: any[] = [];
+let categories: any[] = [];
+let tags: any[] = [];
+let error: string | null = null;
 
-let blogPosts;
-let categories;
-let tags;
-let error = null;
-
-try {
-  // Fetch blog posts with current filters
-  const blogResponse = await blogAPI.getAll({
-    page: currentPage,
-    pageSize: 6,
-    locale: lang,
-    category: categoryFilter,
-    tag: tagFilter,
-    search: searchQuery
-  });
-  
-  blogPosts = blogResponse.data;
-  const totalPages = blogResponse.meta.pagination.pageCount;
-  const totalPosts = blogResponse.meta.pagination.total;
-  
-  // Fetch categories and tags for sidebar
-  const [categoriesResponse, tagsResponse] = await Promise.all([
-    categoriesAPI.getAll(lang),
-    tagsAPI.getAll(lang)
-  ]);
-  
-  categories = categoriesResponse.data;
-  tags = tagsResponse.data;
-  
-} catch (err) {
-  error = handleStrapiError(err);
-  console.error('Blog page error:', error);
-  
-  // Fallback to empty arrays if Strapi is not available
-  blogPosts = [];
-  categories = [];
-  tags = [];
+// === HELPER FUNCTIONS ===
+function getBlogBreadcrumbs(lang: 'tr' | 'en') {
+  return [
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: lang === 'en' ? 'Blog' : 'Blog', url: getRoute(lang, 'blog') }
+  ];
 }
+
+function getBlogPageTitle(lang: 'tr' | 'en'): string {
+  return lang === 'en' ? 'Technology Blog & Digital Insights | BisilerTech' : 'Teknoloji Blog & Dijital İçgörüler | BisilerTech';
+}
+
+function getBlogMetaDescription(lang: 'tr' | 'en'): string {
+  return generateOptimizedMetaDescription(
+    lang === 'en'
+      ? 'Stay updated with the latest in CRM, automation, and digital transformation. Expert insights and best practices from BisilerTech.'
+      : 'CRM, otomasyon ve dijital dönüşümde en güncel gelişmeleri takip edin. BisilerTech\'ten uzman görüşleri ve en iyi uygulamalar.',
+    ['CRM', 'automation', 'digital transformation'],
+    lang === 'en' ? 'Turkey' : 'Türkiye',
+    lang
+  );
+}
+
+// === STATIC DATA INITIALIZATION ===
+// Using static blog data instead of Strapi CMS
+console.log('Using static blog data - Strapi disabled');
+blogPosts = [];
+categories = [];
+tags = [];
+error = null;
 
 // Fallback blog posts if Strapi is not available
 const fallbackPosts = [
@@ -141,21 +196,70 @@ const fallbackPosts = [
   }
 ];
 
-// Use filtered posts if no posts from Strapi
+// === CONTENT OPTIMIZATION ===
+const optimizedDescription = getBlogMetaDescription(lang);
+
+// === STRUCTURED DATA GENERATION ===
+const breadcrumbs = getBlogBreadcrumbs(lang);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+const organizationSchema = generateOrganizationSchema(lang);
+
+// Generate WebPage Schema using AdvancedSEOManager - Fixed for static blogs
+const pageSchemas = seoManager.generateSchemasForPage('blog', {
+  blog: {
+    name: getBlogPageTitle(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'blog')),
+    publisher: {
+      name: COMPANY_INFO.name,
+      url: DOMAIN_CONFIG.baseUrl
+    }
+  },
+  page: {
+    name: getBlogPageTitle(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'blog')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// Combine all schemas
+const allSchemas = [
+  breadcrumbSchema,
+  organizationSchema,
+  ...pageSchemas
+];
+
+// === DATA PROCESSING ===
 const displayPosts = blogPosts.length > 0 ? blogPosts : fallbackPosts;
 const displayCategories = categories.length > 0 ? categories : [...new Set(fallbackPosts.map(post => post.category))];
 const displayTags = tags.length > 0 ? tags : [...new Set(fallbackPosts.flatMap(post => post.tags))];
 
-// Always show all posts for client-side pagination
-const postsPerPage = 4;
+// Pagination setup
+const postsPerPage = BLOG_PAGE_CONFIG.PAGINATION.POSTS_PER_PAGE;
 const paginatedPosts = displayPosts;
 const totalPages = Math.ceil(displayPosts.length / postsPerPage);
 ---
 
-<Layout 
-  title={`${t.nav.blog} | ${COMPANY_INFO.name}`}
-  description={t.blog.metaDescription}
+<Layout
+  title={getBlogPageTitle(lang)}
+  description={optimizedDescription}
 >
+  <!-- Enhanced Structured Data Schemas -->
+  {allSchemas.map((schema) => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />
+  ))}
+
+  <!-- DNS Prefetching and Resource Preloading -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com" slot="head" />
+  <link rel="preconnect" href={DOMAIN_CONFIG.baseUrl} slot="head" />
+  <link rel="preload" href={getRoute(lang, 'contact')} as="document" slot="head" />
+
+  <!-- Security Headers via Meta Tags -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" slot="head" />
+  <meta http-equiv="X-Frame-Options" content="DENY" slot="head" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" slot="head" />
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
@@ -232,10 +336,11 @@ const totalPages = Math.ceil(displayPosts.length / postsPerPage);
                   </p>
                   
                   <div class="flex flex-wrap gap-2 mb-4">
-                    {post.tags.slice(0, 3).map((tag) => (
-                      <a 
+                    {post.tags.slice(0, BLOG_PAGE_CONFIG.CONTENT.MAX_TAGS_DISPLAY).map((tag: any) => (
+                      <a
                         href={`${lang === 'en' ? '/en' : ''}/blog?tag=${encodeURIComponent(tag)}`}
                         class="bg-secondary-100 hover:bg-primary-100 text-secondary-700 hover:text-primary-700 px-2 py-1 rounded text-xs transition-colors"
+                        data-track={`tag_${tag}`}
                       >
                         {tag}
                       </a>
@@ -408,6 +513,131 @@ const totalPages = Math.ceil(displayPosts.length / postsPerPage);
       </div>
     </div>
   </div>
+
+  <!-- Performance Monitoring and Analytics Script -->
+  <script is:inline define:vars={{
+    PERFORMANCE_CONFIG: BLOG_PAGE_CONFIG.PERFORMANCE,
+    securityNonce,
+    lang
+  }}>
+    // Performance Metrics Tracking for Blog Page
+    function initBlogPerformanceTracking() {
+      // Core Web Vitals monitoring
+      let fcpObserver, lcpObserver, clsObserver;
+      
+      // First Contentful Paint (FCP)
+      fcpObserver = new PerformanceObserver((entryList) => {
+        const fcpEntries = entryList.getEntriesByName('first-contentful-paint');
+        if (fcpEntries.length > 0) {
+          const fcp = fcpEntries[0].startTime;
+          console.log('Blog FCP:', fcp);
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_fcp', {
+              value: Math.round(fcp),
+              event_category: 'performance'
+            });
+          }
+        }
+      });
+      fcpObserver.observe({ entryTypes: ['paint'] });
+
+      // Largest Contentful Paint (LCP)
+      lcpObserver = new PerformanceObserver((entryList) => {
+        const lcpEntries = entryList.getEntries();
+        if (lcpEntries.length > 0) {
+          const lcp = lcpEntries[lcpEntries.length - 1].startTime;
+          console.log('Blog LCP:', lcp);
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_lcp', {
+              value: Math.round(lcp),
+              event_category: 'performance'
+            });
+          }
+        }
+      });
+      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+
+      // Cumulative Layout Shift (CLS)
+      let clsValue = 0;
+      clsObserver = new PerformanceObserver((entryList) => {
+        for (const entry of entryList.getEntries()) {
+          if (!entry.hadRecentInput) {
+            clsValue += entry.value;
+          }
+        }
+        console.log('Blog CLS:', clsValue);
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'blog_cls', {
+            value: Math.round(clsValue * 1000),
+            event_category: 'performance'
+          });
+        }
+      });
+      clsObserver.observe({ entryTypes: ['layout-shift'] });
+
+      // Intersection Observer for blog post cards
+      const blogCards = document.querySelectorAll('article');
+      if (blogCards.length > 0) {
+        const cardObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                entry.target.classList.add('animate-in');
+              }, index * PERFORMANCE_CONFIG.ANIMATION_DELAY);
+              cardObserver.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: PERFORMANCE_CONFIG.INTERSECTION_THRESHOLD,
+          rootMargin: PERFORMANCE_CONFIG.LAZY_LOAD_MARGIN
+        });
+
+        blogCards.forEach(card => {
+          cardObserver.observe(card);
+        });
+      }
+
+      // Track blog interactions
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-track]');
+        if (target) {
+          const action = target.dataset.track;
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_interaction', {
+              action: action,
+              event_category: 'engagement'
+            });
+          }
+        }
+      });
+
+      // Page performance summary after load
+      setTimeout(() => {
+        const navigation = performance.getEntriesByType('navigation')[0];
+        if (navigation) {
+          console.log('Blog Page Load Summary:', {
+            domContentLoaded: navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart,
+            loadComplete: navigation.loadEventEnd - navigation.loadEventStart,
+            total: navigation.loadEventEnd - navigation.fetchStart
+          });
+        }
+      }, PERFORMANCE_CONFIG.METRICS_DELAY);
+
+      // Cleanup observers on page unload
+      window.addEventListener('beforeunload', () => {
+        if (fcpObserver) fcpObserver.disconnect();
+        if (lcpObserver) lcpObserver.disconnect();
+        if (clsObserver) clsObserver.disconnect();
+      });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBlogPerformanceTracking);
+    } else {
+      initBlogPerformanceTracking();
+    }
+  </script>
 
   <!-- Client-side filtering and pagination script -->
   <script>
@@ -671,4 +901,88 @@ const totalPages = Math.ceil(displayPosts.length / postsPerPage);
       }
     }
   </script>
+
+  <!-- Animation Styles -->
+  <style>
+    .animate-in {
+      opacity: 1 !important;
+      transform: translateY(0) !important;
+    }
+    
+    article {
+      opacity: 0;
+      transform: translateY(2rem);
+      transition: all 0.6s ease-out;
+    }
+    
+    /* Enhanced blog card hover effects */
+    article:hover {
+      transform: translateY(-0.25rem);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+    
+    /* Optimized image loading */
+    article img {
+      transition: transform 0.3s ease;
+    }
+    
+    article:hover img {
+      transform: scale(1.05);
+    }
+    
+    /* Filter status animation */
+    .filter-status {
+      animation: slideInDown 0.3s ease-out;
+    }
+    
+    @keyframes slideInDown {
+      from {
+        opacity: 0;
+        transform: translateY(-1rem);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    /* Sidebar animations */
+    .sidebar-section {
+      opacity: 0;
+      transform: translateX(1rem);
+      animation: slideInRight 0.6s ease-out forwards;
+    }
+    
+    .sidebar-section:nth-child(2) { animation-delay: 0.1s; }
+    .sidebar-section:nth-child(3) { animation-delay: 0.2s; }
+    .sidebar-section:nth-child(4) { animation-delay: 0.3s; }
+    .sidebar-section:nth-child(5) { animation-delay: 0.4s; }
+    
+    @keyframes slideInRight {
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+    
+    /* Search input focus effects */
+    input[type="search"], input[type="text"] {
+      transition: all 0.2s ease;
+    }
+    
+    input[type="search"]:focus, input[type="text"]:focus {
+      transform: scale(1.02);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+    }
+    
+    /* Pagination hover effects */
+    nav a {
+      transition: all 0.2s ease;
+    }
+    
+    nav a:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  </style>
 </Layout>

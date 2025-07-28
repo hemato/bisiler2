@@ -4,29 +4,299 @@ import ContactForm from './ContactForm';
 
 const lang = getLangFromUrl(Astro.url);
 
+// Enhanced i18n import with proper type support
 const translations = lang === 'en' 
   ? await import('../i18n/en.json')
   : await import('../i18n/tr.json');
 
 const t = translations.default;
+
+// Extract form-specific translations from the new i18n structure
+const formTranslations = {
+  forms: {
+    contact: t.forms?.contact || {},
+    common: t.forms?.common || {},
+    validation: t.forms?.validation || {},
+    security: t.forms?.security || {},
+    analytics: t.forms?.analytics || {}
+  }
+};
+
+// Legacy translation structure for backward compatibility
+const legacyTranslations = {
+  contact: {
+    form: {
+      name: t.forms?.contact?.labels?.name || (lang === 'en' ? 'Full Name' : 'Ad Soyad'),
+      email: t.forms?.contact?.labels?.email || (lang === 'en' ? 'Email' : 'E-posta'),
+      phone: t.forms?.contact?.labels?.phone || (lang === 'en' ? 'Phone Number' : 'Telefon Numarası'),
+      company: t.forms?.contact?.labels?.company || (lang === 'en' ? 'Company Name' : 'Şirket Adı'),
+      services: t.forms?.contact?.labels?.services || (lang === 'en' ? 'Services of Interest' : 'İlgilendiğiniz Hizmetler'),
+      message: t.forms?.contact?.labels?.message || (lang === 'en' ? 'Your Message' : 'Mesajınız'),
+      submit: t.forms?.contact?.submit || (lang === 'en' ? 'Send Message' : 'Mesaj Gönder'),
+      serviceOptions: t.forms?.contact?.serviceOptions || [
+        lang === 'en' ? 'Website Setup' : 'Web Sitesi Kurulumu',
+        lang === 'en' ? 'Form and CRM Integration' : 'Form ve CRM Entegrasyonu',
+        lang === 'en' ? 'CRM Selection & Setup' : 'CRM Seçimi ve Kurulumu',
+        lang === 'en' ? 'Automation Systems' : 'Otomasyon Sistemleri',
+        lang === 'en' ? 'SEO & Technical Optimization' : 'SEO ve Teknik İyileştirme',
+        lang === 'en' ? 'Technical Consulting' : 'Teknik Danışmanlık',
+        lang === 'en' ? 'Other' : 'Diğer'
+      ]
+    }
+  }
+};
+
+// Determine which title and description to use
+const sectionTitle = t.forms?.homeContact?.title || 
+  (lang === 'en' ? 'Get Started Today' : 'Bugün Başlayın');
+
+const sectionDescription = t.forms?.homeContact?.description || 
+  (lang === 'en' 
+    ? 'Fill out the form below and let\'s discuss your project needs'
+    : 'Aşağıdaki formu doldurun ve proje ihtiyaçlarınızı konuşalım'
+  );
 ---
 
-<section class="py-20 bg-secondary-50">
+<!-- Enhanced Home Contact Form Section with Analytics and Security -->
+<section class="py-20 bg-secondary-50" data-section="home-contact-form">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Section Header -->
     <div class="text-center mb-12">
       <h2 class="text-4xl font-bold text-secondary-900 mb-4">
-        {lang === 'en' ? 'Get Started Today' : 'Bugün Başlayın'}
+        {sectionTitle}
       </h2>
       <p class="text-xl text-secondary-600">
-        {lang === 'en' 
-          ? 'Fill out the form below and let\'s discuss your project needs'
-          : 'Aşağıdaki formu doldurun ve proje ihtiyaçlarınızı konuşalım'
-        }
+        {sectionDescription}
       </p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-xl p-8">
-      <ContactForm translations={t} client:load />
+    <!-- Enhanced Contact Form Container -->
+    <div class="bg-white rounded-2xl shadow-xl p-8 relative">
+      <!-- Security and Analytics wrapper -->
+      <div class="relative">
+        <!-- Invisible honeypot fields for additional spam protection -->
+        <div style="position: absolute; left: -9999px; visibility: hidden;" aria-hidden="true">
+          <input type="text" name="email_confirm" tabindex="-1" autocomplete="off" />
+          <input type="text" name="phone_verify" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <!-- Enhanced Contact Form with all optimizations -->
+        <ContactForm 
+          translations={legacyTranslations}
+          i18n={formTranslations}
+          client:load 
+        />
+      </div>
+
+      <!-- Performance and Security Indicators (only visible in development) -->
+      {import.meta.env.DEV && (
+        <div class="absolute top-2 right-2 text-xs text-gray-400 space-y-1">
+          <div>🔒 Security: Enhanced</div>
+          <div>🌍 i18n: {lang.toUpperCase()}</div>
+          <div>📊 Analytics: Enabled</div>
+          <div>⚡ Performance: Optimized</div>
+        </div>
+      )}
+    </div>
+
+    <!-- Trust Indicators -->
+    <div class="mt-8 text-center">
+      <div class="flex flex-wrap justify-center items-center gap-6 text-sm text-secondary-500">
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-2 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd" />
+          </svg>
+          {lang === 'en' ? 'SSL Secured' : 'SSL Güvenli'}
+        </div>
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-2 text-blue-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+          </svg>
+          {lang === 'en' ? 'GDPR Compliant' : 'KVKK Uyumlu'}
+        </div>
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-2 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm0 4a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1V8zm8 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V8z" clip-rule="evenodd" />
+          </svg>
+          {lang === 'en' ? 'Real-time Validation' : 'Anlık Doğrulama'}
+        </div>
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-2 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd" />
+          </svg>
+          {lang === 'en' ? '24h Response' : '24 Saat Yanıt'}
+        </div>
+      </div>
+    </div>
+
+    <!-- Contact Alternatives -->
+    <div class="mt-12 text-center">
+      <p class="text-secondary-600 mb-6">
+        {lang === 'en' 
+          ? 'Prefer to talk directly? Choose your preferred contact method:'
+          : 'Direkt konuşmayı mı tercih ediyorsunuz? Tercih ettiğiniz iletişim yöntemini seçin:'
+        }
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <!-- WhatsApp Contact -->
+        <a 
+          href="https://wa.me/905554443322?text=Merhaba, web sitesi hizmetleriniz hakkında bilgi almak istiyorum." 
+          target="_blank" 
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center px-6 py-3 bg-green-600 text-white font-medium rounded-lg hover:bg-green-700 transition-colors transform hover:scale-105"
+          onclick="gtag('event', 'whatsapp_click', { 'event_category': 'contact', 'event_label': 'home_form' });"
+        >
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/>
+          </svg>
+          WhatsApp
+        </a>
+
+        <!-- Phone Contact -->
+        <a 
+          href="tel:+905554443322" 
+          class="inline-flex items-center justify-center px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors transform hover:scale-105"
+          onclick="gtag('event', 'phone_click', { 'event_category': 'contact', 'event_label': 'home_form' });"
+        >
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+          </svg>
+          {lang === 'en' ? 'Call Now' : 'Hemen Ara'}
+        </a>
+
+        <!-- Email Contact -->
+        <a 
+          href="mailto:info@techcorp.com.tr?subject=Web Sitesi Hizmetleri Hakkında" 
+          class="inline-flex items-center justify-center px-6 py-3 bg-gray-600 text-white font-medium rounded-lg hover:bg-gray-700 transition-colors transform hover:scale-105"
+          onclick="gtag('event', 'email_click', { 'event_category': 'contact', 'event_label': 'home_form' });"
+        >
+          <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+            <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+          </svg>
+          {lang === 'en' ? 'Send Email' : 'E-posta Gönder'}
+        </a>
+      </div>
     </div>
   </div>
 </section>
+
+<!-- Enhanced Analytics and Performance Tracking -->
+<script>
+  // Enhanced form analytics
+  document.addEventListener('DOMContentLoaded', function() {
+    // Track section visibility
+    const section = document.querySelector('[data-section="home-contact-form"]');
+    if (section && 'IntersectionObserver' in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            // Track section view
+            if (typeof window.gtag !== 'undefined') {
+              window.gtag('event', 'section_view', {
+                'event_category': 'engagement',
+                'event_label': 'home_contact_form',
+                'page_language': document.documentElement.lang || 'tr'
+              });
+            }
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      observer.observe(section);
+    }
+
+    // Track form field interactions for better UX insights
+    const formInputs = document.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>('input, textarea, select');
+    formInputs.forEach(input => {
+      let focusTime: number = 0;
+      
+      input.addEventListener('focus', () => {
+        focusTime = Date.now();
+        if (typeof window.gtag !== 'undefined') {
+          window.gtag('event', 'form_field_focus', {
+            'event_category': 'form_interaction',
+            'event_label': input.name || input.tagName.toLowerCase(),
+            'page_language': document.documentElement.lang || 'tr'
+          });
+        }
+      });
+      
+      input.addEventListener('blur', () => {
+        if (focusTime > 0) {
+          const timeSpent = Date.now() - focusTime;
+          if (timeSpent > 1000 && typeof window.gtag !== 'undefined') { // Only track if spent more than 1 second
+            window.gtag('event', 'form_field_time', {
+              'event_category': 'form_interaction',
+              'event_label': input.name || input.tagName.toLowerCase(),
+              'value': Math.round(timeSpent / 1000),
+              'page_language': document.documentElement.lang || 'tr'
+            });
+          }
+        }
+      });
+    });
+
+    // Track scroll depth for better content optimization
+    let maxScroll: number = 0;
+    const trackScrollDepth = (): void => {
+      const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+      if (scrollPercent > maxScroll && scrollPercent % 25 === 0) {
+        maxScroll = scrollPercent;
+        if (typeof window.gtag !== 'undefined') {
+          window.gtag('event', 'scroll_depth', {
+            'event_category': 'engagement',
+            'event_label': `${scrollPercent}%`,
+            'value': scrollPercent
+          });
+        }
+      }
+    };
+    
+    let scrollTimeout: ReturnType<typeof setTimeout> | undefined;
+    window.addEventListener('scroll', () => {
+      if (scrollTimeout) {
+        clearTimeout(scrollTimeout);
+      }
+      scrollTimeout = setTimeout(trackScrollDepth, 100);
+    });
+  });
+</script>
+
+<!-- Performance and Security optimizations -->
+<style>
+  /* Progressive enhancement for better performance */
+  [data-section="home-contact-form"] {
+    /* Optimize rendering performance */
+    contain: layout style paint;
+    will-change: transform;
+  }
+
+  /* Smooth animations for better UX */
+  [data-section="home-contact-form"] .bg-white {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  [data-section="home-contact-form"] .bg-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  /* Accessibility improvements */
+  @media (prefers-reduced-motion: reduce) {
+    [data-section="home-contact-form"] * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    [data-section="home-contact-form"] .bg-white {
+      border: 2px solid currentColor;
+    }
+  }
+</style>

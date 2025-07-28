@@ -1,14 +1,94 @@
 ---
+// === COMPONENT IMPORTS ===
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Building2, TrendingUp, CheckCircle, Globe, Users, Zap, Calendar, Award } from 'lucide-react';
-import { generateReviewSchema } from '../utils/structured-data';
+
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
+
+// === CONFIG IMPORTS ===
+import { COMPANY_INFO } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../config/domain';
 import { getRoute } from '../utils/routes';
 
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../utils/seo-advanced';
+import {
+  generateReviewSchema,
+  generateBreadcrumbSchema,
+  generateOrganizationSchema
+} from '../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../utils/security';
+
+// === CONSTANTS ===
+const REFERENCES_PAGE_CONFIG = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.2,
+    ANIMATION_DELAY: 300
+  },
+  SEO: {
+    AVERAGE_RATING: '5.0',
+    TOTAL_PROJECTS: '50+',
+    SUCCESS_RATE: '98%',
+    AVERAGE_DURATION: '2-4 months',
+    META_DESCRIPTION: {
+      MAX_LENGTH: 160
+    }
+  },
+  REFERENCES: {
+    RATING: 5,
+    REVIEW_DATE: '2024-01-01'
+  }
+};
+
+// === INITIALIZATION ===
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
 
-const serviceIcons = {
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === HELPER FUNCTIONS ===
+function getReferencesBenefits(lang: 'tr' | 'en') {
+  return lang === 'en'
+    ? ['proven results', 'expert implementation', 'long-term success']
+    : ['kanıtlanmış sonuçlar', 'uzman uygulama', 'uzun vadeli başarı'];
+}
+
+function getPageTitle(lang: 'tr' | 'en') {
+  return lang === 'en' ? 'Our References & Client Success Stories | BisilerTech' : 'Referanslarımız & Müşteri Başarı Hikayeleri | BisilerTech';
+}
+
+function getReferencesBreadcrumbs(lang: 'tr' | 'en') {
+  return [
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: lang === 'en' ? 'References' : 'Referanslar', url: getRoute(lang, 'references') }
+  ];
+}
+
+// === CONTENT GENERATION ===
+// Generate enhanced meta description
+const optimizedDescription = generateOptimizedMetaDescription(
+  lang === 'en' ? 'Our successful CRM and web development projects' : 'Başarılı CRM ve web geliştirme projelerimiz',
+  getReferencesBenefits(lang),
+  lang === 'en' ? 'Turkey' : 'Türkiye',
+  lang
+);
+
+// === SERVICE ICONS CONFIGURATION ===
+const serviceIcons: Record<string, any> = {
   'Web Sitesi': Globe,
   'Website': Globe,
   'CRM': Users,
@@ -19,6 +99,7 @@ const serviceIcons = {
   'SEO': TrendingUp
 };
 
+// === DETAILED REFERENCES DATA ===
 const detailedReferences = lang === 'en' ? [
   {
     company: "TechFlow Software Inc.",
@@ -95,25 +176,53 @@ const detailedReferences = lang === 'en' ? [
   }
 ];
 
-// Generate review schemas for each testimonial
+// === STRUCTURED DATA GENERATION ===
+// Generate breadcrumb structured data
+const breadcrumbs = getReferencesBreadcrumbs(lang);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+// Generate Organization Schema
+const organizationSchema = generateOrganizationSchema(lang);
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('references', {
+  page: {
+    name: getPageTitle(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'references')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// Generate review schemas for each reference
 const reviewSchemas = detailedReferences.map((reference, index) =>
   generateReviewSchema(
-    'TechCorp',
-    '5', // 5-star rating
+    COMPANY_INFO.name,
+    REFERENCES_PAGE_CONFIG.REFERENCES.RATING.toString(),
     reference.testimonial,
     reference.company,
-    '2024-01-01', // You can use actual dates if available
+    REFERENCES_PAGE_CONFIG.REFERENCES.REVIEW_DATE,
     lang
   )
 );
+
+// Combine all schemas
+const allSchemas = [
+  breadcrumbSchema,
+  organizationSchema,
+  ...pageSchemas,
+  ...reviewSchemas
+];
+
 ---
 
-<Layout 
-  title={`${t.nav.references} | TechCorp`}
-  description={t.references.metaDescription}
+<Layout
+  title={getPageTitle(lang)}
+  description={optimizedDescription}
 >
-  <!-- Review Schemas -->
-  {reviewSchemas.map((schema) => (
+  <!-- Enhanced Structured Data Schemas -->
+  {allSchemas.map((schema) => (
     <script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />
   ))}
   
@@ -262,6 +371,7 @@ const reviewSchemas = detailedReferences.map((reference, index) =>
       <a
         href={getRoute(lang, 'contact')}
         class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
+        data-track="cta_start_project"
       >
         {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}
       </a>

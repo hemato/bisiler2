@@ -1,5 +1,587 @@
 ---
-import ContactPage from '../iletisim.astro';
+// === COMPONENT IMPORTS ===
+import Layout from '../../layouts/Layout.astro';
+import ContactForm from '../../components/ContactForm';
+import { Mail, Phone, MapPin } from 'lucide-react';
+
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../../i18n/utils';
+
+// === CONFIG IMPORTS ===
+import { COMPANY_INFO } from '../../config/company';
+import { CONTACT_INFO } from '../../config/contact';
+import { OFFICE_HOURS } from '../../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../../config/domain';
+import { getRoute } from '../../utils/routes';
+
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../../utils/seo-advanced';
+import {
+  generateContactPageSchema,
+  generateLocalBusinessSchema,
+  generateFAQSchema,
+  generateBreadcrumbSchema
+} from '../../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../../utils/security';
+
+// === ENGLISH-SPECIFIC CONSTANTS ===
+const CONTACT_PAGE_CONFIG_EN = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.1,
+    FORM_RATE_LIMIT: 3,
+    FORM_RATE_WINDOW: 300000 // 5 minutes
+  },
+  SEO: {
+    RESPONSE_TIME: '24 hours',
+    CONTACT_METHODS: 3,
+    OFFICE_HOURS: 'Mo-Fr 09:00-18:00'
+  },
+  CONTACT: {
+    MAP_COORDINATES: {
+      lat: parseFloat(CONTACT_INFO.coordinates.latitude),
+      lng: parseFloat(CONTACT_INFO.coordinates.longitude)
+    },
+    WORKING_DAYS: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+  }
+};
+
+// === INITIALIZATION ===
+const lang = getLangFromUrl(Astro.url);
+const t = await getTranslations(lang);
+
+// Enhanced i18n translation structures for ContactForm compatibility
+const formTranslations = {
+  forms: {
+    contact: t.forms?.contact || {},
+    common: t.forms?.common || {},
+    validation: t.forms?.validation || {},
+    security: t.forms?.security || {},
+    analytics: t.forms?.analytics || {}
+  }
+};
+
+// Legacy translation structure for backward compatibility
+const legacyTranslations = {
+  contact: {
+    form: {
+      name: t.forms?.contact?.labels?.name || t.contact?.form?.name || 'Full Name',
+      email: t.forms?.contact?.labels?.email || t.contact?.form?.email || 'Email',
+      phone: t.forms?.contact?.labels?.phone || t.contact?.form?.phone || 'Phone Number',
+      company: t.forms?.contact?.labels?.company || t.contact?.form?.company || 'Company Name',
+      services: t.forms?.contact?.labels?.services || t.contact?.form?.services || 'Services of Interest',
+      message: t.forms?.contact?.labels?.message || t.contact?.form?.message || 'Your Message',
+      submit: t.forms?.contact?.submit || t.contact?.form?.submit || 'Send',
+      serviceOptions: t.forms?.contact?.serviceOptions || t.contact?.form?.serviceOptions || [
+        'Website Setup',
+        'Form and CRM Integration',
+        'CRM Selection & Setup',
+        'Automation Systems',
+        'SEO & Technical Optimization',
+        'Technical Consulting',
+        'Other'
+      ]
+    }
+  }
+};
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === ENGLISH-SPECIFIC HELPER FUNCTIONS ===
+function getContactBenefitsEN(lang: 'tr' | 'en') {
+  return lang === 'en'
+    ? ['quick response', 'expert consultation', 'personalized solutions']
+    : ['hızlı yanıt', 'uzman danışmanlık', 'kişiselleştirilmiş çözümler'];
+}
+
+function getPageTitleEN(lang: 'tr' | 'en') {
+  return `${t.nav.contact} | ${COMPANY_INFO.name}`;
+}
+
+function getContactBreadcrumbsEN(lang: 'tr' | 'en') {
+  return [
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: t.nav.contact, url: getRoute(lang, 'contact') }
+  ];
+}
+
+function getContactFAQsEN(lang: 'tr' | 'en') {
+  return lang === 'en' ? [
+    {
+      question: "How long does a typical project take?",
+      answer: "Project timelines vary depending on complexity. A simple website takes 2-4 weeks, while CRM implementations can take 4-8 weeks."
+    },
+    {
+      question: "Do you provide ongoing support?",
+      answer: "Yes, we offer various support packages including technical support, maintenance, and system updates."
+    },
+    {
+      question: "What is your pricing structure?",
+      answer: "We offer both fixed-price packages and custom pricing based on project requirements. Contact us for a detailed quote."
+    }
+  ] : [
+    {
+      question: "Tipik bir proje ne kadar sürer?",
+      answer: "Proje süreleri karmaşıklığa göre değişir. Basit bir web sitesi 2-4 hafta, CRM uygulamaları ise 4-8 hafta sürebilir."
+    },
+    {
+      question: "Sürekli destek sağlıyor musunuz?",
+      answer: "Evet, teknik destek, bakım ve sistem güncellemeleri dahil çeşitli destek paketleri sunuyoruz."
+    },
+    {
+      question: "Fiyatlandırma yapınız nasıl?",
+      answer: "Hem sabit fiyatlı paketler hem de proje gereksinimlerine göre özel fiyatlandırma sunuyoruz. Detaylı teklif için bizimle iletişime geçin."
+    }
+  ];
+}
+
+// === CONTENT GENERATION ===
+// Generate enhanced meta description for English
+const optimizedDescription = generateOptimizedMetaDescription(
+  lang === 'en' ? 'Contact our CRM and web development experts' : 'CRM ve web geliştirme uzmanlarımızla iletişime geçin',
+  getContactBenefitsEN(lang),
+  lang === 'en' ? 'Turkey' : 'Türkiye',
+  lang
+);
+
+// === STRUCTURED DATA GENERATION ===
+// Generate breadcrumb structured data
+const breadcrumbs = getContactBreadcrumbsEN(lang);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+// Generate enhanced contact page schema
+const contactPageSchema = generateContactPageSchema(lang);
+const localBusinessSchema = generateLocalBusinessSchema(lang);
+
+// Generate FAQ Schema for contact page FAQs
+const contactFAQs = getContactFAQsEN(lang);
+const faqSchema = generateFAQSchema(contactFAQs, {
+  author: COMPANY_INFO.name,
+  mainEntity: {
+    name: lang === 'en' ? 'Contact Information FAQ' : 'İletişim Bilgileri SSS',
+    description: lang === 'en'
+      ? 'Frequently asked questions about contacting our company'
+      : 'Şirketimizle iletişim hakkında sık sorulan sorular'
+  }
+});
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('contact', {
+  page: {
+    name: getPageTitleEN(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'contact')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// === COMBINE ALL STRUCTURED DATA ===
+const allStructuredData = [
+  contactPageSchema,
+  localBusinessSchema,
+  breadcrumbSchema,
+  faqSchema,
+  ...pageSchemas
+];
 ---
 
-<ContactPage />
+<Layout
+  title={getPageTitleEN(lang)}
+  description={optimizedDescription}
+  structuredData={allStructuredData}
+  ogImage={DOMAIN_CONFIG.images.ogImage}
+  canonical={getUrl(getRoute(lang, 'contact'))}
+  breadcrumbs={breadcrumbs}
+>
+  
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.contact.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.contact.subtitle}
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <!-- Contact Information -->
+        <div>
+          <h2 class="text-2xl font-semibold text-secondary-900 mb-8">
+            {lang === 'en' ? 'Get in Touch' : 'Bize Ulaşın'}
+          </h2>
+          
+          <div class="space-y-6">
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                <Mail className="w-6 h-6 text-primary-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-secondary-900">
+                  {lang === 'en' ? 'Email' : 'E-posta'}
+                </h3>
+                <p class="text-secondary-600">{CONTACT_INFO.email.primary}</p>
+                <p class="text-secondary-600">{CONTACT_INFO.email.support}</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                <Phone className="w-6 h-6 text-primary-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-secondary-900">
+                  {lang === 'en' ? 'Phone' : 'Telefon'}
+                </h3>
+                <p class="text-secondary-600">{CONTACT_INFO.phone.primary}</p>
+                <p class="text-secondary-600">{CONTACT_INFO.phone.mobile}</p>
+              </div>
+            </div>
+
+            <div class="flex items-start space-x-4">
+              <div class="flex-shrink-0 w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                <MapPin className="w-6 h-6 text-primary-600" />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-secondary-900">
+                  {lang === 'en' ? 'Address' : 'Adres'}
+                </h3>
+                <p class="text-secondary-600">
+                  {CONTACT_INFO.address.street}<br>
+                  {CONTACT_INFO.address.postalCode} {CONTACT_INFO.address.district}/{CONTACT_INFO.address.city}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Map placeholder -->
+          <div class="mt-8 bg-secondary-200 rounded-lg h-64 flex items-center justify-center">
+            <p class="text-secondary-600">
+              {lang === 'en' ? 'Map Area' : 'Harita Alanı'}
+            </p>
+          </div>
+
+          <!-- Office Hours -->
+          <div class="mt-8 bg-white rounded-xl p-6 shadow-lg">
+            <h3 class="text-lg font-semibold text-secondary-900 mb-4">
+              {lang === 'en' ? 'Office Hours' : 'Çalışma Saatleri'}
+            </h3>
+            <div class="space-y-2">
+              <div class="flex justify-between">
+                <span class="text-secondary-600">
+                  {lang === 'en' ? 'Monday - Friday' : 'Pazartesi - Cuma'}
+                </span>
+                <span class="text-secondary-900 font-medium">09:00 - 18:00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-secondary-600">
+                  {lang === 'en' ? 'Saturday' : 'Cumartesi'}
+                </span>
+                <span class="text-secondary-900 font-medium">10:00 - 16:00</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-secondary-600">
+                  {lang === 'en' ? 'Sunday' : 'Pazar'}
+                </span>
+                <span class="text-secondary-900 font-medium">
+                  {lang === 'en' ? 'Closed' : 'Kapalı'}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="bg-white rounded-xl shadow-lg p-8">
+          <ContactForm
+            translations={legacyTranslations}
+            i18n={formTranslations}
+            client:load
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Section -->
+  <section class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl font-bold text-secondary-900 mb-4">
+          {lang === 'en' ? 'Frequently Asked Questions' : 'Sık Sorulan Sorular'}
+        </h2>
+        <p class="text-xl text-secondary-600">
+          {lang === 'en' 
+            ? 'Quick answers to common questions about our services'
+            : 'Hizmetlerimiz hakkında sık sorulan sorulara hızlı cevaplar'
+          }
+        </p>
+      </div>
+
+      <div class="space-y-6">
+        <div class="bg-secondary-50 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-secondary-900 mb-2">
+            {lang === 'en' 
+              ? 'How long does a typical project take?'
+              : 'Tipik bir proje ne kadar sürer?'
+            }
+          </h3>
+          <p class="text-secondary-700">
+            {lang === 'en'
+              ? 'Project timelines vary depending on complexity. A simple website takes 2-4 weeks, while CRM implementations can take 4-8 weeks.'
+              : 'Proje süreleri karmaşıklığa göre değişir. Basit bir web sitesi 2-4 hafta, CRM uygulamaları ise 4-8 hafta sürebilir.'
+            }
+          </p>
+        </div>
+
+        <div class="bg-secondary-50 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-secondary-900 mb-2">
+            {lang === 'en' 
+              ? 'Do you provide ongoing support?'
+              : 'Sürekli destek sağlıyor musunuz?'
+            }
+          </h3>
+          <p class="text-secondary-700">
+            {lang === 'en'
+              ? 'Yes, we offer various support packages including technical support, maintenance, and system updates.'
+              : 'Evet, teknik destek, bakım ve sistem güncellemeleri dahil çeşitli destek paketleri sunuyoruz.'
+            }
+          </p>
+        </div>
+
+        <div class="bg-secondary-50 rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-secondary-900 mb-2">
+            {lang === 'en' 
+              ? 'What is your pricing structure?'
+              : 'Fiyatlandırma yapınız nasıl?'
+            }
+          </h3>
+          <p class="text-secondary-700">
+            {lang === 'en'
+              ? 'We offer both fixed-price packages and custom pricing based on project requirements. Contact us for a detailed quote.'
+              : 'Hem sabit fiyatlı paketler hem de proje gereksinimlerine göre özel fiyatlandırma sunuyoruz. Detaylı teklif için bizimle iletişime geçin.'
+            }
+          </p>
+        </div>
+      </div>
+
+      <div class="text-center mt-12">
+        <a
+          href={getRoute(lang, 'faq')}
+          class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200"
+        >
+          {lang === 'en' ? 'View All FAQs' : 'Tüm SSS\'leri Görüntüle'}
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<!-- Enhanced Performance & Security Optimization Script for English Contact Page -->
+<script is:inline>
+  // English contact page performance & security optimizations
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // === SECURITY FUNCTIONS ===
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    function validateEmail(email) {
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email) && email.length <= 254;
+    }
+    
+    function validatePhone(phone) {
+      var phoneRegex = /^[\+]?[0-9\s\-\(\)]{7,15}$/;
+      return phoneRegex.test(phone.replace(/\s/g, ''));
+    }
+    
+    // Rate limiting for contact form
+    var contactSubmissions = [];
+    var CONTACT_RATE_LIMIT = 300000; // 5 minutes
+    var MAX_SUBMISSIONS = 3;
+    
+    function isContactRateLimited() {
+      var now = Date.now();
+      contactSubmissions = contactSubmissions.filter(function(time) {
+        return now - time < CONTACT_RATE_LIMIT;
+      });
+      
+      if (contactSubmissions.length >= MAX_SUBMISSIONS) {
+        console.warn('Contact form rate limit exceeded');
+        return true;
+      }
+      
+      contactSubmissions.push(now);
+      return false;
+    }
+    
+    // Expose security functions
+    window.contactPageSecurity = {
+      sanitizeInput: sanitizeInput,
+      validateEmail: validateEmail,
+      validatePhone: validatePhone,
+      isContactRateLimited: isContactRateLimited
+    };
+    
+    // === PERFORMANCE FUNCTIONS ===
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    function addPrefetch(href) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics
+    var metrics = {
+      lcp: 0,
+      fid: 0,
+      formInteractions: 0,
+      contactViews: 0
+    };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      } catch (e) {
+        console.warn('LCP observer failed');
+      }
+    }
+    
+    // === OPTIMIZATIONS ===
+    addDnsPrefetch('//fonts.googleapis.com');
+    addPrefetch('/en/services');
+    addPrefetch('/en/faq');
+    addPrefetch('/en/about');
+    
+    // === INTERACTIONS ===
+    // Contact info animations
+    if (window.IntersectionObserver) {
+      var contactObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-contact-item');
+            metrics.contactViews++;
+            contactObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      document.querySelectorAll('.flex.items-start.space-x-4').forEach(function(item) {
+        contactObserver.observe(item);
+      });
+    }
+    
+    // Form interactions tracking
+    document.querySelectorAll('input, textarea').forEach(function(field) {
+      field.addEventListener('focus', function() {
+        metrics.formInteractions++;
+      });
+    });
+    
+    // Contact info click tracking
+    document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.gtag) {
+          var type = this.href.startsWith('mailto:') ? 'email' : 'phone';
+          window.gtag('event', 'contact_info_click', {
+            contact_type: type,
+            page_language: 'en'
+          });
+        }
+      });
+    });
+    
+    // === ANALYTICS ===
+    setTimeout(function() {
+      console.log('📊 Contact Page Metrics:', metrics);
+      
+      if (window.gtag) {
+        window.gtag('event', 'contact_page_view', {
+          page_title: document.title,
+          form_interactions: metrics.formInteractions,
+          contact_views: metrics.contactViews,
+          engagement_time_msec: 5000,
+          page_language: 'en'
+        });
+        
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms',
+            page_type: 'contact',
+            page_language: 'en'
+          });
+        }
+      }
+    }, 5000);
+  });
+</script>
+
+<!-- Contact page specific CSS -->
+<style>
+  .animate-contact-item {
+    animation: contactSlideIn 0.6s ease-out;
+  }
+  
+  @keyframes contactSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Form validation styles */
+  .error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  }
+  
+  /* Performance optimizations */
+  .flex.items-start.space-x-4 {
+    will-change: transform;
+  }
+  
+  .bg-white.rounded-xl.shadow-lg {
+    contain: layout style paint;
+  }
+</style>

@@ -369,6 +369,242 @@ export function generateLocalBusinessSchema(lang: string = 'tr'): LocalBusinessS
   };
 }
 
+// Service-specific schema generators
+export interface CRMServiceSchema {
+  '@context': string;
+  '@type': string;
+  name: string;
+  description: string;
+  provider: {
+    '@type': string;
+    name: string;
+    url: string;
+  };
+  serviceType: string;
+  areaServed: string[];
+  hasOfferCatalog: {
+    '@type': string;
+    name: string;
+    itemListElement: Array<{
+      '@type': string;
+      name: string;
+      description: string;
+    }>;
+  };
+  aggregateRating?: {
+    '@type': string;
+    ratingValue: string;
+    reviewCount: string;
+  };
+}
+
+export interface WebDevelopmentServiceSchema {
+  '@context': string;
+  '@type': string;
+  name: string;
+  description: string;
+  provider: {
+    '@type': string;
+    name: string;
+    url: string;
+  };
+  serviceType: string;
+  areaServed: string[];
+  hasOfferCatalog: {
+    '@type': string;
+    name: string;
+    itemListElement: Array<{
+      '@type': string;
+      name: string;
+      description: string;
+    }>;
+  };
+  aggregateRating?: {
+    '@type': string;
+    ratingValue: string;
+    reviewCount: string;
+  };
+}
+
+export function generateCRMServiceSchema(lang: string = 'tr'): CRMServiceSchema {
+  const isEnglish = lang === 'en';
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: isEnglish ? 'CRM Consulting Services' : 'CRM Danışmanlık Hizmetleri',
+    description: isEnglish
+      ? 'Professional CRM consulting and implementation services with Zoho CRM and Bitrix24. Increase sales by 40% with centralized customer management.'
+      : 'Zoho CRM ve Bitrix24 ile profesyonel CRM danışmanlık ve kurulum hizmetleri. Merkezi müşteri yönetimi ile satışları %40 artırın.',
+    provider: {
+      '@type': 'Organization',
+      name: COMPANY_INFO.name,
+      url: DOMAIN_CONFIG.baseUrl
+    },
+    serviceType: isEnglish ? 'CRM Consulting' : 'CRM Danışmanlığı',
+    areaServed: COMPANY_INFO.serviceAreas[lang as keyof typeof COMPANY_INFO.serviceAreas],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: isEnglish ? 'CRM Services' : 'CRM Hizmetleri',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          name: isEnglish ? 'CRM Analysis and Selection' : 'CRM Analizi ve Seçimi',
+          description: isEnglish
+            ? 'Comprehensive analysis of current processes and CRM platform selection'
+            : 'Mevcut süreçlerin kapsamlı analizi ve CRM platform seçimi'
+        },
+        {
+          '@type': 'Offer',
+          name: isEnglish ? 'CRM Implementation' : 'CRM Kurulumu',
+          description: isEnglish
+            ? 'Professional CRM setup, configuration and data migration'
+            : 'Profesyonel CRM kurulumu, yapılandırma ve veri migrasyonu'
+        },
+        {
+          '@type': 'Offer',
+          name: isEnglish ? 'Team Training' : 'Ekip Eğitimi',
+          description: isEnglish
+            ? 'Comprehensive training for managers and users'
+            : 'Yöneticiler ve kullanıcılar için kapsamlı eğitim'
+        },
+        {
+          '@type': 'Offer',
+          name: isEnglish ? 'Ongoing Support' : 'Sürekli Destek',
+          description: isEnglish
+            ? 'System management and strategic consulting'
+            : 'Sistem yönetimi ve stratejik danışmanlık'
+        }
+      ]
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5.0',
+      reviewCount: '100'
+    }
+  };
+}
+
+export function generateWebDevelopmentServiceSchema(lang: string = 'tr'): WebDevelopmentServiceSchema {
+  const isEnglish = lang === 'en';
+  
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    name: isEnglish ? 'Professional Website Development' : 'Profesyonel Web Sitesi Geliştirme',
+    description: isEnglish
+      ? 'Modern, fast and SEO-optimized website development. Mobile-responsive design with Google top ranking guarantee.'
+      : 'Modern, hızlı ve SEO uyumlu web sitesi geliştirme. Google\'da üst sıralarda çıkma garantisi ile mobil uyumlu tasarım.',
+    provider: {
+      '@type': 'Organization',
+      name: COMPANY_INFO.name,
+      url: DOMAIN_CONFIG.baseUrl
+    },
+    serviceType: isEnglish ? 'Web Development' : 'Web Sitesi Geliştirme',
+    areaServed: COMPANY_INFO.serviceAreas[lang as keyof typeof COMPANY_INFO.serviceAreas],
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: isEnglish ? 'Website Packages' : 'Web Sitesi Paketleri',
+      itemListElement: [
+        {
+          '@type': 'Offer',
+          name: isEnglish ? 'Basic Package' : 'Temel Paket',
+          description: isEnglish
+            ? '5-page website with mobile-responsive design and basic SEO'
+            : '5 sayfa web sitesi, mobil uyumlu tasarım ve temel SEO'
+        },
+        {
+          '@type': 'Offer',
+          name: isEnglish ? 'Standard Package' : 'Standart Paket',
+          description: isEnglish
+            ? '10-page website with custom design and advanced SEO optimization'
+            : '10 sayfa web sitesi, özel tasarım ve gelişmiş SEO optimizasyonu'
+        },
+        {
+          '@type': 'Offer',
+          name: isEnglish ? 'Premium Package' : 'Premium Paket',
+          description: isEnglish
+            ? 'Unlimited pages with e-commerce ready and multilingual support'
+            : 'Sınırsız sayfa, e-ticaret hazır ve çok dilli destek'
+        }
+      ]
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: '5.0',
+      reviewCount: '50'
+    }
+  };
+}
+
+export function generateAggregateReviewSchema(
+  serviceName: string,
+  ratingValue: string = '5.0',
+  reviewCount: string = '100',
+  lang: string = 'tr'
+): any {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: serviceName,
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: ratingValue,
+      bestRating: '5',
+      worstRating: '1',
+      reviewCount: reviewCount
+    },
+    provider: {
+      '@type': 'Organization',
+      name: COMPANY_INFO.name
+    }
+  };
+}
+
+export function generateLandingPageSchema(
+  pageName: string,
+  description: string,
+  serviceType: string,
+  lang: string = 'tr'
+): any {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: pageName,
+    description: description,
+    about: {
+      '@type': 'Service',
+      name: serviceType,
+      provider: {
+        '@type': 'Organization',
+        name: COMPANY_INFO.name
+      }
+    },
+    mainEntity: {
+      '@type': 'Organization',
+      name: COMPANY_INFO.name,
+      url: DOMAIN_CONFIG.baseUrl
+    },
+    breadcrumb: {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: lang === 'en' ? 'Home' : 'Ana Sayfa',
+          item: DOMAIN_CONFIG.baseUrl
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: pageName,
+          item: `${DOMAIN_CONFIG.baseUrl}/${lang === 'en' ? 'en/' : ''}${serviceType.toLowerCase().replace(/\s+/g, '-')}`
+        }
+      ]
+    }
+  };
+}
+
 // Helper function to inject structured data into HTML head
 export function injectStructuredData(schema: any): string {
   return `<script type="application/ld+json">${JSON.stringify(schema, null, 2)}</script>`;

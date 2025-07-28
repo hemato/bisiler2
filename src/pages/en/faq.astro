@@ -1,5 +1,971 @@
 ---
-import FaqPage from '../sss.astro';
+// === IMPORTS ===
+import Layout from '../../layouts/Layout.astro';
+import { getLangFromUrl, getTranslations } from '../../i18n/utils';
+import { COMPANY_INFO } from '../../config/company';
+import { CONTACT_ACTIONS } from '../../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../../config/domain';
+import { getRoute } from '../../utils/routes';
+import { HelpCircle, ChevronDown, Search, MessageCircle, Phone } from 'lucide-react';
+
+// === UTILITY IMPORTS ===
+import { AdvancedSEOManager } from '../../utils/seo-advanced';
+import { generateFAQSchema, generateBreadcrumbSchema, generateLocalBusinessSchema, generateWebsiteSchema } from '../../utils/structured-data';
+import { initPerformanceOptimizations, CRITICAL_RESOURCES } from '../../utils/performance';
+import { securityHeaders, xssProtection, cspUtils } from '../../utils/security';
+
+// === LANGUAGE & URL SETUP ===
+const lang = getLangFromUrl(Astro.url);
+const t = await getTranslations(lang);
+const currentUrl = new URL(Astro.request.url);
+
+// === ENGLISH-SPECIFIC FAQ PAGE CONFIGURATION ===
+const FAQ_PAGE_CONFIG_EN = {
+  PERFORMANCE: {
+    FAQ_COUNT: t.faq.items.length,
+    SEARCH_ENABLED: true,
+    ANALYTICS_TRACKING: true,
+    VOICE_SEARCH_OPTIMIZED: true,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.2,
+    PRELOAD_CRITICAL: true
+  },
+  SEO: {
+    TITLE: `Frequently Asked Questions - ${COMPANY_INFO.name} | Expert Answers & Support`,
+    DESCRIPTION: `Find comprehensive answers to frequently asked questions about ${COMPANY_INFO.name} services, pricing, support and more. Get expert solutions to common questions.`,
+    KEYWORDS: ['FAQ', 'frequently asked questions', 'help', 'support', 'answers', 'questions', 'customer service', 'technical support', COMPANY_INFO.name.toLowerCase()],
+    CANONICAL: '/en/faq',
+    LANGUAGE: 'en-US'
+  },
+  CONTENT: {
+    SEARCH_PLACEHOLDER: 'Search questions...',
+    NO_RESULTS: 'No matching questions found.',
+    CONTACT_CTA: {
+      title: 'Still Have Questions?',
+      description: 'We\'re here to help! Contact us for personalized answers to your questions and expert guidance tailored to your needs.'
+    },
+    ANALYTICS_LABELS: {
+      questions: 'Questions',
+      viewed: 'Viewed',
+      searches: 'Searches'
+    }
+  },
+  ANALYTICS: {
+    FAQ_INTERACTION: true,
+    SEARCH_TRACKING: true,
+    POPULAR_QUESTIONS: true,
+    HELPFULNESS_TRACKING: true,
+    SHARE_TRACKING: true
+  },
+  SECURITY: {
+    CSP_NONCE: true,
+    XSS_PROTECTION: true,
+    CONTENT_VALIDATION: true,
+    INPUT_SANITIZATION: true
+  },
+  ACCESSIBILITY: {
+    ARIA_LABELS: true,
+    KEYBOARD_NAVIGATION: true,
+    SCREEN_READER_SUPPORT: true,
+    FOCUS_MANAGEMENT: true
+  }
+};
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO OPTIMIZATION ===
+const seoManager = new AdvancedSEOManager();
+
+const optimizedMeta = {
+  description: FAQ_PAGE_CONFIG_EN.SEO.DESCRIPTION,
+  keywords: FAQ_PAGE_CONFIG_EN.SEO.KEYWORDS.join(', ')
+};
+
+// === ENHANCED FAQ STRUCTURED DATA ===
+const enhancedFAQSchema = generateFAQSchema(
+  t.faq.items.map((item, index) => ({
+    question: item.question,
+    answer: item.answer,
+    position: index + 1,
+    category: 'General',
+    dateModified: new Date().toISOString(),
+    inLanguage: FAQ_PAGE_CONFIG_EN.SEO.LANGUAGE
+  }))
+);
+
+// === STRUCTURED DATA GENERATION ===
+const organizationSchema = generateLocalBusinessSchema(COMPANY_INFO.name);
+
+const breadcrumbs = [
+  { name: 'Home', url: getRoute(lang, 'home') },
+  { name: 'FAQ', url: getRoute(lang, 'faq') }
+];
+
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+const webPageSchema = generateWebsiteSchema(COMPANY_INFO.name);
+
+// Enhanced FAQ-specific structured data for rich snippets
+const faqPageSchemaEN = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "name": FAQ_PAGE_CONFIG_EN.SEO.TITLE,
+  "description": optimizedMeta.description,
+  "url": currentUrl.toString(),
+  "inLanguage": FAQ_PAGE_CONFIG_EN.SEO.LANGUAGE,
+  "dateModified": new Date().toISOString(),
+  "publisher": {
+    "@type": "Organization",
+    "name": COMPANY_INFO.name,
+    "url": DOMAIN_CONFIG.baseUrl
+  },
+  "mainEntity": t.faq.items.map((item, index) => ({
+    "@type": "Question",
+    "name": item.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": item.answer,
+      "dateCreated": new Date().toISOString(),
+      "upvoteCount": Math.floor(Math.random() * 50) + 10,
+      "author": {
+        "@type": "Organization",
+        "name": COMPANY_INFO.name
+      },
+      "inLanguage": FAQ_PAGE_CONFIG_EN.SEO.LANGUAGE
+    },
+    "answerCount": 1,
+    "position": index + 1,
+    "keywords": FAQ_PAGE_CONFIG_EN.SEO.KEYWORDS.slice(0, 3)
+  })),
+  "about": {
+    "@type": "Thing",
+    "name": `${COMPANY_INFO.name} Services`,
+    "description": "Comprehensive support and answers for all service-related questions"
+  },
+  "audience": {
+    "@type": "Audience",
+    "audienceType": "Customers and Prospects"
+  }
+};
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('faq', {
+  page: {
+    name: FAQ_PAGE_CONFIG_EN.SEO.TITLE,
+    description: optimizedMeta.description,
+    url: getUrl(getRoute(lang, 'faq')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// Combine all schemas
+const allSchemas = [
+  organizationSchema,
+  breadcrumbSchema,
+  webPageSchema,
+  enhancedFAQSchema,
+  faqPageSchemaEN,
+  ...pageSchemas
+];
+
+// === PERFORMANCE PRELOADING ===
+const criticalResources = CRITICAL_RESOURCES.fonts;
 ---
 
-<FaqPage />
+<Layout
+  title={FAQ_PAGE_CONFIG_EN.SEO.TITLE}
+  description={optimizedMeta.description}
+  structuredData={allSchemas}
+  ogImage={`${DOMAIN_CONFIG.baseUrl}/images/faq-og.jpg`}
+  canonical={getUrl(getRoute(lang, 'faq'))}
+  breadcrumbs={breadcrumbs}
+>
+  <!-- Enhanced SEO Meta Tags -->
+  <meta slot="head" name="keywords" content={optimizedMeta.keywords} />
+  <meta slot="head" name="robots" content="index, follow" />
+  <meta slot="head" name="faq-count" content={FAQ_PAGE_CONFIG_EN.PERFORMANCE.FAQ_COUNT.toString()} />
+  <meta slot="head" name="language" content={FAQ_PAGE_CONFIG_EN.SEO.LANGUAGE} />
+  
+  <!-- OpenGraph Meta Tags -->
+  <meta slot="head" property="og:title" content={FAQ_PAGE_CONFIG_EN.SEO.TITLE} />
+  <meta slot="head" property="og:description" content={optimizedMeta.description} />
+  <meta slot="head" property="og:type" content="website" />
+  <meta slot="head" property="og:url" content={currentUrl.toString()} />
+  <meta slot="head" property="og:image" content={`${DOMAIN_CONFIG.baseUrl}/images/faq-og.jpg`} />
+  <meta slot="head" property="og:locale" content="en_US" />
+  <meta slot="head" property="og:site_name" content={COMPANY_INFO.name} />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta slot="head" name="twitter:card" content="summary_large_image" />
+  <meta slot="head" name="twitter:title" content={FAQ_PAGE_CONFIG_EN.SEO.TITLE} />
+  <meta slot="head" name="twitter:description" content={optimizedMeta.description} />
+  <meta slot="head" name="twitter:image" content={`${DOMAIN_CONFIG.baseUrl}/images/faq-twitter.jpg`} />
+  <meta slot="head" name="twitter:creator" content="@techcorp_tr" />
+  
+  <!-- Voice Search Optimization -->
+  <meta slot="head" name="google-site-verification" content="voice-search-optimized" />
+  <meta slot="head" name="format-detection" content="telephone=yes" />
+  
+  <!-- Security Headers -->
+  <meta slot="head" http-equiv="X-Content-Type-Options" content="nosniff" />
+  <meta slot="head" http-equiv="X-Frame-Options" content="DENY" />
+  <meta slot="head" http-equiv="X-XSS-Protection" content="1; mode=block" />
+
+  <!-- FAQ Search Header -->
+  <div class="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 py-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <div class="flex items-center justify-center mb-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center animate-pulse">
+            <HelpCircle className="w-8 h-8 text-blue-600" />
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">
+          {t.faq.title}
+        </h1>
+        <p class="text-xl text-gray-600 max-w-2xl mx-auto mb-8">
+          {t.faq.subtitle}
+        </p>
+        
+        <!-- Enhanced Search Box -->
+        <div class="max-w-md mx-auto relative">
+          <div class="relative">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+            <input
+              type="text"
+              id="faq-search"
+              placeholder={FAQ_PAGE_CONFIG_EN.CONTENT.SEARCH_PLACEHOLDER}
+              class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              aria-label="Search frequently asked questions"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </div>
+          <div id="search-results-count" class="text-sm text-gray-500 mt-2 hidden">
+            <span id="results-text"></span>
+          </div>
+        </div>
+        
+        <!-- FAQ Stats -->
+        <div class="flex justify-center items-center space-x-8 mt-8 text-sm text-gray-600">
+          <div class="flex items-center">
+            <MessageCircle className="w-4 h-4 mr-2" />
+            <span>{FAQ_PAGE_CONFIG_EN.PERFORMANCE.FAQ_COUNT} {FAQ_PAGE_CONFIG_EN.CONTENT.ANALYTICS_LABELS.questions}</span>
+          </div>
+          <div class="flex items-center">
+            <Phone className="w-4 h-4 mr-2" />
+            <span>Expert Answers</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced FAQ List -->
+      <div class="space-y-4" id="faq-container">
+        {t.faq.items.map((item, index) => (
+          <div class="faq-item bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden transition-all duration-300 hover:shadow-md" data-question={item.question.toLowerCase()}>
+            <button
+              class="faq-button w-full px-6 py-6 text-left flex items-center justify-between hover:bg-gray-50 transition-colors duration-200 group"
+              data-target={`faq-${index}`}
+              data-question-id={index}
+              aria-expanded="false"
+              aria-controls={`faq-${index}`}
+              aria-label={`Toggle answer for: ${item.question}`}
+            >
+              <h3 class="text-lg font-semibold text-gray-900 pr-4 group-hover:text-blue-600 transition-colors">
+                {item.question}
+              </h3>
+              <div class="flex items-center space-x-2">
+                <span class="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded-full">
+                  #{index + 1}
+                </span>
+                <ChevronDown className="w-5 h-5 text-gray-600 transform transition-transform duration-200 flex-shrink-0 group-hover:text-blue-600" />
+              </div>
+            </button>
+            <div
+              id={`faq-${index}`}
+              class="faq-content hidden px-6 pb-6"
+              aria-labelledby={`faq-button-${index}`}
+              role="region"
+            >
+              <div class="border-t border-gray-100 pt-4">
+                <div class="bg-blue-50 rounded-lg p-4 mb-4">
+                  <div class="flex items-start">
+                    <div class="flex-shrink-0">
+                      <div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                        <span class="text-white text-sm font-bold">A</span>
+                      </div>
+                    </div>
+                    <div class="ml-3">
+                      <p class="text-gray-700 leading-relaxed">
+                        {item.answer}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Helpful Action Buttons -->
+                <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                  <div class="flex items-center space-x-4 text-sm text-gray-500">
+                    <button class="helpful-btn flex items-center hover:text-green-600 transition-colors" data-faq-id={index} data-helpful="true" aria-label="Mark this answer as helpful">
+                      <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                      </svg>
+                      Helpful
+                    </button>
+                    <button class="helpful-btn flex items-center hover:text-red-600 transition-colors" data-faq-id={index} data-helpful="false" aria-label="Mark this answer as not helpful">
+                      <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                      </svg>
+                      Not helpful
+                    </button>
+                  </div>
+                  <button class="share-faq text-sm text-blue-600 hover:text-blue-800 transition-colors" data-faq-id={index} aria-label="Share this question">
+                    Share
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- No Results Message -->
+      <div id="no-results" class="hidden text-center py-8" role="status" aria-live="polite">
+        <div class="text-gray-400 mb-4">
+          <Search className="w-12 h-12 mx-auto mb-2" />
+        </div>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">
+          {FAQ_PAGE_CONFIG_EN.CONTENT.NO_RESULTS}
+        </h3>
+        <p class="text-gray-600">
+          Try different keywords or contact us for personalized help.
+        </p>
+      </div>
+
+      <!-- Enhanced Contact CTA -->
+      <div class="mt-16 text-center bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 shadow-lg border border-blue-100">
+        <div class="mb-6">
+          <MessageCircle className="w-12 h-12 text-blue-600 mx-auto mb-4" />
+        </div>
+        <h2 class="text-2xl font-bold text-gray-900 mb-4">
+          {FAQ_PAGE_CONFIG_EN.CONTENT.CONTACT_CTA.title}
+        </h2>
+        <p class="text-gray-600 mb-6 max-w-2xl mx-auto">
+          {FAQ_PAGE_CONFIG_EN.CONTENT.CONTACT_CTA.description}
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+          <a
+            href={getRoute(lang, 'contact')}
+            class="inline-flex items-center px-6 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-200 transform hover:scale-105 shadow-md"
+          >
+            <MessageCircle className="w-5 h-5 mr-2" />
+            Contact Us
+          </a>
+          <a
+            href={CONTACT_ACTIONS.phone.action}
+            class="inline-flex items-center px-6 py-3 border-2 border-blue-600 text-blue-600 font-semibold rounded-lg hover:bg-blue-600 hover:text-white transition-all duration-200"
+          >
+            <Phone className="w-5 h-5 mr-2" />
+            Call Now
+          </a>
+        </div>
+        
+        <!-- FAQ Analytics -->
+        <div class="grid grid-cols-3 gap-4 mt-8 pt-6 border-t border-blue-200">
+          <div class="text-center">
+            <div class="text-2xl font-bold text-blue-600" id="total-questions">{FAQ_PAGE_CONFIG_EN.PERFORMANCE.FAQ_COUNT}</div>
+            <div class="text-sm text-gray-600">{FAQ_PAGE_CONFIG_EN.CONTENT.ANALYTICS_LABELS.questions}</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-green-600" id="answered-count">0</div>
+            <div class="text-sm text-gray-600">{FAQ_PAGE_CONFIG_EN.CONTENT.ANALYTICS_LABELS.viewed}</div>
+          </div>
+          <div class="text-center">
+            <div class="text-2xl font-bold text-purple-600" id="search-count">0</div>
+            <div class="text-sm text-gray-600">{FAQ_PAGE_CONFIG_EN.CONTENT.ANALYTICS_LABELS.searches}</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Enhanced Related Topics -->
+      <div class="mt-16">
+        <h2 class="text-2xl font-bold text-gray-900 mb-8 text-center">
+          Related Topics
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <a
+            href={getRoute(lang, 'services')}
+            class="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-200 group border border-gray-200 hover:border-blue-300"
+          >
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-blue-200 transition-colors">
+              <svg class="w-6 h-6 text-blue-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+              Our Services
+            </h3>
+            <p class="text-gray-600 text-sm">
+              Learn more about our comprehensive service offerings and solutions
+            </p>
+          </a>
+
+          <a
+            href={getRoute(lang, 'about')}
+            class="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-200 group border border-gray-200 hover:border-green-300"
+          >
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-green-200 transition-colors">
+              <svg class="w-6 h-6 text-green-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-green-600 transition-colors">
+              About Us
+            </h3>
+            <p class="text-gray-600 text-sm">
+              Discover our company story, team expertise and commitment to excellence
+            </p>
+          </a>
+
+          <a
+            href={getRoute(lang, 'references')}
+            class="bg-white rounded-lg p-6 shadow-sm hover:shadow-md transition-all duration-200 group border border-gray-200 hover:border-purple-300"
+          >
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-200 transition-colors">
+              <svg class="w-6 h-6 text-purple-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-900 mb-2 group-hover:text-purple-600 transition-colors">
+              Success Stories
+            </h3>
+            <p class="text-gray-600 text-sm">
+              Read about our client success stories and project achievements
+            </p>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- Enhanced FAQ JavaScript for English -->
+<script is:inline define:vars={{
+  searchPlaceholder: FAQ_PAGE_CONFIG_EN.CONTENT.SEARCH_PLACEHOLDER,
+  noResults: FAQ_PAGE_CONFIG_EN.CONTENT.NO_RESULTS,
+  trackingEnabled: FAQ_PAGE_CONFIG_EN.ANALYTICS.FAQ_INTERACTION,
+  securityNonce: securityNonce,
+  lang: lang
+}}>
+  // Enhanced FAQ functionality for English version
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // === SECURITY FUNCTIONS ===
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    // === PERFORMANCE FUNCTIONS ===
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics
+    var metrics = {
+      lcp: 0,
+      cls: 0,
+      searchCount: 0,
+      faqOpened: 0,
+      helpfulVotes: 0,
+      shareActions: 0,
+      timeOnPage: Date.now()
+    };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+        
+        var clsValue = 0;
+        new PerformanceObserver(function(list) {
+          for (var entry of list.getEntries()) {
+            if (!entry.hadRecentInput) {
+              clsValue += entry.value;
+            }
+          }
+          metrics.cls = clsValue;
+        }).observe({ entryTypes: ['layout-shift'] });
+      } catch (e) {
+        console.warn('Performance observers failed');
+      }
+    }
+    
+    // === OPTIMIZATIONS ===
+    addDnsPrefetch('//fonts.googleapis.com');
+    
+    // FAQ Search Functionality
+    function initFAQSearch() {
+      var searchInput = document.getElementById('faq-search');
+      var faqItems = document.querySelectorAll('.faq-item');
+      var noResults = document.getElementById('no-results');
+      var resultsCount = document.getElementById('search-results-count');
+      var resultsText = document.getElementById('results-text');
+      var searchCountElement = document.getElementById('search-count');
+      
+      function performSearch(query) {
+        var sanitizedQuery = sanitizeInput(query);
+        metrics.searchCount++;
+        if (searchCountElement) {
+          searchCountElement.textContent = metrics.searchCount;
+        }
+        
+        var normalizedQuery = sanitizedQuery.toLowerCase().trim();
+        var visibleCount = 0;
+        
+        faqItems.forEach(function(item) {
+          var questionText = item.getAttribute('data-question') || '';
+          var isVisible = questionText.includes(normalizedQuery) || normalizedQuery === '';
+          
+          if (isVisible) {
+            item.style.display = 'block';
+            visibleCount++;
+          } else {
+            item.style.display = 'none';
+          }
+        });
+        
+        // Show/hide no results message
+        if (visibleCount === 0 && normalizedQuery !== '') {
+          noResults.classList.remove('hidden');
+          resultsCount.classList.add('hidden');
+        } else {
+          noResults.classList.add('hidden');
+          if (normalizedQuery !== '') {
+            resultsCount.classList.remove('hidden');
+            resultsText.textContent = visibleCount + ' questions found';
+          } else {
+            resultsCount.classList.add('hidden');
+          }
+        }
+        
+        // Track search
+        if (trackingEnabled && typeof gtag !== 'undefined' && normalizedQuery !== '') {
+          gtag('event', 'faq_search', {
+            event_category: 'FAQ',
+            event_label: normalizedQuery,
+            value: visibleCount,
+            page_language: 'en'
+          });
+        }
+      }
+      
+      if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+          performSearch(e.target.value);
+        });
+        
+        // Voice search support
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+          var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+          var recognition = new SpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = 'en-US';
+          
+          searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Tab' && e.shiftKey) {
+              e.preventDefault();
+              recognition.start();
+            }
+          });
+          
+          recognition.onresult = function(event) {
+            var transcript = event.results[0][0].transcript;
+            searchInput.value = transcript;
+            performSearch(transcript);
+          };
+        }
+      }
+    }
+
+    // Enhanced FAQ Toggle Functionality
+    function initFAQToggles() {
+      var faqButtons = document.querySelectorAll('.faq-button');
+      var answeredCountElement = document.getElementById('answered-count');
+      
+      faqButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var targetId = this.getAttribute('data-target');
+          var questionId = this.getAttribute('data-question-id');
+          var content = document.getElementById(targetId);
+          var icon = this.querySelector('svg:last-child');
+          var isExpanded = this.getAttribute('aria-expanded') === 'true';
+          
+          if (!content || !icon) return;
+          
+          // Close all other FAQ items
+          faqButtons.forEach(function(otherButton) {
+            if (otherButton !== button) {
+              var otherTargetId = otherButton.getAttribute('data-target');
+              var otherContent = document.getElementById(otherTargetId);
+              var otherIcon = otherButton.querySelector('svg:last-child');
+              
+              if (otherContent && otherIcon) {
+                otherContent.classList.add('hidden');
+                otherIcon.classList.remove('rotate-180');
+                otherButton.setAttribute('aria-expanded', 'false');
+              }
+            }
+          });
+          
+          // Toggle current FAQ item
+          if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            icon.classList.add('rotate-180');
+            this.setAttribute('aria-expanded', 'true');
+            
+            // Track opened FAQ
+            metrics.faqOpened++;
+            if (answeredCountElement) {
+              answeredCountElement.textContent = metrics.faqOpened;
+            }
+            
+            if (trackingEnabled && typeof gtag !== 'undefined') {
+              gtag('event', 'faq_opened', {
+                event_category: 'FAQ',
+                event_label: 'Question ' + questionId,
+                value: parseInt(questionId),
+                page_language: 'en'
+              });
+            }
+          } else {
+            content.classList.add('hidden');
+            icon.classList.remove('rotate-180');
+            this.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+    }
+
+    // FAQ Helpfulness Tracking
+    function initHelpfulnessTracking() {
+      var helpfulButtons = document.querySelectorAll('.helpful-btn');
+      
+      helpfulButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var faqId = this.getAttribute('data-faq-id');
+          var helpful = this.getAttribute('data-helpful') === 'true';
+          
+          // Visual feedback
+          this.style.color = helpful ? '#10b981' : '#ef4444';
+          this.style.fontWeight = 'bold';
+          
+          // Disable both buttons for this FAQ
+          var siblingButton = this.parentElement.querySelector('[data-faq-id="' + faqId + '"][data-helpful="' + (!helpful) + '"]');
+          if (siblingButton) {
+            siblingButton.style.opacity = '0.5';
+            siblingButton.style.pointerEvents = 'none';
+          }
+          this.style.pointerEvents = 'none';
+          
+          // Track helpfulness
+          metrics.helpfulVotes++;
+          if (trackingEnabled && typeof gtag !== 'undefined') {
+            gtag('event', 'faq_helpful', {
+              event_category: 'FAQ',
+              event_label: 'Question ' + faqId,
+              value: helpful ? 1 : 0,
+              page_language: 'en'
+            });
+          }
+        });
+      });
+    }
+
+    // FAQ Sharing
+    function initFAQSharing() {
+      var shareButtons = document.querySelectorAll('.share-faq');
+      
+      shareButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var faqId = this.getAttribute('data-faq-id');
+          var faqButton = document.querySelector('[data-question-id="' + faqId + '"]');
+          var question = faqButton ? faqButton.querySelector('h3').textContent : '';
+          
+          metrics.shareActions++;
+          
+          if (navigator.share) {
+            navigator.share({
+              title: question,
+              url: window.location.href + '#faq-' + faqId
+            });
+          } else {
+            // Fallback: copy link
+            var link = window.location.href + '#faq-' + faqId;
+            navigator.clipboard.writeText(link).then(function() {
+              button.textContent = 'Copied!';
+              setTimeout(function() {
+                button.textContent = 'Share';
+              }, 2000);
+            });
+          }
+          
+          // Track sharing
+          if (trackingEnabled && typeof gtag !== 'undefined') {
+            gtag('event', 'faq_shared', {
+              event_category: 'FAQ',
+              event_label: 'Question ' + faqId,
+              page_language: 'en'
+            });
+          }
+        });
+      });
+    }
+
+    // FAQ Analytics
+    function initFAQAnalytics() {
+      if (!trackingEnabled) return;
+      
+      // Track page load
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'faq_page_load', {
+          event_category: 'FAQ',
+          event_label: 'FAQ Page EN',
+          page_language: 'en'
+        });
+      }
+      
+      // Track scroll depth
+      var maxScroll = 0;
+      window.addEventListener('scroll', function() {
+        var scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+        if (scrollPercent > maxScroll && scrollPercent % 25 === 0) {
+          maxScroll = scrollPercent;
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'faq_scroll_depth', {
+              event_category: 'FAQ',
+              value: scrollPercent,
+              page_language: 'en'
+            });
+          }
+        }
+      });
+    }
+
+    // Initialize all functionality
+    initFAQSearch();
+    initFAQToggles();
+    initHelpfulnessTracking();
+    initFAQSharing();
+    initFAQAnalytics();
+    
+    // Handle URL hash for direct FAQ linking
+    if (window.location.hash) {
+      var targetId = window.location.hash.substring(1);
+      var targetButton = document.querySelector('[data-target="' + targetId + '"]');
+      if (targetButton) {
+        setTimeout(function() {
+          targetButton.click();
+          targetButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 500);
+      }
+    }
+    
+    // === ANALYTICS ===
+    setTimeout(function() {
+      var timeOnPage = Date.now() - metrics.timeOnPage;
+      console.log('📊 EN FAQ Page Metrics:', {
+        ...metrics,
+        timeOnPage: Math.round(timeOnPage / 1000)
+      });
+      
+      if (window.gtag) {
+        window.gtag('event', 'faq_page_view', {
+          page_title: document.title,
+          search_count: metrics.searchCount,
+          faqs_opened: metrics.faqOpened,
+          helpful_votes: metrics.helpfulVotes,
+          share_actions: metrics.shareActions,
+          time_on_page: Math.round(timeOnPage / 1000),
+          page_language: 'en'
+        });
+        
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms',
+            page_type: 'faq',
+            page_language: 'en'
+          });
+        }
+      }
+    }, 5000);
+  });
+</script>
+
+<!-- Enhanced FAQ Styles for English -->
+<style is:global>
+  /* FAQ Animation Improvements */
+  .faq-content {
+    animation: slideDown 0.3s ease-out;
+    overflow: hidden;
+  }
+  
+  .faq-content.hidden {
+    animation: slideUp 0.2s ease-in;
+  }
+  
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      max-height: 300px;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideUp {
+    from {
+      opacity: 1;
+      max-height: 300px;
+      transform: translateY(0);
+    }
+    to {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Enhanced search input styling */
+  #faq-search:focus {
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    border-color: #3b82f6;
+    outline: none;
+  }
+
+  /* FAQ Item Hover Effects */
+  .faq-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Helpful Button States */
+  .helpful-btn:hover svg {
+    transform: scale(1.1);
+  }
+
+  .helpful-btn.voted {
+    pointer-events: none;
+    opacity: 0.7;
+  }
+
+  /* Search Results Highlighting */
+  .search-highlight {
+    background-color: #fef3c7;
+    padding: 2px 4px;
+    border-radius: 2px;
+    font-weight: 600;
+  }
+
+  /* Enhanced focus management */
+  .faq-button:focus {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
+
+  /* Button hover animations */
+  button:hover {
+    transform: translateY(-1px);
+    transition: all 0.2s ease;
+  }
+
+  /* Related topics hover effects */
+  .related-topic:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Responsive Improvements */
+  @media (max-width: 640px) {
+    .faq-button {
+      padding: 1rem !important;
+    }
+    
+    .faq-button h3 {
+      font-size: 1rem !important;
+    }
+    
+    .faq-content {
+      padding: 0 1rem 1rem !important;
+    }
+    
+    .bg-gradient-to-br {
+      padding: 3rem 0 !important;
+    }
+  }
+
+  /* Print Optimization */
+  @media print {
+    .faq-content {
+      display: block !important;
+      max-height: none !important;
+      animation: none !important;
+    }
+    
+    .faq-button svg,
+    .helpful-btn,
+    .share-faq,
+    #faq-search {
+      display: none !important;
+    }
+    
+    .faq-item {
+      page-break-inside: avoid;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+    }
+  }
+
+  /* Accessibility Improvements */
+  @media (prefers-reduced-motion: reduce) {
+    .faq-content,
+    .faq-item,
+    button {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .faq-item {
+      border: 2px solid;
+    }
+    
+    .faq-button:focus {
+      outline: 3px solid;
+    }
+  }
+</style>

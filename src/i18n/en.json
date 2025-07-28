@@ -809,5 +809,255 @@
       },
       "submit": "Request Free Quote"
     }
+  },
+  "forms": {
+    "common": {
+      "required": "Required field",
+      "optional": "Optional",
+      "submit": "Submit",
+      "submitting": "Submitting...",
+      "success": "Successfully submitted",
+      "error": "An error occurred",
+      "retry": "Try Again",
+      "cancel": "Cancel",
+      "close": "Close",
+      "next": "Next",
+      "back": "Back",
+      "finish": "Finish",
+      "save": "Save",
+      "loading": "Loading...",
+      "selectOption": "Select...",
+      "pleaseWait": "Please wait...",
+      "processing": "Processing..."
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email address",
+      "phone": "Please enter a valid phone number",
+      "name": "Please enter a valid name (2-50 characters)",
+      "company": "Please enter a valid company name",
+      "minLength": "Must be at least {min} characters",
+      "maxLength": "Must be no more than {max} characters",
+      "url": "Please enter a valid URL",
+      "custom": "Invalid value",
+      "services": "Please select at least one service",
+      "privacy": "You must accept the privacy policy",
+      "fillRequired": "Please fill in all required fields correctly",
+      "acceptPrivacy": "Please accept the Privacy Policy to continue"
+    },
+    "contact": {
+      "title": "Contact Form",
+      "description": "Get in touch with us",
+      "labels": {
+        "name": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "company": "Company/Organization Name",
+        "services": "Services of Interest",
+        "message": "Your Message",
+        "otherService": "Other (Please specify)",
+        "privacyAccepted": "Privacy Policy"
+      },
+      "placeholders": {
+        "name": "Enter your full name",
+        "email": "Enter your email address",
+        "phone": "Enter your phone number",
+        "company": "Enter your company/organization name",
+        "message": "Tell us about your project...",
+        "otherService": "Describe your needs..."
+      },
+      "serviceOptions": [
+        "Website Setup",
+        "Form and CRM Integration",
+        "CRM Selection & Setup",
+        "Automation Systems",
+        "SEO & Technical Optimization",
+        "Technical Consulting",
+        "Other"
+      ],
+      "submit": "Send Message",
+      "success": {
+        "title": "Thank You!",
+        "message": "Your message has been sent successfully. We will get back to you soon.",
+        "button": "Send Another Message"
+      },
+      "error": {
+        "submission": "An error occurred while submitting the form. Please try again.",
+        "email": "Error sending email. Please contact us directly.",
+        "network": "Network connection error. Please check your connection.",
+        "server": "Server error. Please try again later."
+      },
+      "privacy": {
+        "text": " and consent to the processing of my personal data.",
+        "link": "Privacy Policy",
+        "required": "Privacy Policy acceptance"
+      },
+      "hints": {
+        "title": "Please complete the following required fields:",
+        "name": "Full Name",
+        "phone": "Phone Number",
+        "services": "Service Selection",
+        "privacy": "Privacy Policy acceptance"
+      }
+    },
+    "crmConsulting": {
+      "title": "CRM Consulting Form",
+      "description": "Let's evaluate your CRM needs",
+      "labels": {
+        "name": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "company": "Company Name",
+        "employeeCount": "Number of Employees",
+        "currentSystem": "Current System",
+        "mainChallenge": "Main Challenge",
+        "preferredCrm": "Preferred CRM",
+        "budgetRange": "Budget Range",
+        "timeline": "Project Timeline",
+        "message": "Additional Notes"
+      },
+      "placeholders": {
+        "name": "Enter your full name",
+        "email": "Enter your email address",
+        "phone": "Enter your phone number",
+        "company": "Enter your company name",
+        "message": "Tell us about your specific CRM needs..."
+      },
+      "options": {
+        "employeeCount": [
+          "1-10 people",
+          "11-25 people",
+          "26-50 people",
+          "51-100 people",
+          "100+ people"
+        ],
+        "currentSystem": [
+          "Excel files",
+          "Google Sheets",
+          "Paper records",
+          "Another CRM",
+          "No system"
+        ],
+        "mainChallenge": [
+          "Customer tracking",
+          "Sales process",
+          "Reporting",
+          "Team coordination",
+          "Data management"
+        ],
+        "preferredCrm": [
+          "Zoho CRM",
+          "Bitrix24",
+          "Undecided",
+          "Other suggestion"
+        ],
+        "budgetRange": [
+          "$0-2,000",
+          "$2,000-6,000",
+          "$6,000-12,000",
+          "$12,000+"
+        ],
+        "timeline": [
+          "Immediately",
+          "Within 1 month",
+          "Within 2-3 months",
+          "Within 6 months"
+        ]
+      },
+      "submit": "Request Free Consultation",
+      "success": {
+        "title": "Thank You!",
+        "message": "Your CRM consulting request has been sent successfully. Our expert team will contact you within 24 hours.",
+        "button": "Send Another Request"
+      },
+      "hints": {
+        "title": "Please complete the following required fields:",
+        "name": "Full Name",
+        "phone": "Phone Number",
+        "privacy": "Privacy Policy acceptance"
+      }
+    },
+    "websiteSetup": {
+      "title": "Website Setup Form",
+      "description": "Let's evaluate your website needs",
+      "labels": {
+        "name": "Full Name",
+        "email": "Email Address",
+        "phone": "Phone Number",
+        "company": "Company Name",
+        "websiteType": "Website Type",
+        "currentWebsite": "Current Website",
+        "timeline": "Project Timeline",
+        "budget": "Budget Range",
+        "message": "Additional Information"
+      },
+      "placeholders": {
+        "name": "Enter your full name",
+        "email": "Enter your email address",
+        "phone": "Enter your phone number",
+        "company": "Enter your company name",
+        "message": "Tell us about your website goals, preferred design style, features needed..."
+      },
+      "options": {
+        "websiteType": [
+          "Corporate Website",
+          "E-commerce Site",
+          "Blog / News Site",
+          "Portfolio Site",
+          "Landing Page",
+          "Custom Project"
+        ],
+        "currentWebsite": [
+          "No website",
+          "Old website exists",
+          "WordPress site exists",
+          "Social media accounts exist",
+          "E-commerce site exists"
+        ],
+        "timeline": [
+          "Immediately",
+          "Within 1 month",
+          "Within 2-3 months",
+          "Within 6 months"
+        ],
+        "budget": [
+          "$2,000-6,000",
+          "$6,000-12,000",
+          "$12,000-20,000",
+          "$20,000+"
+        ]
+      },
+      "submit": "Get Free Quote",
+      "success": {
+        "title": "Thank You!",
+        "message": "Your website setup request has been sent successfully. Our design team will contact you within 24 hours with a custom proposal.",
+        "button": "Send Another Request"
+      },
+      "hints": {
+        "title": "Please complete the following required fields:",
+        "name": "Full Name",
+        "phone": "Phone Number",
+        "privacy": "Privacy Policy acceptance"
+      }
+    },
+    "homeContact": {
+      "title": "Get Started Today",
+      "description": "Fill out the form below and let's discuss your project needs",
+      "submit": "Get in Touch"
+    },
+    "security": {
+      "honeypotField": "Website URL (for robots - leave blank)",
+      "spamDetected": "Spam detected",
+      "securityError": "Security validation failed",
+      "rateLimitExceeded": "Too many requests. Please wait."
+    },
+    "analytics": {
+      "formStart": "Form started",
+      "formSubmit": "Form submitted",
+      "formComplete": "Form completed",
+      "fieldFocus": "Field focused",
+      "fieldBlur": "Field blurred",
+      "validationError": "Validation error"
+    }
   }
 }

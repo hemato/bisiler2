@@ -1,17 +1,159 @@
 ---
+// === COMPONENT IMPORTS ===
 import Layout from '../layouts/Layout.astro';
-import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Award, Users, CheckCircle, ArrowRight } from 'lucide-react';
+
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
+
+// === CONFIG IMPORTS ===
 import { COMPANY_INFO, STATS_SECTIONS } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../config/domain';
 import { getRoute } from '../utils/routes';
 
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../utils/seo-advanced';
+import {
+  generateOrganizationSchema,
+  generateBreadcrumbSchema,
+  injectStructuredData
+} from '../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../utils/security';
+
+// === CONSTANTS ===
+const ABOUT_PAGE_CONFIG = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.1
+  },
+  SEO: {
+    COMPANY_FOUNDING_YEAR: 2020,
+    TEAM_SIZE: '10-50',
+    EXPERTISE_AREAS: ['CRM', 'Web Development', 'Digital Transformation'],
+    CERTIFICATIONS_COUNT: 8
+  },
+  IMAGES: {
+    TEAM_IMAGE: 'https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=800'
+  }
+};
+
+// === INITIALIZATION ===
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === HELPER FUNCTIONS ===
+function getAboutBenefits(lang: 'tr' | 'en') {
+  return lang === 'en'
+    ? ['expertise in CRM', 'proven track record', 'innovative solutions']
+    : ['CRM uzmanlığı', 'kanıtlanmış başarı', 'yenilikçi çözümler'];
+}
+
+function getPageTitle(lang: 'tr' | 'en') {
+  return `${t.nav.about} | ${COMPANY_INFO.name}`;
+}
+
+// === CONTENT GENERATION ===
+// Generate enhanced meta description
+const optimizedDescription = generateOptimizedMetaDescription(
+  lang === 'en' ? 'About our CRM consulting company' : 'CRM danışmanlık şirketimiz hakkında',
+  getAboutBenefits(lang),
+  lang === 'en' ? 'Turkey' : 'Türkiye',
+  lang
+);
+
+// === STRUCTURED DATA GENERATION ===
+// Generate Organization Schema
+const organizationSchema = generateOrganizationSchema(lang);
+
+// Generate AboutPage Schema
+const aboutPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'AboutPage',
+  name: getPageTitle(lang),
+  description: optimizedDescription,
+  url: getUrl(getRoute(lang, 'about')),
+  mainEntity: {
+    '@type': 'Organization',
+    name: COMPANY_INFO.name,
+    foundingDate: COMPANY_INFO.foundingYear,
+    numberOfEmployees: COMPANY_INFO.employeeCount,
+    description: COMPANY_INFO.description[lang],
+    expertise: ABOUT_PAGE_CONFIG.SEO.EXPERTISE_AREAS,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: CONTACT_INFO.address.street,
+      addressLocality: CONTACT_INFO.address.city,
+      addressRegion: CONTACT_INFO.address.district,
+      postalCode: CONTACT_INFO.address.postalCode,
+      addressCountry: CONTACT_INFO.address.country
+    }
+  },
+  breadcrumb: {
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: lang === 'en' ? 'Home' : 'Anasayfa',
+        item: getUrl(getRoute(lang, 'home'))
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: t.nav.about,
+        item: getUrl(getRoute(lang, 'about'))
+      }
+    ]
+  }
+};
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('about', {
+  page: {
+    name: getPageTitle(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'about')),
+    primaryImageOfPage: ABOUT_PAGE_CONFIG.IMAGES.TEAM_IMAGE,
+    breadcrumb: [
+      { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+      { name: t.nav.about, url: getRoute(lang, 'about') }
+    ]
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// === COMBINE ALL STRUCTURED DATA ===
+const allStructuredData = [
+  organizationSchema,
+  aboutPageSchema,
+  ...pageSchemas
+];
 ---
 
-<Layout 
-  title={`${t.nav.about} | ${COMPANY_INFO.name}`}
-  description={t.about.metaDescription}
+<Layout
+  title={getPageTitle(lang)}
+  description={optimizedDescription}
+  structuredData={allStructuredData}
+  ogImage={DOMAIN_CONFIG.images.ogImage}
+  canonical={getUrl(getRoute(lang, 'about'))}
+  breadcrumbs={[
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: t.nav.about, url: getRoute(lang, 'about') }
+  ]}
 >
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -213,3 +355,263 @@ const t = await getTranslations(lang);
     </div>
   </section>
 </Layout>
+
+<!-- Performance & Security Optimization Script -->
+<script is:inline>
+  // Performance & Security optimization for about page
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // === SECURITY FUNCTIONS ===
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    function isValidUrl(url) {
+      try {
+        var urlObj = new URL(url, window.location.origin);
+        return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+      } catch (e) {
+        return false;
+      }
+    }
+    
+    // Rate limiting for interactions
+    var interactionTimestamps = [];
+    var RATE_LIMIT_WINDOW = 60000;
+    var MAX_INTERACTIONS = 10;
+    
+    function isRateLimited() {
+      var now = Date.now();
+      interactionTimestamps = interactionTimestamps.filter(function(time) {
+        return now - time < RATE_LIMIT_WINDOW;
+      });
+      
+      if (interactionTimestamps.length >= MAX_INTERACTIONS) {
+        console.warn('Interaction rate limit exceeded');
+        return true;
+      }
+      
+      interactionTimestamps.push(now);
+      return false;
+    }
+    
+    // Expose security functions globally
+    window.aboutPageSecurity = {
+      sanitizeInput: sanitizeInput,
+      isValidUrl: isValidUrl,
+      isRateLimited: isRateLimited
+    };
+    
+    // === PERFORMANCE FUNCTIONS ===
+    function addPreloadLink(href, as, type) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'preload';
+      link.href = href;
+      link.as = as;
+      if (type) link.type = type;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    }
+    
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    function addPrefetch(href) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics
+    var metrics = { lcp: 0, fid: 0, cls: 0 };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      } catch (e) {
+        console.warn('LCP observer failed');
+      }
+      
+      try {
+        new PerformanceObserver(function(list) {
+          list.getEntries().forEach(function(entry) {
+            metrics.fid = entry.processingStart - entry.startTime;
+          });
+        }).observe({ entryTypes: ['first-input'] });
+      } catch (e) {
+        console.warn('FID observer failed');
+      }
+    }
+    
+    // === APPLY OPTIMIZATIONS ===
+    // DNS prefetch for external resources
+    addDnsPrefetch('//images.pexels.com');
+    addDnsPrefetch('//fonts.googleapis.com');
+    
+    // Prefetch next likely pages
+    addPrefetch('/hizmetlerimiz');
+    addPrefetch('/iletisim');
+    addPrefetch('/referanslar');
+    
+    // === ENHANCED INTERACTIONS ===
+    // Stats animation with intersection observer
+    if (window.IntersectionObserver) {
+      var statsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !isRateLimited()) {
+            entry.target.classList.add('animate-stats');
+            statsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      document.querySelectorAll('.bg-white.p-6.rounded-lg').forEach(function(stat) {
+        statsObserver.observe(stat);
+      });
+    }
+    
+    // Values section animation
+    if (window.IntersectionObserver) {
+      var valuesObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !isRateLimited()) {
+            entry.target.classList.add('animate-fade-in');
+            valuesObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      
+      document.querySelectorAll('.text-center > .w-16.h-16').forEach(function(value) {
+        valuesObserver.observe(value.parentElement);
+      });
+    }
+    
+    // Process steps animation
+    if (window.IntersectionObserver) {
+      var stepsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !isRateLimited()) {
+            var delay = Array.from(entry.target.parentElement.children).indexOf(entry.target) * 200;
+            setTimeout(function() {
+              entry.target.classList.add('animate-step-up');
+            }, delay);
+            stepsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      document.querySelectorAll('.text-center.relative').forEach(function(step) {
+        stepsObserver.observe(step);
+      });
+    }
+    
+    // === ANALYTICS ===
+    setTimeout(function() {
+      console.log('📊 About Page Metrics:', metrics);
+      
+      if (window.gtag) {
+        // Track page-specific events
+        window.gtag('event', 'about_page_view', {
+          page_title: document.title,
+          engagement_time_msec: 5000
+        });
+        
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms',
+            page_type: 'about'
+          });
+        }
+      }
+    }, 5000);
+  });
+</script>
+
+<!-- Enhanced CSS for animations -->
+<style>
+  /* About page specific animations */
+  .animate-stats {
+    animation: statsSlideUp 0.8s ease-out;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-out;
+  }
+  
+  .animate-step-up {
+    animation: stepUp 0.8s ease-out;
+  }
+  
+  @keyframes statsSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  
+  @keyframes stepUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Performance optimizations */
+  .bg-white.p-6.rounded-lg,
+  .text-center.relative,
+  .w-16.h-16 {
+    will-change: transform;
+  }
+  
+  /* Image optimization hints */
+  img {
+    content-visibility: auto;
+    contain-intrinsic-size: 800px 600px;
+  }
+  
+  /* Lazy loading enhancements */
+  .lazy-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 500px;
+  }
+</style>

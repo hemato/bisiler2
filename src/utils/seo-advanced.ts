@@ -503,7 +503,7 @@ export class AdvancedSEOManager {
         break;
 
       case 'blog':
-        if (this.config.enableBlogSchema) {
+        if (this.config.enableBlogSchema && data.blog) {
           schemas.push(blogSchema.generateBlogSchema(data.blog));
         }
         if (this.config.enableWebPageSchema) {
@@ -512,7 +512,7 @@ export class AdvancedSEOManager {
         break;
 
       case 'blog-post':
-        if (this.config.enableBlogSchema) {
+        if (this.config.enableBlogSchema && data.article) {
           schemas.push(blogSchema.generateArticleSchema(data.article));
         }
         if (this.config.enableWebPageSchema) {

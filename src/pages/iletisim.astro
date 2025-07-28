@@ -1,30 +1,210 @@
 ---
+// === COMPONENT IMPORTS ===
 import Layout from '../layouts/Layout.astro';
 import ContactForm from '../components/ContactForm';
-import { getLangFromUrl, getTranslations } from '../i18n/utils';
 import { Mail, Phone, MapPin } from 'lucide-react';
-import { generateContactPageSchema, generateLocalBusinessSchema } from '../utils/structured-data';
+
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
+
+// === CONFIG IMPORTS ===
 import { COMPANY_INFO } from '../config/company';
 import { CONTACT_INFO } from '../config/contact';
+import { OFFICE_HOURS } from '../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../config/domain';
 import { getRoute } from '../utils/routes';
 
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../utils/seo-advanced';
+import {
+  generateContactPageSchema,
+  generateLocalBusinessSchema,
+  generateFAQSchema,
+  generateBreadcrumbSchema
+} from '../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../utils/security';
+
+// === CONSTANTS ===
+const CONTACT_PAGE_CONFIG = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.1,
+    FORM_RATE_LIMIT: 3,
+    FORM_RATE_WINDOW: 300000 // 5 minutes
+  },
+  SEO: {
+    RESPONSE_TIME: '24 hours',
+    CONTACT_METHODS: 3,
+    OFFICE_HOURS: 'Mo-Fr 09:00-18:00'
+  },
+  CONTACT: {
+    MAP_COORDINATES: {
+      lat: parseFloat(CONTACT_INFO.coordinates.latitude),
+      lng: parseFloat(CONTACT_INFO.coordinates.longitude)
+    },
+    WORKING_DAYS: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday']
+  }
+};
+
+// === INITIALIZATION ===
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
 
-// Generate contact page and local business schemas
+// Enhanced i18n translation structures for ContactForm compatibility
+const formTranslations = {
+  forms: {
+    contact: t.forms?.contact || {},
+    common: t.forms?.common || {},
+    validation: t.forms?.validation || {},
+    security: t.forms?.security || {},
+    analytics: t.forms?.analytics || {}
+  }
+};
+
+// Legacy translation structure for backward compatibility
+const legacyTranslations = {
+  contact: {
+    form: {
+      name: t.forms?.contact?.labels?.name || t.contact?.form?.name || 'Ad Soyad',
+      email: t.forms?.contact?.labels?.email || t.contact?.form?.email || 'E-posta',
+      phone: t.forms?.contact?.labels?.phone || t.contact?.form?.phone || 'Telefon Numarası',
+      company: t.forms?.contact?.labels?.company || t.contact?.form?.company || 'Kurum Adı',
+      services: t.forms?.contact?.labels?.services || t.contact?.form?.services || 'İlgilendiğiniz Hizmetler',
+      message: t.forms?.contact?.labels?.message || t.contact?.form?.message || 'Mesajınız',
+      submit: t.forms?.contact?.submit || t.contact?.form?.submit || 'Gönder',
+      serviceOptions: t.forms?.contact?.serviceOptions || t.contact?.form?.serviceOptions || [
+        'Web Sitesi Kurulumu',
+        'Form ve CRM Entegrasyonu',
+        'CRM Seçimi ve Kurulumu',
+        'Otomasyon Sistemleri',
+        'SEO ve Teknik İyileştirme',
+        'Teknik Danışmanlık',
+        'Diğer'
+      ]
+    }
+  }
+};
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === HELPER FUNCTIONS ===
+function getContactBenefits(lang: 'tr' | 'en') {
+  return lang === 'en'
+    ? ['quick response', 'expert consultation', 'personalized solutions']
+    : ['hızlı yanıt', 'uzman danışmanlık', 'kişiselleştirilmiş çözümler'];
+}
+
+function getPageTitle(lang: 'tr' | 'en') {
+  return `${t.nav.contact} | ${COMPANY_INFO.name}`;
+}
+
+function getContactBreadcrumbs(lang: 'tr' | 'en') {
+  return [
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: t.nav.contact, url: getRoute(lang, 'contact') }
+  ];
+}
+
+function getContactFAQs(lang: 'tr' | 'en') {
+  return lang === 'en' ? [
+    {
+      question: "How long does a typical project take?",
+      answer: "Project timelines vary depending on complexity. A simple website takes 2-4 weeks, while CRM implementations can take 4-8 weeks."
+    },
+    {
+      question: "Do you provide ongoing support?",
+      answer: "Yes, we offer various support packages including technical support, maintenance, and system updates."
+    },
+    {
+      question: "What is your pricing structure?",
+      answer: "We offer both fixed-price packages and custom pricing based on project requirements. Contact us for a detailed quote."
+    }
+  ] : [
+    {
+      question: "Tipik bir proje ne kadar sürer?",
+      answer: "Proje süreleri karmaşıklığa göre değişir. Basit bir web sitesi 2-4 hafta, CRM uygulamaları ise 4-8 hafta sürebilir."
+    },
+    {
+      question: "Sürekli destek sağlıyor musunuz?",
+      answer: "Evet, teknik destek, bakım ve sistem güncellemeleri dahil çeşitli destek paketleri sunuyoruz."
+    },
+    {
+      question: "Fiyatlandırma yapınız nasıl?",
+      answer: "Hem sabit fiyatlı paketler hem de proje gereksinimlerine göre özel fiyatlandırma sunuyoruz. Detaylı teklif için bizimle iletişime geçin."
+    }
+  ];
+}
+
+// === CONTENT GENERATION ===
+// Generate enhanced meta description
+const optimizedDescription = generateOptimizedMetaDescription(
+  lang === 'en' ? 'Contact our CRM and web development experts' : 'CRM ve web geliştirme uzmanlarımızla iletişime geçin',
+  getContactBenefits(lang),
+  lang === 'en' ? 'Turkey' : 'Türkiye',
+  lang
+);
+
+// === STRUCTURED DATA GENERATION ===
+// Generate breadcrumb structured data
+const breadcrumbs = getContactBreadcrumbs(lang);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+// Generate enhanced contact page schema
 const contactPageSchema = generateContactPageSchema(lang);
 const localBusinessSchema = generateLocalBusinessSchema(lang);
+
+// Generate FAQ Schema for contact page FAQs
+const contactFAQs = getContactFAQs(lang);
+const faqSchema = generateFAQSchema(contactFAQs, {
+  author: COMPANY_INFO.name,
+  mainEntity: {
+    name: lang === 'en' ? 'Contact Information FAQ' : 'İletişim Bilgileri SSS',
+    description: lang === 'en'
+      ? 'Frequently asked questions about contacting our company'
+      : 'Şirketimizle iletişim hakkında sık sorulan sorular'
+  }
+});
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('contact', {
+  page: {
+    name: getPageTitle(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'contact')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// === COMBINE ALL STRUCTURED DATA ===
+const allStructuredData = [
+  contactPageSchema,
+  localBusinessSchema,
+  breadcrumbSchema,
+  faqSchema,
+  ...pageSchemas
+];
 ---
 
-<Layout 
-  title={`${t.nav.contact} | ${COMPANY_INFO.name}`}
-  description={t.contact.metaDescription}
+<Layout
+  title={getPageTitle(lang)}
+  description={optimizedDescription}
+  structuredData={allStructuredData}
+  ogImage={DOMAIN_CONFIG.images.ogImage}
+  canonical={getUrl(getRoute(lang, 'contact'))}
+  breadcrumbs={breadcrumbs}
 >
-  <!-- Contact Page Schema -->
-  <script type="application/ld+json" set:html={JSON.stringify(contactPageSchema, null, 2)} />
-  
-  <!-- Local Business Schema -->
-  <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema, null, 2)} />
   
   <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -126,7 +306,11 @@ const localBusinessSchema = generateLocalBusinessSchema(lang);
 
         <!-- Contact Form -->
         <div class="bg-white rounded-xl shadow-lg p-8">
-          <ContactForm translations={t} client:load />
+          <ContactForm
+            translations={legacyTranslations}
+            i18n={formTranslations}
+            client:load
+          />
         </div>
       </div>
     </div>
@@ -205,3 +389,196 @@ const localBusinessSchema = generateLocalBusinessSchema(lang);
     </div>
   </section>
 </Layout>
+
+<!-- Enhanced Performance & Security Optimization Script for Contact Page -->
+<script is:inline>
+  // Contact page performance & security optimizations
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // === SECURITY FUNCTIONS ===
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    function validateEmail(email) {
+      var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email) && email.length <= 254;
+    }
+    
+    function validatePhone(phone) {
+      var phoneRegex = /^[\+]?[0-9\s\-\(\)]{7,15}$/;
+      return phoneRegex.test(phone.replace(/\s/g, ''));
+    }
+    
+    // Rate limiting for contact form
+    var contactSubmissions = [];
+    var CONTACT_RATE_LIMIT = 300000; // 5 minutes
+    var MAX_SUBMISSIONS = 3;
+    
+    function isContactRateLimited() {
+      var now = Date.now();
+      contactSubmissions = contactSubmissions.filter(function(time) {
+        return now - time < CONTACT_RATE_LIMIT;
+      });
+      
+      if (contactSubmissions.length >= MAX_SUBMISSIONS) {
+        console.warn('Contact form rate limit exceeded');
+        return true;
+      }
+      
+      contactSubmissions.push(now);
+      return false;
+    }
+    
+    // Expose security functions
+    window.contactPageSecurity = {
+      sanitizeInput: sanitizeInput,
+      validateEmail: validateEmail,
+      validatePhone: validatePhone,
+      isContactRateLimited: isContactRateLimited
+    };
+    
+    // === PERFORMANCE FUNCTIONS ===
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    function addPrefetch(href) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics
+    var metrics = {
+      lcp: 0,
+      fid: 0,
+      formInteractions: 0,
+      contactViews: 0
+    };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      } catch (e) {
+        console.warn('LCP observer failed');
+      }
+    }
+    
+    // === OPTIMIZATIONS ===
+    addDnsPrefetch('//fonts.googleapis.com');
+    addPrefetch('/hizmetlerimiz');
+    addPrefetch('/sss');
+    addPrefetch('/hakkimizda');
+    
+    // === INTERACTIONS ===
+    // Contact info animations
+    if (window.IntersectionObserver) {
+      var contactObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-contact-item');
+            metrics.contactViews++;
+            contactObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      document.querySelectorAll('.flex.items-start.space-x-4').forEach(function(item) {
+        contactObserver.observe(item);
+      });
+    }
+    
+    // Form interactions tracking
+    document.querySelectorAll('input, textarea').forEach(function(field) {
+      field.addEventListener('focus', function() {
+        metrics.formInteractions++;
+      });
+    });
+    
+    // Contact info click tracking
+    document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"]').forEach(function(link) {
+      link.addEventListener('click', function() {
+        if (window.gtag) {
+          var type = this.href.startsWith('mailto:') ? 'email' : 'phone';
+          window.gtag('event', 'contact_info_click', {
+            contact_type: type
+          });
+        }
+      });
+    });
+    
+    // === ANALYTICS ===
+    setTimeout(function() {
+      console.log('📊 Contact Page Metrics:', metrics);
+      
+      if (window.gtag) {
+        window.gtag('event', 'contact_page_view', {
+          page_title: document.title,
+          form_interactions: metrics.formInteractions,
+          contact_views: metrics.contactViews,
+          engagement_time_msec: 5000
+        });
+        
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms',
+            page_type: 'contact'
+          });
+        }
+      }
+    }, 5000);
+  });
+</script>
+
+<!-- Contact page specific CSS -->
+<style>
+  .animate-contact-item {
+    animation: contactSlideIn 0.6s ease-out;
+  }
+  
+  @keyframes contactSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Form validation styles */
+  .error {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+  }
+  
+  /* Performance optimizations */
+  .flex.items-start.space-x-4 {
+    will-change: transform;
+  }
+  
+  .bg-white.rounded-xl.shadow-lg {
+    contain: layout style paint;
+  }
+</style>

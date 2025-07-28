@@ -1,10 +1,18 @@
 ---
-// Optimized image component using Astro 5's built-in image optimization
+// Enhanced optimized image component with advanced utilities
 import { Image } from 'astro:assets';
+import {
+  createResponsiveImageSet,
+  generateSrcset,
+  generateSizes,
+  generateAltText,
+  IMAGE_PRESETS
+} from '../../utils/image';
+import { getLangFromUrl } from '../../i18n/utils';
 
 export interface Props {
   src: string;
-  alt: string;
+  alt?: string;
   width: number;
   height: number;
   class?: string;
@@ -13,6 +21,9 @@ export interface Props {
   format?: 'webp' | 'avif' | 'png' | 'jpg';
   sizes?: string;
   densities?: number[];
+  preset?: 'hero' | 'card' | 'thumbnail' | 'gallery';
+  context?: string;
+  aspectRatio?: number;
 }
 
 const {
@@ -25,48 +36,166 @@ const {
   quality = 80,
   format = 'webp',
   sizes,
-  densities = [1, 2]
+  densities = [1, 2],
+  preset,
+  context,
+  aspectRatio
 } = Astro.props;
 
-// Generate responsive images for different screen sizes
-const responsiveSizes = sizes || `
-  (max-width: 640px) ${Math.round(width * 0.5)}px,
-  (max-width: 1024px) ${Math.round(width * 0.75)}px,
-  ${width}px
-`;
+// Get language for alt text generation
+const lang = getLangFromUrl(Astro.url);
+
+// Use preset if provided
+const presetConfig = preset ? IMAGE_PRESETS[preset] : null;
+const finalWidth = presetConfig?.widths ? Math.max(...presetConfig.widths) : width;
+const finalHeight = height;
+const finalLoading = presetConfig?.loading || loading;
+const finalAspectRatio = presetConfig?.aspectRatio || aspectRatio;
+
+// Generate responsive sizes
+const responsiveSizes = sizes ||
+  (presetConfig ? presetConfig.sizes :
+    generateSizes([
+      { query: '(max-width: 640px)', size: `${Math.round(finalWidth * 0.5)}px` },
+      { query: '(max-width: 1024px)', size: `${Math.round(finalWidth * 0.75)}px` },
+      { query: '', size: `${finalWidth}px` }
+    ])
+  );
+
+// Generate enhanced alt text if not provided
+const enhancedAlt = alt || (context ?
+  generateAltText(src, context, lang as 'tr' | 'en') :
+  `Image - ${finalWidth}x${finalHeight}`
+);
+
+// Generate widths for responsive images
+const responsiveWidths = presetConfig?.widths || [
+  Math.round(finalWidth * 0.5),
+  Math.round(finalWidth * 0.75),
+  finalWidth,
+  Math.round(finalWidth * 1.25)
+];
+
+// Calculate aspect ratio height if provided
+const calculatedHeight = finalAspectRatio ? Math.round(finalWidth / finalAspectRatio) : finalHeight;
 ---
 
 {src.startsWith('http') ? (
-  <!-- External image - use regular img with optimization attributes -->
+  <!-- External image - enhanced with responsive support -->
   <img
     src={src}
-    alt={alt}
-    width={width}
-    height={height}
-    class={className}
-    loading={loading}
+    srcset={generateSrcset(src, responsiveWidths)}
+    alt={enhancedAlt}
+    width={finalWidth}
+    height={calculatedHeight}
+    class={`optimized-image ${className}`}
+    loading={finalLoading}
     decoding="async"
     sizes={responsiveSizes}
+    style={`aspect-ratio: ${finalAspectRatio || finalWidth/calculatedHeight}`}
+    data-src-original={src}
+    data-optimized="external"
   />
 ) : (
-  <!-- Local image - use Astro's built-in optimization -->
+  <!-- Local image - use Astro's built-in optimization with enhancements -->
   <Image
     src={src}
-    alt={alt}
-    width={width}
-    height={height}
-    class={className}
-    loading={loading}
+    alt={enhancedAlt}
+    width={finalWidth}
+    height={calculatedHeight}
+    class={`optimized-image ${className}`}
+    loading={finalLoading}
     quality={quality}
     format={format}
     densities={densities}
     sizes={responsiveSizes}
+    style={`aspect-ratio: ${finalAspectRatio || finalWidth/calculatedHeight}`}
+    data-optimized="local"
   />
 )}
 
+<!-- Intersection Observer for lazy loading enhancements -->
+{finalLoading === 'lazy' && (
+  <script>
+    // Enhanced lazy loading with intersection observer
+    if ('IntersectionObserver' in window) {
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement;
+            
+            // Add loaded class for animations
+            img.classList.add('image-loaded');
+            
+            // Track loading performance
+            if (window.gtag) {
+              window.gtag('event', 'image_loaded', {
+                image_src: img.dataset.srcOriginal || img.src,
+                loading_method: img.dataset.optimized,
+                image_width: img.width,
+                image_height: img.height
+              });
+            }
+            
+            imageObserver.unobserve(img);
+          }
+        });
+      }, {
+        rootMargin: '50px 0px',
+        threshold: 0.1
+      });
+      
+      // Observe all optimized images
+      document.querySelectorAll('.optimized-image').forEach(img => {
+        imageObserver.observe(img);
+      });
+    }
+  </script>
+)}
+
 <style>
-  img {
+  .optimized-image {
     max-width: 100%;
     height: auto;
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
+    background-color: #f3f4f6;
+  }
+  
+  .optimized-image[loading="lazy"] {
+    opacity: 0;
+  }
+  
+  .optimized-image.image-loaded {
+    opacity: 1;
+  }
+  
+  .optimized-image:hover {
+    transform: scale(1.02);
+  }
+  
+  /* Loading skeleton animation */
+  .optimized-image:not(.image-loaded) {
+    background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
+    background-size: 200% 100%;
+    animation: loading-skeleton 2s ease-in-out infinite;
+  }
+  
+  @keyframes loading-skeleton {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+  }
+  
+  /* Responsive image container */
+  .optimized-image {
+    object-fit: cover;
+    width: 100%;
+  }
+  
+  /* Print optimization */
+  @media print {
+    .optimized-image {
+      filter: grayscale(100%);
+      page-break-inside: avoid;
+    }
   }
 </style>

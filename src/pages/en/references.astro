@@ -1,5 +1,621 @@
 ---
-import ReferencesPage from '../referanslar.astro';
+// === COMPONENT IMPORTS ===
+import Layout from '../../layouts/Layout.astro';
+import { Building2, TrendingUp, CheckCircle, Globe, Users, Zap, Calendar, Award } from 'lucide-react';
+
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../../i18n/utils';
+
+// === CONFIG IMPORTS ===
+import { COMPANY_INFO } from '../../config/company';
+import { CONTACT_INFO } from '../../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../../config/domain';
+import { getRoute } from '../../utils/routes';
+
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../../utils/seo-advanced';
+import {
+  generateReviewSchema,
+  generateBreadcrumbSchema,
+  generateOrganizationSchema
+} from '../../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../../utils/security';
+
+// === ENGLISH-SPECIFIC CONSTANTS ===
+const REFERENCES_PAGE_CONFIG_EN = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.2,
+    ANIMATION_DELAY: 300,
+    TESTIMONIAL_SCROLL_THRESHOLD: 0.5
+  },
+  SEO: {
+    AVERAGE_RATING: '5.0',
+    TOTAL_PROJECTS: '50+',
+    SUCCESS_RATE: '98%',
+    AVERAGE_DURATION: '2-4 months',
+    CLIENT_SATISFACTION: '100%',
+    META_DESCRIPTION: {
+      MAX_LENGTH: 160
+    }
+  },
+  REFERENCES: {
+    RATING: 5,
+    REVIEW_DATE: '2024-01-01',
+    TOTAL_CLIENTS: 25,
+    AVERAGE_PROJECT_VALUE: '$15,000'
+  }
+};
+
+// === INITIALIZATION ===
+const lang = getLangFromUrl(Astro.url);
+const t = await getTranslations(lang);
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === ENGLISH-SPECIFIC HELPER FUNCTIONS ===
+function getReferencesBenefitsEN(lang: 'tr' | 'en') {
+  return lang === 'en'
+    ? ['proven results', 'expert implementation', 'long-term success', 'client satisfaction']
+    : ['kanıtlanmış sonuçlar', 'uzman uygulama', 'uzun vadeli başarı', 'müşteri memnuniyeti'];
+}
+
+function getPageTitleEN(lang: 'tr' | 'en') {
+  return `${t.nav.references} | ${COMPANY_INFO.name}`;
+}
+
+function getReferencesBreadcrumbsEN(lang: 'tr' | 'en') {
+  return [
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: t.nav.references, url: getRoute(lang, 'references') }
+  ];
+}
+
+// === SERVICE ICONS CONFIGURATION ===
+const serviceIconsEN: Record<string, any> = {
+  'Web Sitesi': Globe,
+  'Website': Globe,
+  'CRM': Users,
+  'Otomasyon': Zap,
+  'Automation': Zap,
+  'Form Entegrasyonu': CheckCircle,
+  'Form Integration': CheckCircle,
+  'SEO': TrendingUp
+};
+
+// === DETAILED REFERENCES DATA - ENGLISH FOCUSED ===
+const detailedReferencesEN = [
+  {
+    company: "TechFlow Software Inc.",
+    type: "Technology Company",
+    description: "We implemented a comprehensive digital transformation project for a software development company with 50+ employees. We increased operational efficiency by automating customer tracking processes and established a modern web presence.",
+    services: ["Website", "CRM", "Automation"],
+    results: ["40% lead increase", "60% process optimization", "25% customer satisfaction increase"],
+    duration: "3 months",
+    technologies: ["Zoho CRM", "Zapier", "React", "Node.js"],
+    challenge: "Opportunities were being missed due to scattered customer data and manual processes. The company lacked a unified system for tracking leads and managing client relationships effectively.",
+    solution: "We established a central CRM system and developed an automatic lead routing system. Integrated their existing tools with modern automation workflows and created a responsive website with lead capture forms.",
+    testimonial: "Thanks to BisilerTech, our customer tracking processes have completely changed. We no longer miss any opportunities and our team productivity has increased significantly."
+  },
+  {
+    company: "MediCare Private Hospital",
+    type: "Private Hospital",
+    description: "We digitized the patient experience with patient appointment system and CRM integration. We optimized online appointment system and patient tracking processes, improving overall healthcare delivery efficiency.",
+    services: ["CRM", "Form Integration", "Automation"],
+    results: ["50% appointment efficiency", "35% patient satisfaction increase", "70% manual process reduction"],
+    duration: "2 months",
+    technologies: ["Zoho CRM", "Custom Forms", "Email Automation", "Calendar Integration"],
+    challenge: "Manual appointment system and scattered patient information across multiple systems. Staff was spending too much time on administrative tasks instead of patient care.",
+    solution: "We established a central patient management system with online appointment form and CRM integration. Automated appointment confirmations, reminders, and follow-up communications to streamline operations.",
+    testimonial: "Our patient appointment processes are now much more efficient and patient satisfaction has increased dramatically. The automated system has freed up our staff to focus on what matters most - patient care."
+  },
+  {
+    company: "RetailMax Store Chain",
+    type: "Store Chain",
+    description: "We established a central CRM and inventory management system for a 15-branch store chain. We strengthened online sales channels and provided omnichannel experience with integrated e-commerce solutions.",
+    services: ["CRM", "Website", "SEO"],
+    results: ["45% online sales increase", "30% inventory optimization", "55% customer tracking efficiency"],
+    duration: "4 months",
+    technologies: ["Zoho CRM", "E-commerce Platform", "SEO Tools", "Inventory Management"],
+    challenge: "Lack of coordination between branches and low online visibility. Each store operated independently without centralized customer data or unified inventory tracking.",
+    solution: "We strengthened online presence with central CRM system and SEO optimization. Created an integrated e-commerce platform that synchronizes with all physical locations and implemented unified customer tracking.",
+    testimonial: "Our online sales have multiplied and perfect coordination has been achieved between our branches. The unified system has transformed how we operate as a business."
+  }
+];
+
+// === CONTENT GENERATION ===
+// Generate enhanced meta description for English
+const optimizedDescription = generateOptimizedMetaDescription(
+  lang === 'en' ? 'Our successful CRM and web development projects with proven results' : 'Başarılı CRM ve web geliştirme projelerimiz',
+  getReferencesBenefitsEN(lang),
+  lang === 'en' ? 'Turkey' : 'Türkiye',
+  lang
+);
+
+// === STRUCTURED DATA GENERATION ===
+// Generate breadcrumb structured data
+const breadcrumbs = getReferencesBreadcrumbsEN(lang);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+// Generate Organization Schema
+const organizationSchema = generateOrganizationSchema(lang);
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('references', {
+  page: {
+    name: getPageTitleEN(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'references')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// Generate review schemas for each reference
+const reviewSchemas = detailedReferencesEN.map((reference, index) =>
+  generateReviewSchema(
+    COMPANY_INFO.name,
+    REFERENCES_PAGE_CONFIG_EN.REFERENCES.RATING.toString(),
+    reference.testimonial,
+    reference.company,
+    REFERENCES_PAGE_CONFIG_EN.REFERENCES.REVIEW_DATE,
+    lang
+  )
+);
+
+// Combine all schemas
+const allSchemas = [
+  breadcrumbSchema,
+  organizationSchema,
+  ...pageSchemas,
+  ...reviewSchemas
+];
 ---
 
-<ReferencesPage />
+<Layout
+  title={getPageTitleEN(lang)}
+  description={optimizedDescription}
+  structuredData={allSchemas}
+  ogImage={DOMAIN_CONFIG.images.ogImage}
+  canonical={getUrl(getRoute(lang, 'references'))}
+  breadcrumbs={breadcrumbs}
+>
+  
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.references.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.references.subtitle}
+        </p>
+        
+        <!-- Success Metrics -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12 max-w-4xl mx-auto">
+          <div class="text-center">
+            <div class="text-3xl font-bold text-primary-600 mb-2">50+</div>
+            <div class="text-sm text-secondary-600">
+              {lang === 'en' ? 'Projects Completed' : 'Tamamlanan Proje'}
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-primary-600 mb-2">98%</div>
+            <div class="text-sm text-secondary-600">
+              {lang === 'en' ? 'Success Rate' : 'Başarı Oranı'}
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-primary-600 mb-2">100%</div>
+            <div class="text-sm text-secondary-600">
+              {lang === 'en' ? 'Client Satisfaction' : 'Müşteri Memnuniyeti'}
+            </div>
+          </div>
+          <div class="text-center">
+            <div class="text-3xl font-bold text-primary-600 mb-2">5.0</div>
+            <div class="text-sm text-secondary-600">
+              {lang === 'en' ? 'Average Rating' : 'Ortalama Puan'}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-12">
+        {detailedReferencesEN.map((reference, index) => (
+          <div class="bg-white rounded-2xl shadow-xl overflow-hidden reference-card" data-index={index}>
+            <div class="lg:flex">
+              <div class="lg:w-2/3 p-8 lg:p-12">
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex items-center">
+                    <div class="w-16 h-16 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                      <Building2 className="w-8 h-8 text-primary-600" />
+                    </div>
+                    <div>
+                      <h2 class="text-2xl font-bold text-secondary-900">
+                        {reference.company}
+                      </h2>
+                      <span class="text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
+                        {reference.type}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center text-secondary-600">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <span class="text-sm">{reference.duration}</span>
+                  </div>
+                </div>
+
+                <p class="text-secondary-700 mb-8 leading-relaxed text-lg">
+                  {reference.description}
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+                  <div>
+                    <h3 class="text-lg font-semibold text-secondary-900 mb-4">
+                      {lang === 'en' ? 'Challenge' : 'Meydan Okuma'}
+                    </h3>
+                    <p class="text-secondary-600 text-sm leading-relaxed">
+                      {reference.challenge}
+                    </p>
+                  </div>
+                  <div>
+                    <h3 class="text-lg font-semibold text-secondary-900 mb-4">
+                      {lang === 'en' ? 'Solution' : 'Çözüm'}
+                    </h3>
+                    <p class="text-secondary-600 text-sm leading-relaxed">
+                      {reference.solution}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="bg-primary-50 p-6 rounded-lg mb-8 testimonial-section">
+                  <div class="flex items-start">
+                    <Award className="w-6 h-6 text-primary-600 mr-3 flex-shrink-0 mt-1" />
+                    <div>
+                      <h4 class="font-semibold text-secondary-900 mb-2">
+                        {lang === 'en' ? 'Client Testimonial' : 'Müşteri Görüşü'}
+                      </h4>
+                      <p class="text-secondary-700 italic">"{reference.testimonial}"</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mb-6">
+                  <h4 class="text-lg font-semibold text-secondary-900 mb-4">
+                    {lang === 'en' ? 'Technologies Used' : 'Kullanılan Teknolojiler'}
+                  </h4>
+                  <div class="flex flex-wrap gap-2">
+                    {reference.technologies.map((tech) => (
+                      <span class="bg-secondary-100 text-secondary-700 px-3 py-1 rounded-full text-sm font-medium">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div class="lg:w-1/3 bg-secondary-50 p-8 lg:p-12">
+                <div class="mb-8">
+                  <h4 class="text-lg font-semibold text-secondary-900 mb-4">
+                    {lang === 'en' ? 'Services Provided' : 'Sağlanan Hizmetler'}
+                  </h4>
+                  <div class="space-y-3">
+                    {reference.services.map((service) => {
+                      const IconComponent = serviceIconsEN[service] || CheckCircle;
+                      return (
+                        <div class="flex items-center">
+                          <IconComponent className="w-5 h-5 text-primary-600 mr-3" />
+                          <span class="text-secondary-700 font-medium">{service}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 class="text-lg font-semibold text-secondary-900 mb-4 flex items-center">
+                    <TrendingUp className="w-5 h-5 text-green-600 mr-2" />
+                    {lang === 'en' ? 'Results Achieved' : 'Elde Edilen Sonuçlar'}
+                  </h4>
+                  <div class="space-y-4">
+                    {reference.results.map((result) => (
+                      <div class="bg-green-50 p-4 rounded-lg result-item">
+                        <div class="flex items-center">
+                          <div class="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                          <span class="text-green-800 font-semibold">{result}</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA Section -->
+  <section class="py-20 bg-primary-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold text-white mb-6">
+        {lang === 'en' ? 'Ready to Create Your Success Story?' : 'Kendi Başarı Hikayenizi Yazmaya Hazır mısınız?'}
+      </h2>
+      <p class="text-xl text-primary-100 mb-8">
+        {lang === 'en' 
+          ? 'Let\'s discuss how we can help transform your business processes and achieve similar results.'
+          : 'İş süreçlerinizi nasıl dönüştürebileceğimizi ve benzer sonuçlara nasıl ulaşabileceğinizi konuşalım.'
+        }
+      </p>
+      <a
+        href={getRoute(lang, 'contact')}
+        class="inline-flex items-center px-8 py-4 bg-white text-primary-600 font-semibold rounded-lg hover:bg-primary-50 transition-all duration-200 transform hover:scale-105"
+        data-track="cta_start_project"
+      >
+        {lang === 'en' ? 'Start Your Project' : 'Projenizi Başlatın'}
+      </a>
+    </div>
+  </section>
+</Layout>
+
+<!-- Enhanced Performance & Security Optimization Script for English References Page -->
+<script is:inline>
+  // English references page performance & security optimizations
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // === SECURITY FUNCTIONS ===
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    // Rate limiting for testimonial interactions
+    var testimonialInteractions = [];
+    var TESTIMONIAL_RATE_LIMIT = 60000; // 1 minute
+    var MAX_INTERACTIONS = 10;
+    
+    function isTestimonialRateLimited() {
+      var now = Date.now();
+      testimonialInteractions = testimonialInteractions.filter(function(time) {
+        return now - time < TESTIMONIAL_RATE_LIMIT;
+      });
+      
+      if (testimonialInteractions.length >= MAX_INTERACTIONS) {
+        console.warn('Testimonial interaction rate limit exceeded');
+        return true;
+      }
+      
+      testimonialInteractions.push(now);
+      return false;
+    }
+    
+    // === PERFORMANCE FUNCTIONS ===
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    function addPrefetch(href) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics
+    var metrics = {
+      lcp: 0,
+      fid: 0,
+      referencesViewed: 0,
+      testimonialsRead: 0,
+      ctaClicks: 0,
+      technologiesExpanded: 0
+    };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      } catch (e) {
+        console.warn('LCP observer failed');
+      }
+    }
+    
+    // === OPTIMIZATIONS ===
+    addDnsPrefetch('//fonts.googleapis.com');
+    addPrefetch('/en/contact');
+    addPrefetch('/en/services');
+    addPrefetch('/en/about');
+    
+    // === REFERENCE CARD ANIMATIONS ===
+    if (window.IntersectionObserver) {
+      var referenceObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-reference-card');
+            metrics.referencesViewed++;
+            referenceObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      
+      document.querySelectorAll('.reference-card').forEach(function(card) {
+        referenceObserver.observe(card);
+      });
+      
+      // Testimonial section observer
+      var testimonialObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !isTestimonialRateLimited()) {
+            entry.target.classList.add('animate-testimonial');
+            metrics.testimonialsRead++;
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      document.querySelectorAll('.testimonial-section').forEach(function(section) {
+        testimonialObserver.observe(section);
+      });
+      
+      // Result items animation
+      var resultObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-result-item');
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      document.querySelectorAll('.result-item').forEach(function(item) {
+        resultObserver.observe(item);
+      });
+    }
+    
+    // CTA tracking
+    document.querySelectorAll('[data-track="cta_start_project"]').forEach(function(cta) {
+      cta.addEventListener('click', function() {
+        metrics.ctaClicks++;
+        if (window.gtag) {
+          window.gtag('event', 'references_cta_click', {
+            page_title: document.title,
+            cta_location: 'references_bottom',
+            page_language: 'en'
+          });
+        }
+      });
+    });
+    
+    // Technology tags interaction
+    document.querySelectorAll('.bg-secondary-100').forEach(function(tag) {
+      tag.addEventListener('mouseenter', function() {
+        metrics.technologiesExpanded++;
+      });
+    });
+    
+    // === ANALYTICS ===
+    setTimeout(function() {
+      console.log('📊 References Page Metrics:', metrics);
+      
+      if (window.gtag) {
+        window.gtag('event', 'references_page_view', {
+          page_title: document.title,
+          references_viewed: metrics.referencesViewed,
+          testimonials_read: metrics.testimonialsRead,
+          cta_clicks: metrics.ctaClicks,
+          engagement_time_msec: 5000,
+          page_language: 'en'
+        });
+        
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms',
+            page_type: 'references',
+            page_language: 'en'
+          });
+        }
+      }
+    }, 5000);
+  });
+</script>
+
+<!-- References page specific CSS -->
+<style>
+  .animate-reference-card {
+    animation: referenceSlideIn 0.8s ease-out;
+  }
+  
+  .animate-testimonial {
+    animation: testimonialHighlight 1.2s ease-out;
+  }
+  
+  .animate-result-item {
+    animation: resultPulse 0.6s ease-out;
+  }
+  
+  @keyframes referenceSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes testimonialHighlight {
+    0% {
+      background-color: rgb(239 246 255);
+    }
+    50% {
+      background-color: rgb(219 234 254);
+    }
+    100% {
+      background-color: rgb(239 246 255);
+    }
+  }
+  
+  @keyframes resultPulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  /* Performance optimizations */
+  .reference-card {
+    will-change: transform;
+    contain: layout style paint;
+  }
+  
+  .testimonial-section {
+    will-change: background-color;
+  }
+  
+  .result-item {
+    will-change: transform;
+  }
+  
+  /* Hover effects */
+  .reference-card:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease-out;
+  }
+  
+  .bg-secondary-100:hover {
+    background-color: rgb(209 213 219);
+    transition: background-color 0.2s ease-out;
+  }
+</style>

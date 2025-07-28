@@ -1,5 +1,761 @@
 ---
-import ServicesPage from '../hizmetlerimiz.astro';
+// === COMPONENT IMPORTS ===
+import Layout from '../../layouts/Layout.astro';
+import { Globe, Settings, Zap, Search, Users, BarChart3, CheckCircle, ArrowRight } from 'lucide-react';
+import ServicesCtaSection from '../../components/ServicesCtaSection.astro';
+
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../../i18n/utils';
+
+// === CONFIG IMPORTS ===
+import { COMPANY_INFO } from '../../config/company';
+import { CONTACT_INFO } from '../../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../../config/domain';
+import { getRoute } from '../../utils/routes';
+
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../../utils/seo-advanced';
+import {
+  generateServiceSchema,
+  generateBreadcrumbSchema,
+  generateOrganizationSchema
+} from '../../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../../utils/security';
+
+// === ENGLISH-SPECIFIC CONSTANTS ===
+const SERVICES_PAGE_CONFIG_EN = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.1,
+    ANIMATION_DELAY: 200
+  },
+  SEO: {
+    SERVICE_COUNT: 6,
+    AVERAGE_RATING: '5.0',
+    REVIEW_COUNT: '150+',
+    EXPERIENCE_YEARS: '5+'
+  },
+  SERVICES: {
+    CATEGORIES: ['Web Development', 'CRM Implementation', 'Automation', 'SEO', 'Technical Consulting'],
+    BADGES: {
+      web: ['📱 Responsive', '⚡ Fast', '🔍 SEO', '🔒 Secure'],
+      form: ['🎨 Design', '🔗 Integration', '✅ Validation', '🔔 Notifications'],
+      crm: ['🏆 Zoho Expert', '⚙️ Customization', '📊 Reporting', '👥 Training'],
+      automation: ['⚡ Zapier', '🔄 Automation', '📈 Efficiency', '📊 Analytics'],
+      seo: ['🔍 Technical SEO', '📝 Content', '📊 Analytics', '🚀 Performance'],
+      consulting: ['🔧 System Analysis', '🛡️ Security', '📈 Scalability', '💡 Strategy']
+    }
+  }
+};
+
+// === INITIALIZATION ===
+const lang = getLangFromUrl(Astro.url);
+const t = await getTranslations(lang);
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === ENGLISH-SPECIFIC HELPER FUNCTIONS ===
+function getServicesBenefitsEN(lang: 'tr' | 'en') {
+  return lang === 'en'
+    ? ['comprehensive solutions', 'expert implementation', 'ongoing support']
+    : ['kapsamlı çözümler', 'uzman uygulaması', 'sürekli destek'];
+}
+
+function getPageTitleEN(lang: 'tr' | 'en') {
+  return `${t.nav.services} | ${COMPANY_INFO.name}`;
+}
+
+function getServicesBreadcrumbsEN(lang: 'tr' | 'en') {
+  return [
+    { name: t.nav.home || (lang === 'en' ? 'Home' : 'Anasayfa'), url: getRoute(lang, 'home') },
+    { name: t.nav.services, url: getRoute(lang, 'services') }
+  ];
+}
+
+// === CONTENT GENERATION ===
+// Generate enhanced meta description for English
+const optimizedDescription = generateOptimizedMetaDescription(
+  lang === 'en' ? 'Professional CRM and web development services' : 'Profesyonel CRM ve web geliştirme hizmetleri',
+  getServicesBenefitsEN(lang),
+  lang === 'en' ? 'Turkey' : 'Türkiye',
+  lang
+);
+
+// === STRUCTURED DATA GENERATION ===
+// Generate breadcrumb structured data
+const breadcrumbs = getServicesBreadcrumbsEN(lang);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+// Generate enhanced services schema with ratings
+const servicesSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: lang === 'en' ? 'Our Services' : 'Hizmetlerimiz',
+  description: optimizedDescription,
+  itemListElement: t.services.items.map((service, index) => ({
+    '@type': 'Service',
+    position: index + 1,
+    name: service.title,
+    description: service.description,
+    provider: {
+      '@type': 'Organization',
+      name: COMPANY_INFO.name,
+      url: DOMAIN_CONFIG.baseUrl
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue: SERVICES_PAGE_CONFIG_EN.SEO.AVERAGE_RATING,
+      reviewCount: SERVICES_PAGE_CONFIG_EN.SEO.REVIEW_COUNT
+    },
+    serviceType: SERVICES_PAGE_CONFIG_EN.SERVICES.CATEGORIES[index] || 'Professional Service'
+  }))
+};
+
+// Generate Organization Schema
+const organizationSchema = generateOrganizationSchema(lang);
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('services', {
+  page: {
+    name: getPageTitleEN(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'services')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// === COMBINE ALL STRUCTURED DATA ===
+const allStructuredData = [
+  breadcrumbSchema,
+  servicesSchema,
+  organizationSchema,
+  ...pageSchemas
+];
+
+const detailedServices = [
+  {
+    icon: Globe,
+    title: t.services.items[0].title,
+    description: t.services.items[0].description,
+    badges: ['📱 Responsive', '⚡ Fast', '🔍 SEO', '🔒 Secure'],
+    process: lang === 'en' ? [
+      'Needs analysis and discovery meeting',
+      'Wireframe and design approval',
+      'Development and testing phase',
+      'Content integration',
+      'Go-live and training'
+    ] : [
+      'İhtiyaç analizi ve keşif toplantısı',
+      'Wireframe ve tasarım onayı',
+      'Geliştirme ve test aşaması',
+      'İçerik entegrasyonu',
+      'Yayına alma ve eğitim'
+    ],
+    packageDetails: lang === 'en' ? [
+      '5-15 pages',
+      'Content management system',
+      'Contact form',
+      'Google Analytics',
+      '1 year technical support',
+      'Hosting and domain consulting'
+    ] : [
+      '5-15 sayfa',
+      'İçerik yönetim sistemi',
+      'İletişim formu',
+      'Google Analytics',
+      '1 yıl teknik destek',
+      'Hosting ve domain danışmanlığı'
+    ]
+  },
+  {
+    icon: Settings,
+    title: t.services.items[1].title,
+    description: t.services.items[1].description,
+    badges: ['🎨 Design', '🔗 Integration', '✅ Validation', '🔔 Notifications'],
+    process: lang === 'en' ? [
+      'Form requirements determination',
+      'Design and user experience planning',
+      'CRM integration setup',
+      'Testing and optimization',
+      'Go-live and monitoring'
+    ] : [
+      'Form gereksinimlerinin belirlenmesi',
+      'Tasarım ve kullanıcı deneyimi planlaması',
+      'CRM entegrasyon kurulumu',
+      'Test ve optimizasyon',
+      'Yayına alma ve izleme'
+    ],
+    packageDetails: lang === 'en' ? [
+      'Custom form design',
+      'Automatic CRM integration',
+      'Data validation systems',
+      'Email notifications',
+      'Reporting dashboard',
+      '6 months technical support'
+    ] : [
+      'Özel form tasarımı',
+      'Otomatik CRM entegrasyonu',
+      'Veri doğrulama sistemleri',
+      'E-posta bildirimleri',
+      'Raporlama panosu',
+      '6 ay teknik destek'
+    ]
+  },
+  {
+    icon: Users,
+    title: t.services.items[2].title,
+    description: t.services.items[2].description,
+    badges: ['🏆 Zoho Expert', '⚙️ Customization', '📊 Reporting', '👥 Training'],
+    process: lang === 'en' ? [
+      'Analysis of existing processes',
+      'CRM selection and planning',
+      'Setup and customization',
+      'Data migration',
+      'Team training and go-live'
+    ] : [
+      'Mevcut süreçlerin analizi',
+      'CRM seçimi ve planlaması',
+      'Kurulum ve özelleştirme',
+      'Veri taşıma',
+      'Ekip eğitimi ve yayına alma'
+    ],
+    packageDetails: lang === 'en' ? [
+      'Zoho CRM Professional license',
+      'Custom fields and workflow setup',
+      'Existing data migration',
+      'Comprehensive team training',
+      'Dashboards and reports',
+      '1 year continuous support'
+    ] : [
+      'Zoho CRM Professional lisansı',
+      'Özel alan ve iş akışı kurulumu',
+      'Mevcut veri taşıma',
+      'Kapsamlı ekip eğitimi',
+      'Panolar ve raporlar',
+      '1 yıl sürekli destek'
+    ]
+  },
+  {
+    icon: Zap,
+    title: t.services.items[3].title,
+    description: t.services.items[3].description,
+    badges: ['⚡ Zapier', '🔄 Automation', '📈 Efficiency', '📊 Analytics'],
+    process: lang === 'en' ? [
+      'Process mapping and analysis',
+      'Automation strategy development',
+      'Zapier/Make setups',
+      'Testing and optimization',
+      'Monitoring and improvement'
+    ] : [
+      'Süreç haritalama ve analizi',
+      'Otomasyon stratejisi geliştirme',
+      'Zapier/Make kurulumları',
+      'Test ve optimizasyon',
+      'İzleme ve iyileştirme'
+    ],
+    packageDetails: lang === 'en' ? [
+      '10+ application integrations',
+      'Custom automation scenarios',
+      'Error management systems',
+      'Performance reports',
+      'Continuous optimization',
+      '6 months technical support'
+    ] : [
+      '10+ uygulama entegrasyonu',
+      'Özel otomasyon senaryoları',
+      'Hata yönetim sistemleri',
+      'Performans raporları',
+      'Sürekli optimizasyon',
+      '6 ay teknik destek'
+    ]
+  },
+  {
+    icon: Search,
+    title: t.services.items[4].title,
+    description: t.services.items[4].description,
+    badges: ['🔍 Technical SEO', '📝 Content', '📊 Analytics', '🚀 Performance'],
+    process: lang === 'en' ? [
+      'SEO audit and analysis',
+      'Keyword research',
+      'Technical optimizations',
+      'Content strategy',
+      'Monitoring and reporting'
+    ] : [
+      'SEO denetimi ve analizi',
+      'Anahtar kelime araştırması',
+      'Teknik optimizasyonlar',
+      'İçerik stratejisi',
+      'İzleme ve raporlama'
+    ],
+    packageDetails: lang === 'en' ? [
+      'Comprehensive SEO audit',
+      'Technical optimizations',
+      'Content strategy',
+      'Google Analytics setup',
+      'Monthly performance reports',
+      '3 months continuous optimization'
+    ] : [
+      'Kapsamlı SEO denetimi',
+      'Teknik optimizasyonlar',
+      'İçerik stratejisi',
+      'Google Analytics kurulumu',
+      'Aylık performans raporları',
+      '3 ay sürekli optimizasyon'
+    ]
+  },
+  {
+    icon: BarChart3,
+    title: t.services.items[5].title,
+    description: t.services.items[5].description,
+    badges: ['🔧 System Analysis', '🛡️ Security', '📈 Scalability', '💡 Strategy'],
+    process: lang === 'en' ? [
+      'Current infrastructure assessment',
+      'Needs analysis and planning',
+      'Technology roadmap creation',
+      'Implementation support',
+      'Continuous consulting'
+    ] : [
+      'Mevcut altyapı değerlendirmesi',
+      'İhtiyaç analizi ve planlama',
+      'Teknoloji yol haritası oluşturma',
+      'Uygulama desteği',
+      'Sürekli danışmanlık'
+    ],
+    packageDetails: lang === 'en' ? [
+      'Comprehensive system analysis',
+      'Technology selection consulting',
+      'Security assessment',
+      'Scalability planning',
+      'Implementation support',
+      'Continuous consulting service'
+    ] : [
+      'Kapsamlı sistem analizi',
+      'Teknoloji seçimi danışmanlığı',
+      'Güvenlik değerlendirmesi',
+      'Ölçeklenebilirlik planlaması',
+      'Uygulama desteği',
+      'Sürekli danışmanlık hizmeti'
+    ]
+  }
+];
 ---
 
-<ServicesPage />
+<Layout
+  title={getPageTitleEN(lang)}
+  description={optimizedDescription}
+  structuredData={allStructuredData}
+  ogImage={DOMAIN_CONFIG.images.ogImage}
+  canonical={getUrl(getRoute(lang, 'services'))}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.services.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.services.subtitle}
+        </p>
+      </div>
+
+      <div class="space-y-16">
+        {detailedServices.map((service, index) => {
+          const Icon = service.icon;
+          return (
+            <div class={`bg-white rounded-2xl shadow-xl overflow-hidden ${index % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+              <div class="lg:flex">
+                <div class="lg:w-1/2 p-8 lg:p-12">
+                  <div class="flex items-center mb-6">
+                    <div class="w-16 h-16 bg-primary-100 rounded-lg flex items-center justify-center mr-4">
+                      <Icon className="w-8 h-8 text-primary-600" />
+                    </div>
+                    <div>
+                      <h3 class="text-2xl font-bold text-secondary-900">
+                        {service.title}
+                      </h3>
+                      <div class="flex flex-wrap gap-2 mt-2">
+                        {service.badges.map((badge) => (
+                          <span class="text-xs bg-primary-100 text-primary-700 px-2 py-1 rounded-full">
+                            {badge}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <p class="text-secondary-600 mb-8 leading-relaxed text-lg">
+                    {service.description}
+                  </p>
+                  
+                  <div class="mb-8">
+                    <h4 class="text-lg font-semibold text-secondary-900 mb-4">
+                      {lang === 'en' ? 'Process' : 'Süreç'}
+                    </h4>
+                    <div class="space-y-3">
+                      {service.process.map((step, stepIndex) => (
+                        <div class="flex items-center">
+                          <div class="w-6 h-6 bg-primary-600 text-white rounded-full flex items-center justify-center text-sm font-bold mr-3 flex-shrink-0">
+                            {stepIndex + 1}
+                          </div>
+                          <span class="text-secondary-700">{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <a
+                    href={getRoute(lang, 'contact')}
+                    class="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-semibold rounded-lg hover:bg-primary-700 transition-all duration-200 transform hover:scale-105"
+                  >
+                    {lang === 'en' ? 'Get Quote' : 'Teklif Al'}
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </a>
+                </div>
+                
+                <div class="lg:w-1/2 bg-secondary-50 p-8 lg:p-12">
+                  <h4 class="text-xl font-semibold text-secondary-900 mb-6">
+                    {lang === 'en' ? 'Package Details' : 'Paket Detayları'}
+                  </h4>
+                  <ul class="space-y-4">
+                    {service.packageDetails.map((detail) => (
+                      <li class="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-green-600 mr-3 flex-shrink-0 mt-0.5" />
+                        <span class="text-secondary-700">{detail}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  
+                  <div class="mt-8 p-4 bg-primary-50 rounded-lg">
+                    <p class="text-sm text-primary-700 font-medium">
+                      {lang === 'en' 
+                        ? 'Contact us for detailed pricing and custom solutions'
+                        : 'Detaylı fiyatlandırma ve özel çözümler için bizimle iletişime geçin'
+                      }
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </div>
+
+  <ServicesCtaSection />
+</Layout>
+
+<!-- Performance & Security Optimization Script -->
+<script is:inline>
+  // Performance & Security optimization for English services page
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // === SECURITY FUNCTIONS ===
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    function isValidUrl(url) {
+      try {
+        var urlObj = new URL(url, window.location.origin);
+        return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+      } catch (e) {
+        return false;
+      }
+    }
+    
+    // Rate limiting for service interactions
+    var serviceInteractions = [];
+    var RATE_LIMIT_WINDOW = 60000;
+    var MAX_SERVICE_INTERACTIONS = 20;
+    
+    function isServiceRateLimited() {
+      var now = Date.now();
+      serviceInteractions = serviceInteractions.filter(function(time) {
+        return now - time < RATE_LIMIT_WINDOW;
+      });
+      
+      if (serviceInteractions.length >= MAX_SERVICE_INTERACTIONS) {
+        console.warn('Service interaction rate limit exceeded');
+        return true;
+      }
+      
+      serviceInteractions.push(now);
+      return false;
+    }
+    
+    // Expose security functions globally
+    window.servicesPageSecurity = {
+      sanitizeInput: sanitizeInput,
+      isValidUrl: isValidUrl,
+      isServiceRateLimited: isServiceRateLimited
+    };
+    
+    // === PERFORMANCE FUNCTIONS ===
+    function addPreloadLink(href, as, type) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'preload';
+      link.href = href;
+      link.as = as;
+      if (type) link.type = type;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    }
+    
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    function addPrefetch(href) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics
+    var metrics = { lcp: 0, fid: 0, cls: 0, serviceViews: 0 };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      } catch (e) {
+        console.warn('LCP observer failed');
+      }
+      
+      try {
+        new PerformanceObserver(function(list) {
+          list.getEntries().forEach(function(entry) {
+            metrics.fid = entry.processingStart - entry.startTime;
+          });
+        }).observe({ entryTypes: ['first-input'] });
+      } catch (e) {
+        console.warn('FID observer failed');
+      }
+    }
+    
+    // === APPLY OPTIMIZATIONS ===
+    // DNS prefetch for external resources
+    addDnsPrefetch('//fonts.googleapis.com');
+    
+    // Prefetch next likely pages (English versions)
+    addPrefetch('/en/contact');
+    addPrefetch('/en/about');
+    addPrefetch('/en/references');
+    
+    // === SERVICE CARD INTERACTIONS ===
+    // Service card hover effects with rate limiting
+    function handleServiceHover(serviceCard, index) {
+      if (isServiceRateLimited()) return;
+      
+      serviceCard.classList.add('service-hover');
+      metrics.serviceViews++;
+      
+      // Track service interest
+      if (window.gtag) {
+        window.gtag('event', 'service_hover', {
+          service_name: serviceCard.querySelector('h3').textContent,
+          service_position: index + 1,
+          page_language: 'en'
+        });
+      }
+    }
+    
+    // Service card animations with intersection observer
+    if (window.IntersectionObserver) {
+      var serviceObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry, index) {
+          if (entry.isIntersecting && !isServiceRateLimited()) {
+            var delay = index * 200; // Stagger animations
+            setTimeout(function() {
+              entry.target.classList.add('animate-service-card');
+            }, delay);
+            serviceObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      
+      document.querySelectorAll('.bg-white.rounded-2xl.shadow-xl').forEach(function(card, index) {
+        serviceObserver.observe(card);
+        
+        // Add hover interaction
+        card.addEventListener('mouseenter', function() {
+          handleServiceHover(card, index);
+        });
+      });
+    }
+    
+    // Process steps animation
+    if (window.IntersectionObserver) {
+      var processObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !isServiceRateLimited()) {
+            var steps = entry.target.querySelectorAll('.flex.items-center');
+            steps.forEach(function(step, stepIndex) {
+              setTimeout(function() {
+                step.classList.add('animate-process-step');
+              }, stepIndex * 150);
+            });
+            processObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.3 });
+      
+      document.querySelectorAll('.space-y-3').forEach(function(processSection) {
+        processObserver.observe(processSection);
+      });
+    }
+    
+    // Badge animations
+    if (window.IntersectionObserver) {
+      var badgeObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting && !isServiceRateLimited()) {
+            var badges = entry.target.querySelectorAll('.text-xs.bg-primary-100');
+            badges.forEach(function(badge, badgeIndex) {
+              setTimeout(function() {
+                badge.classList.add('animate-badge');
+              }, badgeIndex * 100);
+            });
+            badgeObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.5 });
+      
+      document.querySelectorAll('.flex.flex-wrap.gap-2').forEach(function(badgeContainer) {
+        badgeObserver.observe(badgeContainer);
+      });
+    }
+    
+    // === ANALYTICS ===
+    setTimeout(function() {
+      console.log('📊 Services Page Metrics:', metrics);
+      
+      if (window.gtag) {
+        // Track services page specific events
+        window.gtag('event', 'services_page_view', {
+          page_title: document.title,
+          service_views: metrics.serviceViews,
+          engagement_time_msec: 5000,
+          page_language: 'en'
+        });
+        
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms',
+            page_type: 'services',
+            page_language: 'en'
+          });
+        }
+      }
+    }, 5000);
+  });
+</script>
+
+<!-- Enhanced CSS for services page animations -->
+<style>
+  /* Services page specific animations */
+  .animate-service-card {
+    animation: serviceCardSlideUp 0.8s ease-out;
+  }
+  
+  .animate-process-step {
+    animation: processStepFadeIn 0.6s ease-out;
+  }
+  
+  .animate-badge {
+    animation: badgeBounce 0.5s ease-out;
+  }
+  
+  .service-hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    transition: all 0.3s ease;
+  }
+  
+  @keyframes serviceCardSlideUp {
+    from {
+      opacity: 0;
+      transform: translateY(40px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+  
+  @keyframes processStepFadeIn {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  @keyframes badgeBounce {
+    0% {
+      opacity: 0;
+      transform: scale(0.8) translateY(-10px);
+    }
+    60% {
+      transform: scale(1.05) translateY(0);
+    }
+    100% {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+  
+  /* Performance optimizations */
+  .bg-white.rounded-2xl.shadow-xl,
+  .flex.items-center,
+  .text-xs.bg-primary-100 {
+    will-change: transform;
+  }
+  
+  /* Lazy loading enhancements */
+  .space-y-16 > div {
+    content-visibility: auto;
+    contain-intrinsic-size: 0 600px;
+  }
+  
+  /* Service card optimizations */
+  .lg\\:flex {
+    contain: layout style paint;
+  }
+</style>

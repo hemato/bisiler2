@@ -1,4 +1,5 @@
 ---
+// === COMPONENT IMPORTS ===
 import Layout from '../layouts/Layout.astro';
 import Hero from '../components/Hero.astro';
 import DetailedServicesSection from '../components/DetailedServicesSection.astro';
@@ -6,17 +7,197 @@ import WhyChooseUsSection from '../components/WhyChooseUsSection.astro';
 import ReferencesSection from '../components/ReferencesSection.astro';
 import HomeContactForm from '../components/HomeContactForm.astro';
 import ServicesCtaSection from '../components/ServicesCtaSection.astro';
-import { getLangFromUrl, getTranslations } from '../i18n/utils';
-import { STATS_SECTIONS } from '../config/company';
 
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../i18n/utils';
+
+// === CONFIG IMPORTS ===
+import { STATS_SECTIONS, COMPANY_INFO } from '../config/company';
+import { CONTACT_INFO } from '../config/contact';
+import { DOMAIN_CONFIG, getUrl } from '../config/domain';
+
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../utils/seo-advanced';
+import {
+  generateLocalBusinessSchema,
+  generateServiceSchema
+} from '../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../utils/security';
+
+// === CONSTANTS ===
+const HOMEPAGE_CONFIG = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    RATE_LIMIT_WINDOW: 60000,
+    MAX_REQUESTS_PER_WINDOW: 3,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.1
+  },
+  SEO: {
+    DEFAULT_RATING: '5.0',
+    CRM_REVIEW_COUNT: '50',
+    WEBSITE_REVIEW_COUNT: '45'
+  }
+};
+
+// === INITIALIZATION ===
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+// XSS protection will be handled by Layout.astro's security headers
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === HELPER FUNCTIONS ===
+function getServiceBenefits(lang: 'tr' | 'en') {
+  return lang === 'en'
+    ? ['increased efficiency', 'digital transformation', 'professional solutions']
+    : ['verimlilik artışı', 'dijital dönüşüm', 'profesyonel çözümler'];
+}
+
+function getServiceArea(lang: 'tr' | 'en') {
+  return lang === 'en' ? 'Turkey' : 'Türkiye';
+}
+
+function getServiceNames(lang: 'tr' | 'en') {
+  return {
+    crm: lang === 'en' ? 'CRM consulting and website setup' : 'CRM danışmanlığı ve web sitesi kurulumu',
+    crmTitle: lang === 'en' ? 'CRM Consulting Services' : 'CRM Danışmanlık Hizmetleri',
+    websiteTitle: lang === 'en' ? 'Website Setup Services' : 'Web Sitesi Kurulum Hizmetleri'
+  };
+}
+
+function getServiceDescriptions(lang: 'tr' | 'en') {
+  return {
+    crm: lang === 'en'
+      ? 'Professional CRM consulting and implementation services to optimize your customer relationship management.'
+      : 'Müşteri ilişkileri yönetiminizi optimize etmek için profesyonel CRM danışmanlık ve uygulama hizmetleri.',
+    website: lang === 'en'
+      ? 'Professional website design, development, and setup services for businesses.'
+      : 'İşletmeler için profesyonel web sitesi tasarım, geliştirme ve kurulum hizmetleri.'
+  };
+}
+
+function getServiceTypes(lang: 'tr' | 'en') {
+  return {
+    crm: lang === 'en' ? 'Business Consulting' : 'İş Danışmanlığı',
+    website: lang === 'en' ? 'Web Development' : 'Web Geliştirme'
+  };
+}
+
+function getPricingText(lang: 'tr' | 'en') {
+  return lang === 'en' ? 'Contact for pricing' : 'Fiyat için iletişime geçin';
+}
+
+function getCompanySlogan(lang: 'tr' | 'en') {
+  return lang === 'en' ? 'Your Digital Transformation Partner' : 'Dijital Dönüşüm Ortağınız';
+}
+
+// === CONTENT GENERATION ===
+const serviceNames = getServiceNames(lang);
+const serviceDescriptions = getServiceDescriptions(lang);
+const serviceTypes = getServiceTypes(lang);
+
+// Generate enhanced meta description
+const optimizedDescription = generateOptimizedMetaDescription(
+  serviceNames.crm,
+  getServiceBenefits(lang),
+  getServiceArea(lang),
+  lang
+);
+
+// === STRUCTURED DATA GENERATION ===
+// Generate LocalBusiness Schema
+const localBusinessSchema = generateLocalBusinessSchema(lang);
+
+// Generate Service Schemas with constants
+const crmServiceSchema = generateServiceSchema({
+  name: serviceNames.crmTitle,
+  description: serviceDescriptions.crm,
+  provider: COMPANY_INFO.name,
+  serviceType: serviceTypes.crm,
+  category: 'CRM Services',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: HOMEPAGE_CONFIG.SEO.DEFAULT_RATING,
+    reviewCount: HOMEPAGE_CONFIG.SEO.CRM_REVIEW_COUNT
+  }
+}, lang);
+
+const websiteServiceSchema = generateServiceSchema({
+  name: serviceNames.websiteTitle,
+  description: serviceDescriptions.website,
+  provider: COMPANY_INFO.name,
+  serviceType: serviceTypes.website,
+  category: 'Website Services',
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: HOMEPAGE_CONFIG.SEO.DEFAULT_RATING,
+    reviewCount: HOMEPAGE_CONFIG.SEO.WEBSITE_REVIEW_COUNT
+  }
+}, lang);
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('homepage', {
+  business: {
+    name: COMPANY_INFO.name,
+    description: COMPANY_INFO.description[lang],
+    url: DOMAIN_CONFIG.baseUrl,
+    telephone: CONTACT_INFO.phone.formatted.primary,
+    email: CONTACT_INFO.email.primary,
+    address: {
+      streetAddress: CONTACT_INFO.address.street,
+      addressLocality: CONTACT_INFO.address.city,
+      addressRegion: CONTACT_INFO.address.district,
+      postalCode: CONTACT_INFO.address.postalCode,
+      addressCountry: CONTACT_INFO.address.country
+    },
+    geo: {
+      latitude: parseFloat(CONTACT_INFO.coordinates.latitude),
+      longitude: parseFloat(CONTACT_INFO.coordinates.longitude)
+    },
+    openingHours: ['Mo-Fr 09:00-18:00'],
+    services: COMPANY_INFO.services[lang],
+    priceRange: getPricingText(lang),
+    areaServed: getServiceArea(lang),
+    foundingDate: COMPANY_INFO.foundingYear,
+    numberOfEmployees: COMPANY_INFO.employeeCount,
+    slogan: getCompanySlogan(lang)
+  },
+  page: {
+    name: t.site.title,
+    description: optimizedDescription,
+    url: DOMAIN_CONFIG.baseUrl,
+    primaryImageOfPage: getUrl(DOMAIN_CONFIG.images.ogImage)
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// === COMBINE ALL STRUCTURED DATA ===
+const allStructuredData = [
+  localBusinessSchema,
+  crmServiceSchema,
+  websiteServiceSchema,
+  ...pageSchemas
+];
 ---
 
 <Layout
   title={t.site.title}
-  description={t.site.metaDescription}
+  description={optimizedDescription}
+  structuredData={allStructuredData}
   isHomepage={true}
+  ogImage={DOMAIN_CONFIG.images.ogImage}
+  canonical={DOMAIN_CONFIG.baseUrl}
 >
   <Hero />
   <DetailedServicesSection />
@@ -40,3 +221,230 @@ const t = await getTranslations(lang);
   <HomeContactForm />
   <ServicesCtaSection />
 </Layout>
+
+<!-- Performance & Security Optimization Script -->
+<script is:inline>
+  // Performance & Security optimization for homepage
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // Security: Input validation and XSS protection
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    // Security: URL validation
+    function isValidUrl(url) {
+      try {
+        var urlObj = new URL(url, window.location.origin);
+        return urlObj.protocol === 'http:' || urlObj.protocol === 'https:';
+      } catch (e) {
+        return false;
+      }
+    }
+    
+    // Security: Rate limiting for form submissions
+    var submitTimestamps = [];
+    function isRateLimited() {
+      var now = Date.now();
+      submitTimestamps = submitTimestamps.filter(function(time) {
+        return now - time < 60000; // Keep timestamps from last minute
+      });
+      
+      if (submitTimestamps.length >= 3) {
+        console.warn('Rate limit exceeded');
+        return true;
+      }
+      
+      submitTimestamps.push(now);
+      return false;
+    }
+    
+    // Expose security functions globally for form components
+    window.securityUtils = {
+      sanitizeInput: sanitizeInput,
+      isValidUrl: isValidUrl,
+      isRateLimited: isRateLimited
+    };
+    // Simple resource preloading
+    function addPreloadLink(href, as, type) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'preload';
+      link.href = href;
+      link.as = as;
+      if (type) link.type = type;
+      link.crossOrigin = 'anonymous';
+      document.head.appendChild(link);
+    }
+    
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    function addPrefetch(href) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics object
+    var metrics = { lcp: 0, fid: 0, cls: 0 };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+      } catch (e) {
+        console.warn('LCP observer failed');
+      }
+      
+      try {
+        new PerformanceObserver(function(list) {
+          list.getEntries().forEach(function(entry) {
+            metrics.fid = entry.processingStart - entry.startTime;
+          });
+        }).observe({ entryTypes: ['first-input'] });
+      } catch (e) {
+        console.warn('FID observer failed');
+      }
+      
+      try {
+        new PerformanceObserver(function(list) {
+          var clsValue = 0;
+          list.getEntries().forEach(function(entry) {
+            if (!entry.hadRecentInput) {
+              clsValue += entry.value;
+            }
+          });
+          metrics.cls = clsValue;
+        }).observe({ entryTypes: ['layout-shift'] });
+      } catch (e) {
+        console.warn('CLS observer failed');
+      }
+    }
+    
+    // Apply optimizations
+    addPreloadLink('/og-image.jpg', 'image');
+    addDnsPrefetch('//images.pexels.com');
+    addDnsPrefetch('//fonts.googleapis.com');
+    addDnsPrefetch('//www.googletagmanager.com');
+    
+    // Prefetch next pages
+    addPrefetch('/hizmetlerimiz');
+    addPrefetch('/hakkimizda');
+    addPrefetch('/iletisim');
+    
+    // Image lazy loading
+    if (window.IntersectionObserver) {
+      var imageObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var img = entry.target;
+            if (img.dataset && img.dataset.src) {
+              img.src = img.dataset.src;
+              img.removeAttribute('data-src');
+              imageObserver.unobserve(img);
+            }
+          }
+        });
+      }, { rootMargin: '50px 0px' });
+      
+      document.querySelectorAll('img[data-src]').forEach(function(img) {
+        imageObserver.observe(img);
+      });
+    }
+    
+    // Stats animation
+    if (window.IntersectionObserver) {
+      var statsObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-stats');
+            statsObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      var statsSection = document.querySelector('.bg-primary-600');
+      if (statsSection) {
+        statsObserver.observe(statsSection);
+      }
+    }
+    
+    // Send metrics to analytics
+    setTimeout(function() {
+      console.log('📊 Performance Metrics:', metrics);
+      
+      if (window.gtag) {
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms'
+          });
+        }
+        
+        if (metrics.fid > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'FID',
+            metric_value: Math.round(metrics.fid),
+            metric_unit: 'ms'
+          });
+        }
+        
+        if (metrics.cls > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'CLS',
+            metric_value: metrics.cls,
+            metric_unit: 'score'
+          });
+        }
+      }
+    }, 5000);
+  });
+</script>
+
+<!-- Critical CSS for above-the-fold content -->
+<style>
+  /* Critical CSS for homepage above-the-fold optimization */
+  .animate-stats {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Optimize stats section loading */
+  .bg-primary-600 {
+    will-change: transform;
+  }
+  
+  /* Image optimization hints */
+  img {
+    content-visibility: auto;
+  }
+</style>

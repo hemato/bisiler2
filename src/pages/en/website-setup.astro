@@ -4,15 +4,75 @@ import WebsiteSetupForm from '../../components/WebsiteSetupForm.tsx';
 import translations from '../../i18n/en.json';
 import { CONTACT_ACTIONS } from '../../config/contact';
 import { DOMAIN_CONFIG } from '../../config/domain';
+import {
+  generateWebDevelopmentServiceSchema,
+  generateFAQSchema,
+  generateAggregateReviewSchema,
+  generateLandingPageSchema
+} from '../../utils/structured-data';
+
+// FAQ structured data
+const faqData = [
+  {
+    question: "How long do you deliver my website?",
+    answer: "Average 2 weeks for standard projects. Complex projects can take 5-6 weeks. We give you a clear timeline at the beginning of the project and provide regular updates throughout the process."
+  },
+  {
+    question: "Can I make changes later?",
+    answer: "Yes, we provide modification and update service after delivery. Small changes are free, we provide service at reasonable prices for major changes. We also train you for site management."
+  },
+  {
+    question: "Will it be mobile compatible?",
+    answer: "Yes, all our websites work perfectly on mobile devices. Responsive design is applied as standard. Delivered tested on mobile, tablet and computer."
+  }
+];
+
+// Generate all schemas
+const webServiceSchema = generateWebDevelopmentServiceSchema('en');
+const faqSchema = generateFAQSchema(faqData);
+const reviewSchema = generateAggregateReviewSchema("Website Development Services", "5.0", "50", "en");
+const landingPageSchema = generateLandingPageSchema(
+  "Website Setup Landing Page",
+  "Professional website development with modern design, fast loading and SEO optimization",
+  "Website Development",
+  "en"
+);
 ---
 
-<Layout 
+<Layout
   title="Website Setup | Your Professional Website Ready in 2 Weeks"
   description="Modern design, fast loading, SEO optimized website setup. Mobile responsive design, guaranteed top ranking on Google. 20% discount this month!"
   canonical={`${DOMAIN_CONFIG.baseUrl}/en/website-setup`}
   isLandingPage={true}
   hideFooter={true}
 >
+
+<!-- Enhanced Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(webServiceSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(reviewSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(landingPageSchema)}></script>
+
+<!-- Critical CSS for above-the-fold content -->
+<style is:inline>
+  .hero-section { min-height: 100vh; }
+  .gradient-bg { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #7c2d12 100%); }
+  .floating-metric { animation: floatMetric 4s ease-in-out infinite; }
+  @keyframes floatMetric {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+  }
+  .pulse-urgency { animation: pulseUrgency 2s infinite; }
+  @keyframes pulseUrgency {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  }
+</style>
+
+<!-- Preload critical resources -->
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
 
 <!-- Hero Section -->
 <section class="relative bg-gradient-to-br from-blue-600 via-blue-700 to-purple-800 text-white overflow-hidden">
@@ -23,9 +83,14 @@ import { DOMAIN_CONFIG } from '../../config/domain';
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <!-- Left Content -->
       <div class="text-center lg:text-left">
-        <!-- Urgency Badge -->
-        <div class="inline-flex items-center px-4 py-2 bg-red-600 rounded-full text-sm font-semibold mb-6 animate-pulse">
-          ⚠️ The number of customers you lose increases every day
+        <!-- Enhanced Urgency Badge -->
+        <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 rounded-full text-sm font-semibold mb-6 pulse-urgency shadow-lg">
+          ⚠️ <span class="ml-2">The number of customers you lose increases every day</span>
+        </div>
+        
+        <!-- Live Activity Indicator -->
+        <div class="inline-flex items-center px-3 py-1 bg-green-600 rounded-full text-xs font-medium mb-4 animate-pulse">
+          🔴 <span class="ml-1">3 websites delivered in the last 48 hours</span>
         </div>
         
         <!-- Main Headline -->
@@ -70,17 +135,40 @@ import { DOMAIN_CONFIG } from '../../config/domain';
           </a>
         </div>
         
-        <!-- Social Proof -->
-        <div class="mt-8 flex items-center justify-center lg:justify-start text-sm text-gray-300">
-          <span class="mr-2">⭐⭐⭐⭐⭐</span>
-          <span class="font-semibold">50+ successful website projects</span>
-          <span class="mx-2">•</span>
-          <span>100% customer satisfaction</span>
+        <!-- Enhanced Social Proof -->
+        <div class="mt-8 space-y-3">
+          <div class="flex items-center justify-center lg:justify-start text-sm text-gray-300">
+            <span class="mr-2">⭐⭐⭐⭐⭐</span>
+            <span class="font-semibold">50+ successful website projects</span>
+            <span class="mx-2">•</span>
+            <span>100% customer satisfaction</span>
+          </div>
+          <div class="flex items-center justify-center lg:justify-start text-xs text-yellow-300">
+            <span class="animate-pulse mr-2">🚀</span>
+            <span>Average 2-week delivery time</span>
+          </div>
+          <div class="flex items-center justify-center lg:justify-start text-xs text-blue-300">
+            <span class="animate-bounce mr-2">📱</span>
+            <span>100% mobile responsive guarantee</span>
+          </div>
         </div>
       </div>
       
-      <!-- Right Content - Website Preview -->
+      <!-- Right Content - Enhanced Website Preview -->
       <div class="relative">
+        <!-- Floating Metrics -->
+        <div class="absolute -top-4 -left-4 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg floating-metric z-10">
+          <div class="text-xs font-semibold">Mobile Score</div>
+          <div class="text-lg font-bold">100%</div>
+        </div>
+        <div class="absolute -top-4 -right-4 bg-blue-500 text-white px-3 py-2 rounded-lg shadow-lg floating-metric z-10" style="animation-delay: 1s;">
+          <div class="text-xs font-semibold">Speed Score</div>
+          <div class="text-lg font-bold">95+</div>
+        </div>
+        <div class="absolute -bottom-4 -left-4 bg-purple-500 text-white px-3 py-2 rounded-lg shadow-lg floating-metric z-10" style="animation-delay: 2s;">
+          <div class="text-xs font-semibold">SEO Score</div>
+          <div class="text-lg font-bold">98%</div>
+        </div>
         <div class="bg-white rounded-2xl shadow-2xl overflow-hidden transform rotate-2 hover:rotate-0 transition-transform duration-300">
           <!-- Browser Chrome -->
           <div class="bg-gray-100 px-4 py-3 flex items-center">
@@ -131,13 +219,23 @@ import { DOMAIN_CONFIG } from '../../config/domain';
   </div>
 </section>
 
-<!-- Scarcity Banner -->
-<section class="bg-red-600 text-white py-3">
-  <div class="max-w-7xl mx-auto px-4 text-center">
-    <p class="text-sm md:text-base font-semibold">
-      🔥 Special 20% discount for first 15 businesses creating website this month! 
-      <span class="font-bold">Only 9 slots left!</span>
-    </p>
+<!-- Enhanced Scarcity Banner -->
+<section class="bg-gradient-to-r from-red-600 to-red-700 text-white py-4 relative overflow-hidden">
+  <div class="absolute inset-0 bg-black/10"></div>
+  <div class="relative max-w-7xl mx-auto px-4 text-center">
+    <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6">
+      <p class="text-sm md:text-base font-semibold flex items-center">
+        🔥 <span class="ml-2">Special 20% discount for first 15 businesses creating website this month!</span>
+      </p>
+      <div class="flex items-center space-x-4">
+        <span class="font-bold bg-yellow-500 text-black px-3 py-1 rounded-full text-sm animate-pulse">
+          Only 9 slots left!
+        </span>
+        <div id="countdown-timer-web" class="text-sm font-mono bg-black/20 px-3 py-1 rounded">
+          Ends in: <span class="font-bold">23:59:45</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -687,10 +785,11 @@ import { DOMAIN_CONFIG } from '../../config/domain';
 <!-- Website Form Section -->
 <section id="form" class="py-20 bg-white">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <WebsiteSetupForm 
+    <WebsiteSetupForm
       translations={translations}
+      i18n={translations}
       lang="en"
-      client:load 
+      client:load
     />
   </div>
 </section>

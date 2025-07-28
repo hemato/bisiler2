@@ -1,17 +1,26 @@
-import { 
-  STRAPI_CONFIG, 
-  buildApiUrl, 
-  type StrapiBlogPost, 
-  type StrapiCategory, 
-  type StrapiTag, 
-  type StrapiResponse, 
-  type StrapiSingleResponse 
+import {
+  STRAPI_CONFIG,
+  buildApiUrl,
+  type StrapiBlogPost,
+  type StrapiCategory,
+  type StrapiTag,
+  type StrapiResponse,
+  type StrapiSingleResponse
 } from '../config/strapi';
+
+// Re-export types for external use
+export type {
+  StrapiBlogPost as BlogPost,
+  StrapiCategory,
+  StrapiTag,
+  StrapiResponse,
+  StrapiSingleResponse
+};
 import { strapiCache, httpCache } from './cache';
 import { createError } from './error-handler';
 
-// Generic fetch function for Strapi API
-async function fetchFromStrapi<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
+// Generic fetch function for Strapi API - exported for reuse
+export async function fetchFromStrapi<T>(endpoint: string, params?: Record<string, any>): Promise<T> {
   const url = buildApiUrl(endpoint, params);
   
   try {

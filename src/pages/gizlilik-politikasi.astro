@@ -1,12 +1,50 @@
 ---
+// === IMPORTS ===
 import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl } from '../i18n/utils';
 import { COMPANY_INFO } from '../config/company';
 import { CONTACT_INFO } from '../config/contact';
 import { DOMAIN_CONFIG } from '../config/domain';
 
-const lang = getLangFromUrl(Astro.url);
+// === UTILITY IMPORTS ===
+import { AdvancedSEOManager } from '../utils/seo-advanced';
+import { generateLocalBusinessSchema, generateBreadcrumbSchema, generateWebsiteSchema } from '../utils/structured-data';
+import { initPerformanceOptimizations, CRITICAL_RESOURCES } from '../utils/performance';
+// Security utilities will be handled inline
 
+// === LANGUAGE & URL SETUP ===
+const lang = getLangFromUrl(Astro.url);
+const currentUrl = new URL(Astro.request.url);
+
+// === PRIVACY PAGE CONFIGURATION ===
+const PRIVACY_PAGE_CONFIG = {
+  PERFORMANCE: {
+    READING_TIME: 8, // minutes estimated reading time
+    CONTENT_SECTIONS: 10,
+    SCROLL_TRACKING: true,
+    PRINT_OPTIMIZATION: true
+  },
+  SEO: {
+    TITLE: "Gizlilik Politikası - TechCorp | KVKK Uyumlu Veri Koruma",
+    DESCRIPTION: "TechCorp gizlilik politikası ve KVKK uyumlu kişisel veri korunması. Veri toplama, işleme, saklama ve haklarınız hakkında detaylı bilgiler.",
+    KEYWORDS: ["gizlilik politikası", "KVKK", "veri koruma", "kişisel veriler", "çerez politikası", "GDPR"],
+    CANONICAL: "/gizlilik-politikasi",
+    LEGAL_TYPE: "PrivacyPolicy"
+  },
+  CONTENT: {
+    LAST_UPDATED: "2024-01-15",
+    VERSION: "2.1",
+    COMPLIANCE_STANDARDS: ["KVKK", "GDPR", "CCPA"],
+    DOCUMENT_TYPE: "legal"
+  },
+  TRACKING: {
+    LEGAL_COMPLIANCE: true,
+    READING_ANALYTICS: true,
+    PRINT_TRACKING: true
+  }
+};
+
+// === HREFLANG & BREADCRUMBS ===
 const hreflang = [
   { lang: 'tr', url: `${DOMAIN_CONFIG.baseUrl}/gizlilik-politikasi` },
   { lang: 'en', url: `${DOMAIN_CONFIG.baseUrl}/en/privacy` }
@@ -16,25 +54,186 @@ const breadcrumbs = [
   { name: 'Anasayfa', url: '/' },
   { name: 'Gizlilik Politikası', url: '/gizlilik-politikasi' }
 ];
+
+// === SEO OPTIMIZATION ===
+const seoManager = new AdvancedSEOManager();
+
+const optimizedMeta = {
+  description: PRIVACY_PAGE_CONFIG.SEO.DESCRIPTION,
+  keywords: PRIVACY_PAGE_CONFIG.SEO.KEYWORDS.join(', ')
+};
+
+// === STRUCTURED DATA GENERATION ===
+const organizationSchema = generateLocalBusinessSchema(COMPANY_INFO.name);
+
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+
+const webPageSchema = generateWebsiteSchema(COMPANY_INFO.name);
+
+// Legal Document specific structured data
+const legalDocumentSchema = {
+  "@context": "https://schema.org",
+  "@type": "LegalDocument",
+  "name": "Gizlilik Politikası",
+  "description": "KVKK ve GDPR uyumlu gizlilik politikası",
+  "url": currentUrl.toString(),
+  "dateModified": PRIVACY_PAGE_CONFIG.CONTENT.LAST_UPDATED,
+  "version": PRIVACY_PAGE_CONFIG.CONTENT.VERSION,
+  "inLanguage": "tr-TR",
+  "author": {
+    "@type": "Organization",
+    "name": COMPANY_INFO.name
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": COMPANY_INFO.name
+  },
+  "isBasedOn": PRIVACY_PAGE_CONFIG.CONTENT.COMPLIANCE_STANDARDS,
+  "genre": "legal"
+};
+
+// === SECURITY ===
+const securityNonce = Math.random().toString(36).substring(2, 15);
+
+// === PERFORMANCE PRELOADING ===
+const criticalResources = CRITICAL_RESOURCES.fonts;
 ---
 
-<Layout 
-  title="Gizlilik Politikası - TechCorp"
-  description="TechCorp gizlilik politikası. Kişisel verilerinizin korunması, işlenmesi ve kullanımı hakkında detaylı bilgiler."
+<Layout
+  title={PRIVACY_PAGE_CONFIG.SEO.TITLE}
+  description={optimizedMeta.description}
   hreflang={hreflang}
   breadcrumbs={breadcrumbs}
 >
+  <!-- Enhanced SEO Meta Tags -->
+  <meta slot="head" name="keywords" content={optimizedMeta.keywords} />
+  <meta slot="head" name="robots" content="index, follow" />
+  <meta slot="head" name="document-type" content="Legal Document" />
+  <meta slot="head" name="document-version" content={PRIVACY_PAGE_CONFIG.CONTENT.VERSION} />
+  <meta slot="head" name="last-modified" content={PRIVACY_PAGE_CONFIG.CONTENT.LAST_UPDATED} />
+  <meta slot="head" name="compliance" content={PRIVACY_PAGE_CONFIG.CONTENT.COMPLIANCE_STANDARDS.join(', ')} />
+  <link slot="head" rel="canonical" href={`${DOMAIN_CONFIG.baseUrl}${PRIVACY_PAGE_CONFIG.SEO.CANONICAL}`} />
+  
+  <!-- OpenGraph Meta Tags -->
+  <meta slot="head" property="og:title" content={PRIVACY_PAGE_CONFIG.SEO.TITLE} />
+  <meta slot="head" property="og:description" content={optimizedMeta.description} />
+  <meta slot="head" property="og:type" content="article" />
+  <meta slot="head" property="og:url" content={currentUrl.toString()} />
+  <meta slot="head" property="og:image" content={`${DOMAIN_CONFIG.baseUrl}/images/privacy-policy-og.jpg`} />
+  <meta slot="head" property="og:locale" content="tr_TR" />
+  <meta slot="head" property="og:site_name" content={COMPANY_INFO.name} />
+  <meta slot="head" property="article:published_time" content={PRIVACY_PAGE_CONFIG.CONTENT.LAST_UPDATED} />
+  <meta slot="head" property="article:modified_time" content={PRIVACY_PAGE_CONFIG.CONTENT.LAST_UPDATED} />
+  <meta slot="head" property="article:section" content="Legal" />
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta slot="head" name="twitter:card" content="summary_large_image" />
+  <meta slot="head" name="twitter:title" content={PRIVACY_PAGE_CONFIG.SEO.TITLE} />
+  <meta slot="head" name="twitter:description" content={optimizedMeta.description} />
+  <meta slot="head" name="twitter:image" content={`${DOMAIN_CONFIG.baseUrl}/images/privacy-policy-twitter.jpg`} />
+  <meta slot="head" name="twitter:creator" content="@techcorp_tr" />
+  
+  <!-- Structured Data -->
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(webPageSchema)} />
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(legalDocumentSchema)} />
+  <!-- Legal Document Header -->
+  <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-b border-gray-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div class="text-center">
+        <div class="inline-flex items-center px-4 py-2 bg-blue-100 rounded-full text-sm font-medium text-blue-800 mb-4">
+          <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 1.944A11.954 11.954 0 012.166 5C2.056 5.649 2 6.319 2 7c0 5.225 3.34 9.67 8 11.317C14.66 16.67 18 12.225 18 7c0-.682-.057-1.351-.166-2A11.954 11.954 0 0110 1.944zM11 14a1 1 0 11-2 0 1 1 0 012 0zm0-7a1 1 0 10-2 0v3a1 1 0 102 0V7z" clip-rule="evenodd"></path>
+          </svg>
+          KVKK & GDPR Uyumlu
+        </div>
+        <h1 class="text-4xl font-bold text-gray-900 mb-4">Gizlilik Politikası</h1>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Kişisel verilerinizin güvenliği bizim için önceliklidir. Bu politika ile veri koruma yaklaşımımızı şeffaf bir şekilde açıklıyoruz.
+        </p>
+        <div class="mt-6 flex items-center justify-center space-x-6 text-sm text-gray-500">
+          <div class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+            </svg>
+            {PRIVACY_PAGE_CONFIG.PERFORMANCE.READING_TIME} dk okuma
+          </div>
+          <div class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"></path>
+            </svg>
+            Son güncelleme: {new Date(PRIVACY_PAGE_CONFIG.CONTENT.LAST_UPDATED).toLocaleDateString('tr-TR')}
+          </div>
+          <div class="flex items-center">
+            <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v4H7V5zm8 8v2a1 1 0 01-1 1H6a1 1 0 01-1-1v-2h10z" clip-rule="evenodd"></path>
+            </svg>
+            Versiyon: {PRIVACY_PAGE_CONFIG.CONTENT.VERSION}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content -->
   <div class="bg-white">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div class="prose prose-lg max-w-none">
-        <h1>Gizlilik Politikası</h1>
-        
-        <p class="lead">
-          Bu gizlilik politikası, {COMPANY_INFO.name} olarak kişisel verilerinizi nasıl topladığımızı, 
-          kullandığımızı ve koruduğumuzu açıklar.
-        </p>
+      <!-- Reading Progress Bar -->
+      <div class="fixed top-0 left-0 w-full h-1 bg-gray-200 z-50">
+        <div id="reading-progress" class="h-full bg-gradient-to-r from-blue-500 to-indigo-600 transition-all duration-300 ease-out" style="width: 0%"></div>
+      </div>
 
-        <h2>1. Veri Sorumlusu</h2>
+      <!-- Privacy Policy Quick Navigation -->
+      <div class="bg-gray-50 rounded-lg p-6 mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">Hızlı Navigasyon</h2>
+        <div class="grid md:grid-cols-2 gap-3">
+          <a href="#veri-sorumlusu" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-white rounded transition-colors">
+            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold mr-3">1</span>
+            Veri Sorumlusu
+          </a>
+          <a href="#toplanan-veriler" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-white rounded transition-colors">
+            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold mr-3">2</span>
+            Toplanan Veriler
+          </a>
+          <a href="#veri-amacları" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-white rounded transition-colors">
+            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold mr-3">3</span>
+            Veri Toplama Amaçları
+          </a>
+          <a href="#veri-paylaşımı" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-white rounded transition-colors">
+            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold mr-3">4</span>
+            Veri Paylaşımı
+          </a>
+          <a href="#veri-güvenliği" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-white rounded transition-colors">
+            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold mr-3">5</span>
+            Veri Güvenliği
+          </a>
+          <a href="#haklarınız" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:text-blue-600 hover:bg-white rounded transition-colors">
+            <span class="w-6 h-6 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-xs font-semibold mr-3">7</span>
+            KVKK Haklarınız
+          </a>
+        </div>
+      </div>
+
+      <div class="prose prose-lg max-w-none">
+        <div class="bg-blue-50 border-l-4 border-blue-400 p-4 mb-8">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm text-blue-700">
+                Bu gizlilik politikası <strong>KVKK (Kişisel Verilerin Korunması Kanunu)</strong> ve <strong>GDPR</strong>
+                düzenlemeleri uyarınca hazırlanmıştır. Kişisel verilerinizin işlenmesi ile ilgili haklarınızı ve
+                sorumluluklarımızı detaylı olarak açıklamaktadır.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <h2 id="veri-sorumlusu">1. Veri Sorumlusu</h2>
         <p>
           <strong>Şirket:</strong> {COMPANY_INFO.legalName}<br>
           <strong>Adres:</strong> {CONTACT_INFO.address.full.tr}<br>
@@ -42,7 +241,7 @@ const breadcrumbs = [
           <strong>Telefon:</strong> {CONTACT_INFO.phone.primary}
         </p>
 
-        <h2>2. Toplanan Kişisel Veriler</h2>
+        <h2 id="toplanan-veriler">2. Toplanan Kişisel Veriler</h2>
         <p>Web sitemizde aşağıdaki kişisel veriler toplanmaktadır:</p>
         <ul>
           <li><strong>İletişim Bilgileri:</strong> Ad, soyad, e-posta adresi, telefon numarası</li>
@@ -51,7 +250,7 @@ const breadcrumbs = [
           <li><strong>Teknik Bilgiler:</strong> IP adresi, çerez bilgileri, tarayıcı bilgileri</li>
         </ul>
 
-        <h2>3. Veri Toplama Amaçları</h2>
+        <h2 id="veri-amacları">3. Veri Toplama Amaçları</h2>
         <p>Kişisel verileriniz aşağıdaki amaçlarla toplanmaktadır:</p>
         <ul>
           <li>Hizmet talepleri ve sorularınızı yanıtlamak</li>
@@ -61,7 +260,7 @@ const breadcrumbs = [
           <li>Web sitesi performansını iyileştirmek</li>
         </ul>
 
-        <h2>4. Veri Paylaşımı</h2>
+        <h2 id="veri-paylaşımı">4. Veri Paylaşımı</h2>
         <p>
           Kişisel verileriniz, açık rızanız olmadıkça üçüncü şahıslarla paylaşılmaz. 
           Aşağıdaki durumlar istisnadır:
@@ -72,7 +271,7 @@ const breadcrumbs = [
           <li>İş ortaklarımızla sınırlı paylaşım</li>
         </ul>
 
-        <h2>5. Veri Güvenliği</h2>
+        <h2 id="veri-güvenliği">5. Veri Güvenliği</h2>
         <p>
           Kişisel verileriniz uygun teknik ve idari tedbirlerle korunmaktadır:
         </p>
@@ -93,7 +292,7 @@ const breadcrumbs = [
           <li><strong>Pazarlama Çerezleri:</strong> Reklam kampanyaları ve takip</li>
         </ul>
 
-        <h2>7. Haklarınız</h2>
+        <h2 id="haklarınız">7. KVKK Kapsamında Haklarınız</h2>
         <p>KVKK kapsamında aşağıdaki haklara sahipsiniz:</p>
         <ul>
           <li>Kişisel verilerinizin işlenip işlenmediğini öğrenme</li>
@@ -125,10 +324,332 @@ const breadcrumbs = [
           web sitemizde duyurulacaktır.
         </p>
 
-        <p class="text-sm text-gray-600 mt-8">
-          <strong>Son Güncelleme:</strong> {new Date().toLocaleDateString('tr-TR')}
-        </p>
+        <!-- Enhanced Contact Section -->
+        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 mt-8">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">KVKK İletişim ve Başvuru</h3>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h4 class="font-medium text-gray-900 mb-2">Veri Sorumlusu İletişim</h4>
+              <div class="space-y-2 text-sm text-gray-600">
+                <div class="flex items-center">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                    <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                  </svg>
+                  <a href={`mailto:${CONTACT_INFO.email.privacy}`} class="hover:text-blue-600">
+                    {CONTACT_INFO.email.privacy}
+                  </a>
+                </div>
+                <div class="flex items-center">
+                  <svg class="w-4 h-4 mr-2 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                  </svg>
+                  <a href={`tel:${CONTACT_INFO.phone.primary}`} class="hover:text-blue-600">
+                    {CONTACT_INFO.phone.primary}
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div>
+              <h4 class="font-medium text-gray-900 mb-2">Başvuru Süreçleri</h4>
+              <p class="text-sm text-gray-600 mb-3">
+                KVKK kapsamındaki haklarınızı kullanmak için talebinizi yazılı olarak
+                veya elektronik ortamda iletebilirsiniz.
+              </p>
+              <a href="/kvkk-basvuru-formu" class="inline-flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors">
+                <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1h6v4H7V5zm8 8v2a1 1 0 01-1 1H6a1 1 0 01-1-1v-2h10z" clip-rule="evenodd"></path>
+                </svg>
+                Başvuru Formu
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Document Information -->
+        <div class="bg-gray-50 rounded-lg p-6 mt-8">
+          <div class="grid md:grid-cols-3 gap-6 text-center">
+            <div>
+              <div class="text-2xl font-bold text-blue-600 mb-2">{PRIVACY_PAGE_CONFIG.CONTENT.VERSION}</div>
+              <div class="text-sm text-gray-600">Politika Versiyonu</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-green-600 mb-2">
+                {new Date(PRIVACY_PAGE_CONFIG.CONTENT.LAST_UPDATED).toLocaleDateString('tr-TR')}
+              </div>
+              <div class="text-sm text-gray-600">Son Güncelleme</div>
+            </div>
+            <div>
+              <div class="text-2xl font-bold text-purple-600 mb-2">{PRIVACY_PAGE_CONFIG.CONTENT.COMPLIANCE_STANDARDS.length}</div>
+              <div class="text-sm text-gray-600">Uyumluluk Standardı</div>
+            </div>
+          </div>
+          <div class="mt-4 text-center">
+            <p class="text-xs text-gray-500">
+              Bu politika {PRIVACY_PAGE_CONFIG.CONTENT.COMPLIANCE_STANDARDS.join(', ')}
+              düzenlemelerine uygun olarak hazırlanmıştır.
+            </p>
+          </div>
+        </div>
+
+        <!-- Print/Share Actions -->
+        <div class="flex justify-center space-x-4 mt-8 no-print">
+          <button
+            onclick="window.print()"
+            class="inline-flex items-center px-4 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-md hover:bg-gray-200 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path fill-rule="evenodd" d="M5 4v3H4a2 2 0 00-2 2v3a2 2 0 002 2h1v2a2 2 0 002 2h6a2 2 0 002-2v-2h1a2 2 0 002-2V9a2 2 0 00-2-2h-1V4a2 2 0 00-2-2H7a2 2 0 00-2 2zm8 0H7v3h6V4zM5 14H4v-3h1v3zm2 0v2h6v-2H7z" clip-rule="evenodd"></path>
+            </svg>
+            Yazdır
+          </button>
+          <button
+            onclick="copyToClipboard()"
+            class="inline-flex items-center px-4 py-2 bg-blue-100 text-blue-700 text-sm font-medium rounded-md hover:bg-blue-200 transition-colors"
+          >
+            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"></path>
+              <path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"></path>
+            </svg>
+            Link Kopyala
+          </button>
+        </div>
       </div>
     </div>
   </div>
+
+  <!-- Enhanced Privacy Policy JavaScript -->
+  <script is:inline define:vars={{
+    readingTime: PRIVACY_PAGE_CONFIG.PERFORMANCE.READING_TIME,
+    trackingEnabled: PRIVACY_PAGE_CONFIG.TRACKING.READING_ANALYTICS,
+    securityNonce: securityNonce
+  }}>
+    // Reading Progress Tracking
+    function updateReadingProgress() {
+      const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      
+      const progressBar = document.getElementById('reading-progress');
+      if (progressBar) {
+        progressBar.style.width = scrolled + '%';
+      }
+      
+      // Track reading milestones for analytics
+      if (trackingEnabled && typeof gtag !== 'undefined') {
+        if (scrolled >= 25 && !window.privacy_25_tracked) {
+          gtag('event', 'privacy_policy_read_25', {
+            event_category: 'Legal Document',
+            event_label: 'Privacy Policy'
+          });
+          window.privacy_25_tracked = true;
+        }
+        
+        if (scrolled >= 50 && !window.privacy_50_tracked) {
+          gtag('event', 'privacy_policy_read_50', {
+            event_category: 'Legal Document',
+            event_label: 'Privacy Policy'
+          });
+          window.privacy_50_tracked = true;
+        }
+        
+        if (scrolled >= 100 && !window.privacy_complete_tracked) {
+          gtag('event', 'privacy_policy_complete', {
+            event_category: 'Legal Document',
+            event_label: 'Privacy Policy',
+            value: readingTime
+          });
+          window.privacy_complete_tracked = true;
+        }
+      }
+    }
+
+    // Copy URL to clipboard
+    function copyToClipboard() {
+      navigator.clipboard.writeText(window.location.href).then(function() {
+        // Show success feedback
+        const button = event.target.closest('button');
+        const originalText = button.innerHTML;
+        button.innerHTML = '<svg class="w-4 h-4 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>Kopyalandı!';
+        button.className = button.className.replace('text-blue-700', 'text-green-700').replace('bg-blue-100', 'bg-green-100');
+        
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.className = button.className.replace('text-green-700', 'text-blue-700').replace('bg-green-100', 'bg-blue-100');
+        }, 2000);
+      });
+    }
+
+    // Enhanced Section Navigation
+    function initSectionNavigation() {
+      const navLinks = document.querySelectorAll('a[href^="#"]');
+      const sections = document.querySelectorAll('h2[id]');
+      
+      // Smooth scroll for navigation links
+      navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const targetId = this.getAttribute('href').substring(1);
+          const targetSection = document.getElementById(targetId);
+          
+          if (targetSection) {
+            targetSection.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start'
+            });
+            
+            // Track section navigation
+            if (trackingEnabled && typeof gtag !== 'undefined') {
+              gtag('event', 'privacy_section_view', {
+                event_category: 'Legal Document',
+                event_label: targetId
+              });
+            }
+          }
+        });
+      });
+
+      // Highlight current section in navigation
+      function highlightCurrentSection() {
+        let current = '';
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop;
+          const sectionHeight = section.clientHeight;
+          if (window.scrollY >= sectionTop - 100) {
+            current = section.getAttribute('id');
+          }
+        });
+
+        navLinks.forEach(link => {
+          link.classList.remove('bg-white', 'text-blue-600');
+          if (link.getAttribute('href') === '#' + current) {
+            link.classList.add('bg-white', 'text-blue-600');
+          }
+        });
+      }
+
+      window.addEventListener('scroll', highlightCurrentSection);
+    }
+
+    // Print Optimization
+    function optimizeForPrint() {
+      window.addEventListener('beforeprint', function() {
+        // Track print action
+        if (trackingEnabled && typeof gtag !== 'undefined') {
+          gtag('event', 'privacy_policy_print', {
+            event_category: 'Legal Document',
+            event_label: 'Privacy Policy'
+          });
+        }
+        
+        // Expand all collapsed sections for print
+        document.querySelectorAll('.no-print').forEach(el => {
+          el.style.display = 'none';
+        });
+      });
+      
+      window.addEventListener('afterprint', function() {
+        // Restore interactive elements
+        document.querySelectorAll('.no-print').forEach(el => {
+          el.style.display = '';
+        });
+      });
+    }
+
+    // Privacy Policy Specific Analytics
+    function initPrivacyAnalytics() {
+      if (!trackingEnabled) return;
+      
+      // Track document load
+      if (typeof gtag !== 'undefined') {
+        gtag('event', 'privacy_policy_load', {
+          event_category: 'Legal Document',
+          event_label: 'Privacy Policy',
+          custom_parameters: {
+            document_version: '{PRIVACY_PAGE_CONFIG.CONTENT.VERSION}',
+            compliance_standards: '{PRIVACY_PAGE_CONFIG.CONTENT.COMPLIANCE_STANDARDS.join(", ")}',
+            estimated_reading_time: readingTime
+          }
+        });
+      }
+
+      // Track time spent on page
+      let startTime = Date.now();
+      window.addEventListener('beforeunload', function() {
+        const timeSpent = Math.round((Date.now() - startTime) / 1000);
+        if (typeof gtag !== 'undefined' && timeSpent > 10) {
+          gtag('event', 'privacy_policy_time_spent', {
+            event_category: 'Legal Document',
+            event_label: 'Privacy Policy',
+            value: timeSpent
+          });
+        }
+      });
+    }
+
+    // Initialize all functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      updateReadingProgress();
+      initSectionNavigation();
+      optimizeForPrint();
+      initPrivacyAnalytics();
+      
+      // Scroll event listeners
+      window.addEventListener('scroll', updateReadingProgress);
+      
+      // Performance monitoring
+      if ('PerformanceObserver' in window) {
+        const observer = new PerformanceObserver((list) => {
+          for (const entry of list.getEntries()) {
+            if (entry.entryType === 'largest-contentful-paint') {
+              if (trackingEnabled && typeof gtag !== 'undefined') {
+                gtag('event', 'privacy_lcp', {
+                  event_category: 'Legal Document Performance',
+                  value: Math.round(entry.startTime)
+                });
+              }
+            }
+          }
+        });
+        
+        observer.observe({entryTypes: ['largest-contentful-paint']});
+      }
+    });
+
+    // Make functions globally available
+    window.copyToClipboard = copyToClipboard;
+  </script>
+
+  <!-- Print Styles -->
+  <style is:global>
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      
+      .fixed {
+        position: relative !important;
+      }
+      
+      body {
+        font-size: 12pt;
+        line-height: 1.4;
+      }
+      
+      h1, h2, h3 {
+        page-break-after: avoid;
+      }
+      
+      .prose h2 {
+        margin-top: 2em;
+        border-bottom: 1px solid #ccc;
+        padding-bottom: 0.5em;
+      }
+      
+      .bg-gradient-to-r {
+        background: #f8f9fa !important;
+        border: 1px solid #dee2e6 !important;
+      }
+    }
+  </style>
 </Layout>

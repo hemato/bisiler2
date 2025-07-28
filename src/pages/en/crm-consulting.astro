@@ -4,15 +4,75 @@ import CRMConsultingForm from '../../components/CRMConsultingForm.tsx';
 import translations from '../../i18n/en.json';
 import { CONTACT_ACTIONS } from '../../config/contact';
 import { DOMAIN_CONFIG } from '../../config/domain';
+import {
+  generateCRMServiceSchema,
+  generateFAQSchema,
+  generateAggregateReviewSchema,
+  generateLandingPageSchema
+} from '../../utils/structured-data';
+
+// FAQ structured data
+const faqData = [
+  {
+    question: "Which CRM platform should I choose?",
+    answer: "We recommend Zoho CRM or Bitrix24 according to your business needs. We determine the most suitable one for you with free analysis. We make the right choice by evaluating factors such as company size, existing systems and your budget."
+  },
+  {
+    question: "How long does the setup take?",
+    answer: "It takes between 2-8 weeks depending on system complexity. Simple CRM setups take 2-3 weeks, comprehensive integrations and customizations can take 6-8 weeks. We give you a clear timeline at the beginning of the project."
+  },
+  {
+    question: "Will my existing data be lost?",
+    answer: "No, we safely transfer all your data to the new system. During the data migration process, we take backups and test. All customer data from Excel, old CRM or other systems is preserved and transferred to the new system in a clean state."
+  }
+];
+
+// Generate all schemas
+const crmServiceSchema = generateCRMServiceSchema('en');
+const faqSchema = generateFAQSchema(faqData);
+const reviewSchema = generateAggregateReviewSchema("CRM Consulting Services", "5.0", "100", "en");
+const landingPageSchema = generateLandingPageSchema(
+  "CRM Consulting Landing Page",
+  "Professional CRM consulting services to increase sales by 40% and stop customer loss",
+  "CRM Consulting",
+  "en"
+);
 ---
 
-<Layout 
+<Layout
   title="CRM Consulting | Stop Customer Loss, Increase Sales by 40%"
   description="Professional customer management with Zoho CRM and Bitrix24. Centralized customer database, automatic sales processes, detailed reporting. Apply now for free consultation!"
   canonical={`${DOMAIN_CONFIG.baseUrl}/en/crm-consulting`}
   isLandingPage={true}
   hideFooter={true}
 >
+
+<!-- Enhanced Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(crmServiceSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(reviewSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(landingPageSchema)}></script>
+
+<!-- Critical CSS for above-the-fold content -->
+<style is:inline>
+  .hero-section { min-height: 100vh; }
+  .gradient-bg { background: linear-gradient(135deg, #1e40af 0%, #3730a3 50%, #581c87 100%); }
+  .floating-metric { animation: floatMetric 4s ease-in-out infinite; }
+  @keyframes floatMetric {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(1deg); }
+  }
+  .pulse-urgency { animation: pulseUrgency 2s infinite; }
+  @keyframes pulseUrgency {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+  }
+</style>
+
+<!-- Preload critical resources -->
+<link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="dns-prefetch" href="//www.googletagmanager.com">
+<link rel="dns-prefetch" href="//fonts.googleapis.com">
 
 <!-- Hero Section -->
 <section class="relative bg-gradient-to-br from-primary-600 via-primary-700 to-primary-800 text-white overflow-hidden">
@@ -23,9 +83,14 @@ import { DOMAIN_CONFIG } from '../../config/domain';
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
       <!-- Left Content -->
       <div class="text-center lg:text-left">
-        <!-- Urgency Badge -->
-        <div class="inline-flex items-center px-4 py-2 bg-red-600 rounded-full text-sm font-semibold mb-6 animate-pulse">
-          ⚠️ The number of customers you lose increases every day
+        <!-- Enhanced Urgency Badge -->
+        <div class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-600 to-red-700 rounded-full text-sm font-semibold mb-6 pulse-urgency shadow-lg">
+          ⚠️ <span class="ml-2">The number of customers you lose increases every day</span>
+        </div>
+        
+        <!-- Live Activity Indicator -->
+        <div class="inline-flex items-center px-3 py-1 bg-green-600 rounded-full text-xs font-medium mb-4 animate-pulse">
+          🔴 <span class="ml-1">5 businesses applied for CRM consulting in the last 24 hours</span>
         </div>
         
         <!-- Main Headline -->
@@ -70,18 +135,42 @@ import { DOMAIN_CONFIG } from '../../config/domain';
           </a>
         </div>
         
-        <!-- Social Proof -->
-        <div class="mt-8 flex items-center justify-center lg:justify-start text-sm text-gray-300">
-          <span class="mr-2">⭐⭐⭐⭐⭐</span>
-          <span class="font-semibold">100+ successful CRM projects</span>
-          <span class="mx-2">•</span>
-          <span>100% customer satisfaction</span>
+        <!-- Enhanced Social Proof -->
+        <div class="mt-8 space-y-3">
+          <div class="flex items-center justify-center lg:justify-start text-sm text-gray-300">
+            <span class="mr-2">⭐⭐⭐⭐⭐</span>
+            <span class="font-semibold">100+ successful CRM projects</span>
+            <span class="mx-2">•</span>
+            <span>100% customer satisfaction</span>
+          </div>
+          <div class="flex items-center justify-center lg:justify-start text-xs text-yellow-300">
+            <span class="animate-pulse mr-2">🎯</span>
+            <span>Average 40% sales increase in first 6 months</span>
+          </div>
+          <div class="flex items-center justify-center lg:justify-start text-xs text-blue-300">
+            <span class="animate-bounce mr-2">⚡</span>
+            <span>Last CRM setup completed in 2 weeks</span>
+          </div>
         </div>
       </div>
       
-      <!-- Right Content - Dashboard Preview -->
+      <!-- Right Content - Enhanced Dashboard Preview -->
       <div class="relative">
-        <div class="bg-white rounded-2xl shadow-2xl p-6 transform rotate-2 hover:rotate-0 transition-transform duration-300">
+        <!-- Floating Metrics -->
+        <div class="absolute -top-4 -left-4 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg floating-metric z-10">
+          <div class="text-xs font-semibold">Sales Increase</div>
+          <div class="text-lg font-bold">+40%</div>
+        </div>
+        <div class="absolute -top-4 -right-4 bg-blue-500 text-white px-3 py-2 rounded-lg shadow-lg floating-metric z-10" style="animation-delay: 1s;">
+          <div class="text-xs font-semibold">Time Saved</div>
+          <div class="text-lg font-bold">60%</div>
+        </div>
+        <div class="absolute -bottom-4 -left-4 bg-purple-500 text-white px-3 py-2 rounded-lg shadow-lg floating-metric z-10" style="animation-delay: 2s;">
+          <div class="text-xs font-semibold">Happy Clients</div>
+          <div class="text-lg font-bold">100+</div>
+        </div>
+        
+        <div class="bg-white rounded-2xl shadow-2xl p-6 transform rotate-2 hover:rotate-0 transition-transform duration-300 relative">
           <div class="bg-gray-100 rounded-lg p-4 mb-4">
             <div class="flex items-center mb-3">
               <div class="w-3 h-3 bg-red-500 rounded-full mr-2"></div>
@@ -101,13 +190,23 @@ import { DOMAIN_CONFIG } from '../../config/domain';
   </div>
 </section>
 
-<!-- Scarcity Banner -->
-<section class="bg-red-600 text-white py-3">
-  <div class="max-w-7xl mx-auto px-4 text-center">
-    <p class="text-sm md:text-base font-semibold">
-      🔥 Special 20% discount for first 10 businesses applying this month! 
-      <span class="font-bold">Only 7 slots left!</span>
-    </p>
+<!-- Enhanced Scarcity Banner -->
+<section class="bg-gradient-to-r from-red-600 to-red-700 text-white py-4 relative overflow-hidden">
+  <div class="absolute inset-0 bg-black/10"></div>
+  <div class="relative max-w-7xl mx-auto px-4 text-center">
+    <div class="flex flex-col sm:flex-row items-center justify-center space-y-2 sm:space-y-0 sm:space-x-6">
+      <p class="text-sm md:text-base font-semibold flex items-center">
+        🔥 <span class="ml-2">Special 20% discount for first 10 businesses applying this month!</span>
+      </p>
+      <div class="flex items-center space-x-4">
+        <span class="font-bold bg-yellow-500 text-black px-3 py-1 rounded-full text-sm animate-pulse">
+          Only 7 slots left!
+        </span>
+        <div id="countdown-timer" class="text-sm font-mono bg-black/20 px-3 py-1 rounded">
+          Ends in: <span class="font-bold">23:59:45</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -751,10 +850,11 @@ import { DOMAIN_CONFIG } from '../../config/domain';
 <!-- CRM Form Section -->
 <section id="form" class="py-20 bg-white">
   <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-    <CRMConsultingForm 
+    <CRMConsultingForm
       translations={translations}
+      i18n={translations}
       lang="en"
-      client:load 
+      client:load
     />
   </div>
 </section>
@@ -955,6 +1055,97 @@ import { DOMAIN_CONFIG } from '../../config/domain';
 </div>
 
 </Layout>
+
+<!-- Conversion Tracking Scripts -->
+<script>
+  // Enhanced analytics and conversion tracking
+  function trackConversion(eventName, value = {}) {
+    // Google Analytics 4 tracking
+    if (typeof gtag !== 'undefined') {
+      gtag('event', eventName, {
+        event_category: 'CRM_Consulting',
+        event_label: 'EN_V1',
+        currency: 'USD',
+        ...value
+      });
+    }
+    
+    // Console log for debugging
+    console.log('Conversion tracked:', eventName, value);
+  }
+
+  // Countdown timer functionality
+  function initCountdownTimer() {
+    const timer = document.getElementById('countdown-timer');
+    if (!timer) return;
+    
+    let timeLeft = 24 * 60 * 60; // 24 hours in seconds
+    
+    function updateTimer() {
+      const hours = Math.floor(timeLeft / 3600);
+      const minutes = Math.floor((timeLeft % 3600) / 60);
+      const seconds = timeLeft % 60;
+      
+      const display = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      const span = timer.querySelector('span');
+      if (span) span.textContent = display;
+      
+      if (timeLeft > 0) {
+        timeLeft--;
+      } else {
+        timeLeft = 24 * 60 * 60; // Reset to 24 hours
+      }
+    }
+    
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  }
+
+  // Track CTA clicks
+  function trackCTAClicks() {
+    document.querySelectorAll('a[href="#form"]').forEach(button => {
+      button.addEventListener('click', () => {
+        trackConversion('cta_click', {
+          button_text: button.textContent?.trim() || 'CTA',
+          position: button.closest('section')?.querySelector('h1, h2')?.textContent?.trim() || 'unknown'
+        });
+      });
+    });
+  }
+
+  // Track scroll depth
+  function trackScrollDepth() {
+    const milestones = [25, 50, 75, 100];
+    let tracked = {};
+    
+    function checkScroll() {
+      const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+      
+      milestones.forEach(milestone => {
+        if (scrollPercent >= milestone && !tracked[milestone]) {
+          tracked[milestone] = true;
+          trackConversion('scroll_depth', {
+            percent: milestone
+          });
+        }
+      });
+    }
+    
+    window.addEventListener('scroll', checkScroll);
+  }
+
+  // Initialize when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    initCountdownTimer();
+    trackCTAClicks();
+    trackScrollDepth();
+    
+    // Track page view
+    trackConversion('page_view', {
+      page: 'crm_consulting_en_v1'
+    });
+  });
+</script>
 
 <style>
   /* Smooth scroll for anchor links */

@@ -1,5 +1,920 @@
 ---
-import BlogPage from '../blog.astro';
+// === COMPONENT IMPORTS ===
+import Layout from '../../layouts/Layout.astro';
+import { Calendar, User, ArrowRight, BookOpen, Search, Tag, Folder } from 'lucide-react';
+
+// === I18N IMPORTS ===
+import { getLangFromUrl, getTranslations } from '../../i18n/utils';
+
+// === CONFIG IMPORTS ===
+import { COMPANY_INFO } from '../../config/company';
+import { DOMAIN_CONFIG, getUrl } from '../../config/domain';
+import { getRoute } from '../../utils/routes';
+
+// === REMOVED STRAPI IMPORTS - USING STATIC DATA ===
+// import { blogAPI, categoriesAPI, tagsAPI, handleStrapiError } from '../../utils/strapi';
+// import { getMediaUrl, formatDate, calculateReadingTime } from '../../config/strapi';
+
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../../utils/seo-advanced';
+import {
+  generateBreadcrumbSchema,
+  generateOrganizationSchema
+} from '../../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../../utils/security';
+
+// === ENGLISH-SPECIFIC CONSTANTS ===
+const BLOG_PAGE_CONFIG_EN = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.15,
+    ANIMATION_DELAY: 200,
+    POSTS_PER_PAGE: 6,
+    IMAGE_LAZY_LOADING: true,
+    SCROLL_DEBOUNCE: 100
+  },
+  SEO: {
+    META_DESCRIPTION: {
+      MAX_LENGTH: 160
+    },
+    BLOG_SCHEMA: {
+      ARTICLE_SECTION: 'Technology',
+      PUBLISHER_TYPE: 'Organization',
+      LANGUAGE: 'en-US'
+    },
+    KEYWORDS: ['CRM', 'automation', 'digital transformation', 'business solutions']
+  },
+  CONTENT: {
+    EXCERPT_LENGTH: 150,
+    MAX_TAGS_DISPLAY: 3,
+    RECENT_POSTS_COUNT: 3,
+    READING_TIME_MULTIPLIER: 1.2 // English reading might be slower for Turkish audience
+  },
+  PAGINATION: {
+    MAX_PAGES_SHOWN: 5,
+    POSTS_PER_PAGE: 4,
+    INFINITE_SCROLL: false
+  },
+  ANALYTICS: {
+    TRACK_SCROLL_DEPTH: true,
+    TRACK_TIME_ON_PAGE: true,
+    TRACK_ENGAGEMENT: true
+  }
+};
+
+// === INITIALIZATION ===
+const lang = getLangFromUrl(Astro.url);
+const t = await getTranslations(lang);
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === URL PARAMETERS ===
+const url = new URL(Astro.request.url);
+const currentPage = Math.max(1, parseInt(url.searchParams.get('page') || '1'));
+const categoryFilter = url.searchParams.get('category') || undefined;
+const tagFilter = url.searchParams.get('tag') || undefined;
+const searchQuery = url.searchParams.get('search') || undefined;
+
+console.log('EN Blog - Server-side params:', { currentPage, categoryFilter, tagFilter, searchQuery });
+
+// === TYPE DEFINITIONS ===
+let blogPosts: any[] = [];
+let categories: any[] = [];
+let tags: any[] = [];
+let error: string | null = null;
+
+// === ENGLISH-SPECIFIC HELPER FUNCTIONS ===
+function getBlogBreadcrumbsEN(lang: 'tr' | 'en') {
+  return [
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: t.nav.blog, url: getRoute(lang, 'blog') }
+  ];
+}
+
+function getBlogPageTitleEN(lang: 'tr' | 'en'): string {
+  return `${t.blog.title} | ${COMPANY_INFO.name}`;
+}
+
+function getBlogMetaDescriptionEN(lang: 'tr' | 'en'): string {
+  return generateOptimizedMetaDescription(
+    lang === 'en'
+      ? 'Stay updated with the latest in CRM, automation, and digital transformation. Expert insights and best practices from BisilerTech.'
+      : 'CRM, otomasyon ve dijital dönüşümde en güncel gelişmeleri takip edin. BisilerTech\'ten uzman görüşleri ve en iyi uygulamalar.',
+    BLOG_PAGE_CONFIG_EN.SEO.KEYWORDS,
+    lang === 'en' ? 'Turkey' : 'Türkiye',
+    lang
+  );
+}
+
+// === STATIC DATA INITIALIZATION ===
+// Using static blog data instead of Strapi CMS for English blog
+console.log('EN Blog - Using static blog data - Strapi disabled');
+blogPosts = [];
+categories = [];
+tags = [];
+error = null;
+
+// Fallback blog posts for English - updated with English content
+const fallbackPostsEN = [
+  {
+    id: 1,
+    title: 'CRM Selection Guide for SMEs',
+    excerpt: 'Learn how to choose the right CRM system for your small or medium business. Key features, pricing models and implementation tips.',
+    publishedAt: '2025-07-11',
+    author: `${COMPANY_INFO.name} Team`,
+    category: 'CRM',
+    slug: 'crm-selection-guide-smes',
+    image: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['CRM', 'SME', 'Digital Transformation'],
+    readTime: '5 min'
+  },
+  {
+    id: 2,
+    title: 'Sales Process Automation with Zapier',
+    excerpt: 'Discover how to automate your sales processes using Zapier. From lead capture to customer follow-up, streamline everything.',
+    publishedAt: '2025-07-04',
+    author: `${COMPANY_INFO.name} Team`,
+    category: 'Automation',
+    slug: 'zapier-sales-automation',
+    image: 'https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Zapier', 'Automation', 'Sales'],
+    readTime: '7 min'
+  },
+  {
+    id: 3,
+    title: 'SEO Fundamentals for Corporate Websites',
+    excerpt: 'Essential SEO strategies for corporate websites. Technical optimization, content strategy and performance measurement.',
+    publishedAt: '2025-06-27',
+    author: `${COMPANY_INFO.name} Team`,
+    category: 'SEO',
+    slug: 'seo-fundamentals-corporate-websites',
+    image: 'https://images.pexels.com/photos/270348/pexels-photo-270348.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['SEO', 'Website', 'Digital Marketing'],
+    readTime: '6 min'
+  },
+  {
+    id: 4,
+    title: 'Digital Transformation Success Stories',
+    excerpt: 'Real success stories from our clients\' digital transformation journeys. Challenges, solutions and results.',
+    publishedAt: '2025-06-20',
+    author: `${COMPANY_INFO.name} Team`,
+    category: 'Case Study',
+    slug: 'digital-transformation-success-stories',
+    image: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Digital Transformation', 'Success Stories', 'CRM'],
+    readTime: '8 min'
+  },
+  {
+    id: 5,
+    title: 'Form Integration Best Practices',
+    excerpt: 'Learn how to integrate web forms with CRM systems effectively. Data validation, automation and user experience tips.',
+    publishedAt: '2025-06-13',
+    author: `${COMPANY_INFO.name} Team`,
+    category: 'Integration',
+    slug: 'form-integration-best-practices',
+    image: 'https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Forms', 'Integration', 'CRM'],
+    readTime: '4 min'
+  },
+  {
+    id: 6,
+    title: 'Customer Data Management Strategies',
+    excerpt: 'Effective strategies for managing customer data. GDPR compliance, data security and analytics insights.',
+    publishedAt: '2025-06-06',
+    author: `${COMPANY_INFO.name} Team`,
+    category: 'Data Management',
+    slug: 'customer-data-management-strategies',
+    image: 'https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=800',
+    tags: ['Data Management', 'GDPR', 'Security'],
+    readTime: '6 min'
+  }
+];
+
+// === CONTENT OPTIMIZATION ===
+const optimizedDescription = getBlogMetaDescriptionEN(lang);
+
+// === STRUCTURED DATA GENERATION ===
+const breadcrumbs = getBlogBreadcrumbsEN(lang);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+const organizationSchema = generateOrganizationSchema(lang);
+
+// Generate WebPage Schema using AdvancedSEOManager - Fixed for static blogs
+const pageSchemas = seoManager.generateSchemasForPage('blog', {
+  blog: {
+    name: getBlogPageTitleEN(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'blog')),
+    publisher: {
+      name: COMPANY_INFO.name,
+      url: DOMAIN_CONFIG.baseUrl
+    }
+  },
+  page: {
+    name: getBlogPageTitleEN(lang),
+    description: optimizedDescription,
+    url: getUrl(getRoute(lang, 'blog')),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// Combine all schemas
+const allSchemas = [
+  breadcrumbSchema,
+  organizationSchema,
+  ...pageSchemas
+];
+
+// === DATA PROCESSING ===
+const displayPosts = blogPosts.length > 0 ? blogPosts : fallbackPostsEN;
+const displayCategories = categories.length > 0 ? categories : [...new Set(fallbackPostsEN.map(post => post.category))];
+const displayTags = tags.length > 0 ? tags : [...new Set(fallbackPostsEN.flatMap(post => post.tags))];
+
+// Pagination setup
+const postsPerPage = BLOG_PAGE_CONFIG_EN.PAGINATION.POSTS_PER_PAGE;
+const paginatedPosts = displayPosts;
+const totalPages = Math.ceil(displayPosts.length / postsPerPage);
 ---
 
-<BlogPage />
+<Layout
+  title={getBlogPageTitleEN(lang)}
+  description={optimizedDescription}
+  structuredData={allSchemas}
+  ogImage={DOMAIN_CONFIG.images.ogImage}
+  canonical={getUrl(getRoute(lang, 'blog'))}
+  breadcrumbs={breadcrumbs}
+>
+
+  <!-- DNS Prefetching and Resource Preloading -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com" slot="head" />
+  <link rel="preconnect" href={DOMAIN_CONFIG.baseUrl} slot="head" />
+  <link rel="preload" href={getRoute(lang, 'contact')} as="document" slot="head" />
+
+  <!-- Security Headers via Meta Tags -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" slot="head" />
+  <meta http-equiv="X-Frame-Options" content="DENY" slot="head" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" slot="head" />
+  
+  <div class="bg-gradient-to-br from-primary-50 to-secondary-50 py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <div class="flex items-center justify-center mb-6">
+          <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center">
+            <BookOpen className="w-8 h-8 text-primary-600" />
+          </div>
+        </div>
+        <h1 class="text-4xl font-bold text-secondary-900 mb-4">
+          {t.blog.title}
+        </h1>
+        <p class="text-xl text-secondary-600 max-w-2xl mx-auto">
+          {t.blog.subtitle}
+        </p>
+        
+        <!-- FILTER STATUS -->
+        {(categoryFilter || tagFilter || searchQuery) && (
+          <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm">
+            <p class="text-blue-800">
+              <strong>Active Filters:</strong>
+              {categoryFilter && <span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Category: {categoryFilter}</span>}
+              {tagFilter && <span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Tag: {tagFilter}</span>}
+              {searchQuery && <span class="ml-2 px-2 py-1 bg-blue-100 rounded text-xs">Search: {searchQuery}</span>}
+              <span class="ml-2 text-blue-600">(loading results...)</span>
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <!-- Main Content -->
+        <div class="lg:col-span-3">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {paginatedPosts.map((post, index) => (
+              <article class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group blog-post-card" data-index={index}>
+                <div class="relative overflow-hidden">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    class="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    loading={index < 2 ? 'eager' : 'lazy'}
+                  />
+                  <div class="absolute top-4 left-4">
+                    <a 
+                      href={`/en/blog?category=${encodeURIComponent(post.category)}`}
+                      class="bg-primary-600 hover:bg-primary-700 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors"
+                    >
+                      {post.category}
+                    </a>
+                  </div>
+                </div>
+                
+                <div class="p-6">
+                  <div class="flex items-center text-sm text-secondary-500 mb-3">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    <span>{new Date(post.publishedAt || post.date).toLocaleDateString('en-US')}</span>
+                    <span class="mx-2">•</span>
+                    <User className="w-4 h-4 mr-1" />
+                    <span>{post.author}</span>
+                    <span class="mx-2">•</span>
+                    <span>{post.readTime || '5 min'}</span>
+                  </div>
+                  
+                  <h2 class="text-xl font-bold text-secondary-900 mb-3">
+                    <a 
+                      href={`/en/blog/${post.slug || post.id}`}
+                      class="group-hover:text-primary-600 hover:text-primary-600 transition-colors"
+                    >
+                      {post.title}
+                    </a>
+                  </h2>
+                  
+                  <p class="text-secondary-600 mb-4 leading-relaxed">
+                    {post.excerpt}
+                  </p>
+                  
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    {post.tags.slice(0, BLOG_PAGE_CONFIG_EN.CONTENT.MAX_TAGS_DISPLAY).map((tag: any) => (
+                      <a
+                        href={`/en/blog?tag=${encodeURIComponent(tag)}`}
+                        class="bg-secondary-100 hover:bg-primary-100 text-secondary-700 hover:text-primary-700 px-2 py-1 rounded text-xs transition-colors"
+                        data-track={`tag_${tag}`}
+                      >
+                        {tag}
+                      </a>
+                    ))}
+                  </div>
+                  
+                  <a
+                    href={`/en/blog/${post.slug || post.id}`}
+                    class="inline-flex items-center text-primary-600 hover:text-primary-700 font-medium transition-colors group-hover:text-primary-700"
+                  >
+                    {t.blog.readMore}
+                    <ArrowRight className="ml-2 w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <!-- Pagination -->
+          <div id="pagination-container" class="mt-12 flex justify-center">
+            <nav class="flex items-center space-x-2" id="pagination-nav">
+              {(totalPages > 1) && (
+                <>
+                  {currentPage > 1 && (
+                    <a
+                      href={`/en/blog?page=${currentPage - 1}`}
+                      class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 transition-colors"
+                    >
+                      Previous
+                    </a>
+                  )}
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(pageNum => (
+                    <a
+                      href={`/en/blog?page=${pageNum}`}
+                      class={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                        currentPage === pageNum 
+                          ? 'text-white bg-primary-600 border border-primary-600' 
+                          : 'text-secondary-700 bg-white border border-secondary-300 hover:bg-secondary-50'
+                      }`}
+                    >
+                      {pageNum}
+                    </a>
+                  ))}
+                  
+                  {currentPage < totalPages && (
+                    <a
+                      href={`/en/blog?page=${currentPage + 1}`}
+                      class="px-3 py-2 text-sm font-medium text-secondary-500 bg-white border border-secondary-300 rounded-md hover:bg-secondary-50 transition-colors"
+                    >
+                      Next
+                    </a>
+                  )}
+                </>
+              )}
+            </nav>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="lg:col-span-1">
+          <div class="space-y-8">
+            <!-- Search -->
+            <div class="bg-white rounded-xl p-6 shadow-lg sidebar-section">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                Search
+              </h3>
+              <form method="GET" class="relative">
+                <input
+                  type="text"
+                  name="search"
+                  value={searchQuery || ''}
+                  placeholder="Search articles..."
+                  class="w-full px-4 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                />
+                <button type="submit" class="absolute right-2 top-2 p-1 text-secondary-400 hover:text-primary-600">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                  </svg>
+                </button>
+              </form>
+            </div>
+
+            <!-- Categories -->
+            <div class="bg-white rounded-xl p-6 shadow-lg sidebar-section">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {t.blog.categories}
+              </h3>
+              <div class="space-y-2">
+                <a
+                  href="/en/blog"
+                  class={`block py-1 transition-colors ${!categoryFilter ? 'text-primary-600 font-medium' : 'text-secondary-600 hover:text-primary-600'}`}
+                >
+                  All Categories
+                </a>
+                {displayCategories.map((category) => (
+                  <a
+                    href={`/en/blog?category=${encodeURIComponent(category)}`}
+                    class={`block py-1 transition-colors ${categoryFilter === category ? 'text-primary-600 font-medium' : 'text-secondary-600 hover:text-primary-600'}`}
+                  >
+                    {category}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Tags -->
+            <div class="bg-white rounded-xl p-6 shadow-lg sidebar-section">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {t.blog.tags}
+              </h3>
+              <div class="flex flex-wrap gap-2">
+                {displayTags.map((tag) => (
+                  <a
+                    href={`/en/blog?tag=${encodeURIComponent(tag)}`}
+                    class={`px-3 py-1 rounded-full text-sm transition-colors ${tagFilter === tag ? 'bg-primary-100 text-primary-700' : 'bg-secondary-100 hover:bg-primary-100 text-secondary-700 hover:text-primary-700'}`}
+                  >
+                    {tag}
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Recent Posts -->
+            <div class="bg-white rounded-xl p-6 shadow-lg sidebar-section">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                {t.blog.recentPosts}
+              </h3>
+              <div class="space-y-4">
+                {displayPosts.slice(0, 3).map((post) => (
+                  <a
+                    href={`/en/blog/${post.slug || post.id}`}
+                    class="block group"
+                  >
+                    <h4 class="text-sm font-medium text-secondary-900 group-hover:text-primary-600 transition-colors mb-1">
+                      {post.title}
+                    </h4>
+                    <p class="text-xs text-secondary-500">
+                      {new Date(post.publishedAt || post.date).toLocaleDateString('en-US')}
+                    </p>
+                  </a>
+                ))}
+              </div>
+            </div>
+
+            <!-- Newsletter -->
+            <div class="bg-primary-50 rounded-xl p-6 sidebar-section">
+              <h3 class="text-lg font-bold text-secondary-900 mb-4">
+                Newsletter
+              </h3>
+              <p class="text-sm text-secondary-600 mb-4">
+                Subscribe to get the latest articles and updates.
+              </p>
+              <div class="space-y-3">
+                <input
+                  type="email"
+                  placeholder="Your email address"
+                  class="w-full px-3 py-2 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                />
+                <button class="w-full px-4 py-2 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors text-sm">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<!-- Enhanced Performance & Security Optimization Script for English Blog Page -->
+<script is:inline define:vars={{
+  PERFORMANCE_CONFIG: BLOG_PAGE_CONFIG_EN.PERFORMANCE,
+  securityNonce,
+  lang
+}}>
+  // English blog page performance & security optimizations
+  document.addEventListener('DOMContentLoaded', function() {
+    
+    // === SECURITY FUNCTIONS ===
+    function sanitizeInput(input) {
+      if (!input || typeof input !== 'string') return '';
+      return input
+        .replace(/[<>]/g, '')
+        .replace(/javascript:/gi, '')
+        .replace(/on\w+=/gi, '')
+        .trim();
+    }
+    
+    // Rate limiting for search and interactions
+    var searchInteractions = [];
+    var SEARCH_RATE_LIMIT = 30000; // 30 seconds
+    var MAX_SEARCH_REQUESTS = 5;
+    
+    function isSearchRateLimited() {
+      var now = Date.now();
+      searchInteractions = searchInteractions.filter(function(time) {
+        return now - time < SEARCH_RATE_LIMIT;
+      });
+      
+      if (searchInteractions.length >= MAX_SEARCH_REQUESTS) {
+        console.warn('Search rate limit exceeded');
+        return true;
+      }
+      
+      searchInteractions.push(now);
+      return false;
+    }
+    
+    // === PERFORMANCE FUNCTIONS ===
+    function addDnsPrefetch(domain) {
+      if (document.querySelector('link[href="' + domain + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'dns-prefetch';
+      link.href = domain;
+      document.head.appendChild(link);
+    }
+    
+    function addPrefetch(href) {
+      if (document.querySelector('link[href="' + href + '"]')) return;
+      var link = document.createElement('link');
+      link.rel = 'prefetch';
+      link.href = href;
+      document.head.appendChild(link);
+    }
+    
+    // Performance metrics
+    var metrics = {
+      lcp: 0,
+      fid: 0,
+      cls: 0,
+      postsViewed: 0,
+      searchPerformed: 0,
+      tagsClicked: 0,
+      categoryFilters: 0,
+      timeOnPage: Date.now()
+    };
+    
+    // Core Web Vitals monitoring
+    if (window.PerformanceObserver) {
+      try {
+        // Largest Contentful Paint
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.lcp = entries[entries.length - 1].startTime;
+          }
+        }).observe({ entryTypes: ['largest-contentful-paint'] });
+        
+        // First Input Delay
+        new PerformanceObserver(function(list) {
+          var entries = list.getEntries();
+          if (entries.length > 0) {
+            metrics.fid = entries[0].processingStart - entries[0].startTime;
+          }
+        }).observe({ entryTypes: ['first-input'] });
+        
+        // Cumulative Layout Shift
+        var clsValue = 0;
+        new PerformanceObserver(function(list) {
+          for (var entry of list.getEntries()) {
+            if (!entry.hadRecentInput) {
+              clsValue += entry.value;
+            }
+          }
+          metrics.cls = clsValue;
+        }).observe({ entryTypes: ['layout-shift'] });
+        
+      } catch (e) {
+        console.warn('Performance observers failed:', e);
+      }
+    }
+    
+    // === OPTIMIZATIONS ===
+    addDnsPrefetch('//fonts.googleapis.com');
+    addPrefetch('/en/contact');
+    addPrefetch('/en/services');
+    addPrefetch('/en/about');
+    
+    // === BLOG POST CARD ANIMATIONS ===
+    if (window.IntersectionObserver) {
+      var blogObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry, index) {
+          if (entry.isIntersecting) {
+            setTimeout(function() {
+              entry.target.classList.add('animate-blog-card');
+              metrics.postsViewed++;
+            }, parseInt(entry.target.dataset.index) * PERFORMANCE_CONFIG.ANIMATION_DELAY);
+            blogObserver.unobserve(entry.target);
+          }
+        });
+      }, { 
+        threshold: PERFORMANCE_CONFIG.INTERSECTION_THRESHOLD,
+        rootMargin: PERFORMANCE_CONFIG.LAZY_LOAD_MARGIN 
+      });
+      
+      document.querySelectorAll('.blog-post-card').forEach(function(card) {
+        blogObserver.observe(card);
+      });
+      
+      // Sidebar animations
+      var sidebarObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry, index) {
+          if (entry.isIntersecting) {
+            setTimeout(function() {
+              entry.target.classList.add('animate-sidebar');
+            }, index * 100);
+            sidebarObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.2 });
+      
+      document.querySelectorAll('.sidebar-section').forEach(function(section) {
+        sidebarObserver.observe(section);
+      });
+    }
+    
+    // === INTERACTION TRACKING ===
+    // Search form handling
+    document.querySelector('form').addEventListener('submit', function(e) {
+      if (isSearchRateLimited()) {
+        e.preventDefault();
+        alert('Please wait before performing another search.');
+        return;
+      }
+      
+      var searchInput = document.querySelector('input[name="search"]');
+      var searchTerm = sanitizeInput(searchInput.value);
+      
+      if (searchTerm && searchTerm.length > 2) {
+        metrics.searchPerformed++;
+        if (window.gtag) {
+          window.gtag('event', 'blog_search', {
+            search_term: searchTerm,
+            page_language: 'en'
+          });
+        }
+      }
+    });
+    
+    // Tag and category click tracking
+    document.addEventListener('click', function(e) {
+      var target = e.target;
+      
+      // Tag clicks
+      if (target.href && target.href.includes('tag=')) {
+        metrics.tagsClicked++;
+        if (window.gtag) {
+          var tagName = decodeURIComponent(target.href.split('tag=')[1].split('&')[0]);
+          window.gtag('event', 'blog_tag_click', {
+            tag_name: tagName,
+            page_language: 'en'
+          });
+        }
+      }
+      
+      // Category clicks
+      if (target.href && target.href.includes('category=')) {
+        metrics.categoryFilters++;
+        if (window.gtag) {
+          var categoryName = decodeURIComponent(target.href.split('category=')[1].split('&')[0]);
+          window.gtag('event', 'blog_category_click', {
+            category_name: categoryName,
+            page_language: 'en'
+          });
+        }
+      }
+      
+      // Data track attributes
+      if (target.dataset && target.dataset.track) {
+        if (window.gtag) {
+          window.gtag('event', 'blog_interaction', {
+            action: target.dataset.track,
+            page_language: 'en'
+          });
+        }
+      }
+    });
+    
+    // Scroll depth tracking
+    var scrollMilestones = [25, 50, 75, 100];
+    var scrolledMilestones = [];
+    
+    function trackScrollDepth() {
+      var scrollPercent = Math.round(
+        (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100
+      );
+      
+      scrollMilestones.forEach(function(milestone) {
+        if (scrollPercent >= milestone && !scrolledMilestones.includes(milestone)) {
+          scrolledMilestones.push(milestone);
+          if (window.gtag) {
+            window.gtag('event', 'scroll_depth', {
+              percentage: milestone,
+              page_type: 'blog_listing',
+              page_language: 'en'
+            });
+          }
+        }
+      });
+    }
+    
+    var scrollTimeout;
+    window.addEventListener('scroll', function() {
+      if (scrollTimeout) clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(trackScrollDepth, PERFORMANCE_CONFIG.SCROLL_DEBOUNCE);
+    });
+    
+    // === ANALYTICS ===
+    setTimeout(function() {
+      var timeOnPage = Date.now() - metrics.timeOnPage;
+      console.log('📊 EN Blog Page Metrics:', {
+        ...metrics,
+        timeOnPage: timeOnPage
+      });
+      
+      if (window.gtag) {
+        window.gtag('event', 'blog_page_view', {
+          page_title: document.title,
+          posts_viewed: metrics.postsViewed,
+          search_performed: metrics.searchPerformed,
+          tags_clicked: metrics.tagsClicked,
+          category_filters: metrics.categoryFilters,
+          time_on_page: Math.round(timeOnPage / 1000),
+          page_language: 'en'
+        });
+        
+        // Core Web Vitals
+        if (metrics.lcp > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'LCP',
+            metric_value: Math.round(metrics.lcp),
+            metric_unit: 'ms',
+            page_type: 'blog_listing',
+            page_language: 'en'
+          });
+        }
+        
+        if (metrics.fid > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'FID',
+            metric_value: Math.round(metrics.fid),
+            metric_unit: 'ms',
+            page_type: 'blog_listing',
+            page_language: 'en'
+          });
+        }
+        
+        if (metrics.cls > 0) {
+          window.gtag('event', 'web_vitals', {
+            metric_name: 'CLS',
+            metric_value: Math.round(metrics.cls * 1000),
+            metric_unit: 'score',
+            page_type: 'blog_listing',
+            page_language: 'en'
+          });
+        }
+      }
+    }, PERFORMANCE_CONFIG.METRICS_DELAY);
+  });
+</script>
+
+<!-- Blog page specific CSS -->
+<style>
+  .animate-blog-card {
+    animation: blogCardSlideIn 0.6s ease-out;
+  }
+  
+  .animate-sidebar {
+    animation: sidebarSlideIn 0.6s ease-out;
+  }
+  
+  @keyframes blogCardSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes sidebarSlideIn {
+    from {
+      opacity: 0;
+      transform: translateX(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  /* Enhanced blog card hover effects */
+  .blog-post-card {
+    will-change: transform;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s ease-out;
+  }
+  
+  .blog-post-card.animate-blog-card {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .blog-post-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  }
+  
+  /* Sidebar sections */
+  .sidebar-section {
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.6s ease-out;
+  }
+  
+  .sidebar-section.animate-sidebar {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  
+  /* Search input enhancements */
+  input[type="text"], input[type="email"] {
+    transition: all 0.2s ease;
+  }
+  
+  input[type="text"]:focus, input[type="email"]:focus {
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.15);
+  }
+  
+  /* Image loading optimization */
+  img {
+    transition: transform 0.3s ease;
+  }
+  
+  .group:hover img {
+    transform: scale(1.05);
+  }
+  
+  /* Tag and category hover effects */
+  a[href*="tag="], a[href*="category="] {
+    transition: all 0.2s ease;
+  }
+  
+  a[href*="tag="]:hover, a[href*="category="]:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Newsletter section */
+  .bg-primary-50 button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  }
+  
+  /* Pagination enhancements */
+  nav a {
+    transition: all 0.2s ease;
+  }
+  
+  nav a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+</style>

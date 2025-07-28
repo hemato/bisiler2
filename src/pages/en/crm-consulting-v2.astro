@@ -1,7 +1,12 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import { getLangFromUrl } from '../../i18n/utils';
-import { generateServiceSchema } from '../../utils/structured-data';
+import {
+  generateCRMServiceSchema,
+  generateFAQSchema,
+  generateAggregateReviewSchema,
+  generateLandingPageSchema
+} from '../../utils/structured-data';
 import CRMConsultingForm from '../../components/CRMConsultingForm';
 import { ArrowRight, CheckCircle, TrendingUp, MessageCircle, Phone, Users, Target, BarChart3, Shield, Smartphone, Link, Clock, Star, Award, Zap } from 'lucide-react';
 import { CONTACT_ACTIONS } from '../../config/contact';
@@ -11,17 +16,48 @@ const lang = getLangFromUrl(Astro.url);
 const translations = await import('../../i18n/en.json');
 const t = translations.default;
 
-const structuredData = generateServiceSchema({
-  name: t.crmConsulting.title,
-  description: t.crmConsulting.description,
-  provider: 'TechCorp',
-  offers: {
-    '@type': 'Offer',
-    price: 'varies',
-    priceCurrency: 'USD',
-    availability: 'InStock'
+// Enhanced FAQ structured data
+const faqData = [
+  {
+    question: "Which CRM platform should I choose?",
+    answer: "We recommend Zoho CRM or Bitrix24 according to your business needs. We determine the most suitable one for you with free analysis."
+  },
+  {
+    question: "How long does the setup take?",
+    answer: "It takes between 2-8 weeks depending on system complexity. Simple CRM setups take 2-3 weeks, comprehensive integrations can take 6-8 weeks."
+  },
+  {
+    question: "Will my existing data be lost?",
+    answer: "No, we safely transfer all your data to the new system. During the data migration process, we take backups and test everything thoroughly."
   }
-}, lang);
+];
+
+// Enhanced reviews data
+const reviewsData = [
+  {
+    author: "MediCare Private Hospital",
+    rating: 5,
+    reviewBody: "Our patient tracking has been completely fixed. Thanks to Zoho CRM, no appointments get mixed up. 50% appointment efficiency increase.",
+    datePublished: "2024-01-15"
+  },
+  {
+    author: "RetailMax Store Chain",
+    rating: 5,
+    reviewBody: "Inter-branch coordination is perfect. Now all our customer data is centralized. 45% online sales increase achieved.",
+    datePublished: "2024-02-20"
+  }
+];
+
+// Generate enhanced schemas
+const crmServiceSchema = generateCRMServiceSchema('en');
+const faqSchema = generateFAQSchema(faqData);
+const reviewSchema = generateAggregateReviewSchema("CRM Consulting Services", "5.0", "100", "en");
+const landingPageSchema = generateLandingPageSchema(
+  "Advanced CRM Consulting Landing Page V2",
+  "Professional CRM consulting services with modern approach to increase sales by 40% and stop customer loss",
+  "CRM Consulting",
+  "en"
+);
 
 // Hreflang for SEO
 const hreflang = [
@@ -30,14 +66,39 @@ const hreflang = [
 ];
 ---
 
-<Layout 
+<Layout
   title={t.crmConsulting.title}
   description={t.crmConsulting.description}
-  structuredData={structuredData}
+  canonical={`${DOMAIN_CONFIG.baseUrl}/en/crm-consulting-v2`}
   hreflang={hreflang}
   hideFooter={true}
   isLandingPage={true}
 >
+
+<!-- Enhanced Structured Data -->
+<script type="application/ld+json" set:html={JSON.stringify(crmServiceSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(faqSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(reviewSchema)}></script>
+<script type="application/ld+json" set:html={JSON.stringify(landingPageSchema)}></script>
+
+<!-- Critical CSS for V2 advanced features -->
+<style is:inline>
+  .floating-activity {
+    animation: floatActivity 3s ease-in-out infinite;
+    animation-delay: 0.5s;
+  }
+  @keyframes floatActivity {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    50% { transform: translateY(-8px) scale(1.02); }
+  }
+  .pulse-advanced {
+    animation: pulseAdvanced 2s infinite;
+  }
+  @keyframes pulseAdvanced {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+  }
+</style>
   <!-- Hero Section -->
   <section class="relative bg-gradient-to-br from-red-50 to-primary-50 overflow-hidden">
     <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
@@ -154,7 +215,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {t.crmConsulting.problems.items.map((problem, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500" key={index}>
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500">
             <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
               <span class="text-red-600 text-2xl">❌</span>
             </div>
@@ -199,7 +260,7 @@ const hreflang = [
           </div>
           <ul class="space-y-3">
             {t.crmConsulting.solution.platforms.zoho.features.map((feature, index) => (
-              <li class="flex items-start" key={index}>
+              <li class="flex items-start">
                 <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
                 <span class="text-secondary-700">{feature}</span>
               </li>
@@ -220,7 +281,7 @@ const hreflang = [
           </div>
           <ul class="space-y-3">
             {t.crmConsulting.solution.platforms.bitrix.features.map((feature, index) => (
-              <li class="flex items-start" key={index}>
+              <li class="flex items-start">
                 <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
                 <span class="text-secondary-700">{feature}</span>
               </li>
@@ -254,7 +315,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {t.crmConsulting.features.items.map((feature, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
             <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">{feature.title.split(' ')[0]}</div>
             <h3 class="text-xl font-bold text-secondary-900 mb-2">
               {feature.title.substring(2)}
@@ -290,7 +351,7 @@ const hreflang = [
         </h3>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           {t.crmConsulting.roi.results.items.map((result, index) => (
-            <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200" key={index}>
+            <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border border-green-200">
               <div class="text-3xl mb-2">{result.split(' ')[0]}</div>
               <p class="text-secondary-700 font-medium">{result.substring(2)}</p>
             </div>
@@ -323,7 +384,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {t.crmConsulting.process.steps.map((step, index) => (
-          <div class="relative" key={index}>
+          <div class="relative">
             <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-primary-600 relative">
               <div class="flex items-center mb-4">
                 <div class="w-8 h-8 bg-primary-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
@@ -358,7 +419,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {t.crmConsulting.packages.items.map((packageItem, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
             <div class="text-center mb-6">
               <div class="text-3xl mb-2 group-hover:scale-110 transition-transform">{packageItem.title.split(' ')[0]}</div>
               <h3 class="text-xl font-bold text-secondary-900">
@@ -367,7 +428,7 @@ const hreflang = [
             </div>
             <ul class="space-y-3 mb-6">
               {packageItem.features.map((feature, featureIndex) => (
-                <li class="flex items-start" key={featureIndex}>
+                <li class="flex items-start">
                   <CheckCircle className="w-4 h-4 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span class="text-secondary-700 text-sm">{feature}</span>
                 </li>
@@ -394,7 +455,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {t.crmConsulting.testimonials.items.map((testimonial, index) => (
-          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative" key={index}>
+          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative">
             <div class="absolute top-4 right-4 text-4xl text-blue-200">"</div>
             <div class="mb-6">
               <div class="flex items-center mb-4">
@@ -413,7 +474,7 @@ const hreflang = [
             <div class="space-y-2">
               <h5 class="font-semibold text-secondary-900 mb-2">Results Achieved:</h5>
               {testimonial.results.map((result, resultIndex) => (
-                <div class="flex items-center text-sm" key={resultIndex}>
+                <div class="flex items-center text-sm">
                   <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
                   <span class="text-secondary-700">{result}</span>
                 </div>

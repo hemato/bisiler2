@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Send, CheckCircle, User, Mail, Phone, Building, Users, Database, Target, Zap, Calendar, MessageSquare } from 'lucide-react';
 import { sendEmails, detectLanguage, detectPageSource } from '../utils/email';
 import { CONTACT_ACTIONS, PRIVACY_LINKS } from '../config/contact';
@@ -14,12 +14,24 @@ import {
   formatPhoneNumber,
   FORM_SCHEMAS
 } from '../utils/validation';
-import { useErrorHandler } from '../utils/error-handler';
+import { useErrorHandler, createFormErrorState } from '../utils/error-handler';
 import { Alert, Spinner, ValidatedField } from './ui';
-import { formSecurity, honeypotUtils } from '../utils/security';
+import { formSecurity, honeypotUtils, globalRateLimiter, xssProtection } from '../utils/security';
+import { trackEvent, trackFormSubmit, getUTMParameters } from '../config/analytics';
 
+// Automatic language detection
+const detectCurrentLanguage = (): 'tr' | 'en' => {
+  if (typeof window !== 'undefined') {
+    const pathname = window.location.pathname;
+    return pathname.startsWith('/en') ? 'en' : 'tr';
+  }
+  return 'tr';
+};
+
+// Enhanced interface for proper i18n support
 interface CRMConsultingFormProps {
-  translations: {
+  // Legacy support
+  translations?: {
     crmConsulting: {
       form: {
         title: string;
@@ -48,10 +60,236 @@ interface CRMConsultingFormProps {
       };
     };
   };
-  lang: string;
+  lang?: string;
+  // New i18n structure
+  i18n?: {
+    forms: {
+      crmConsulting: any;
+      common: any;
+      validation: any;
+      security: any;
+      analytics: any;
+    };
+  };
 }
 
-export default function CRMConsultingForm({ translations, lang }: CRMConsultingFormProps) {
+// Default translations for fallback
+const getDefaultTranslations = (lang: 'tr' | 'en') => {
+  const translations = {
+    tr: {
+      title: "Ücretsiz CRM Danışmanlığı Talep Edin",
+      description: "CRM ihtiyaçlarınızı değerlendirelim",
+      labels: {
+        name: "Ad Soyad",
+        email: "E-posta Adresi",
+        phone: "Telefon Numarası",
+        company: "Şirket Adı",
+        employeeCount: "Çalışan Sayısı",
+        currentSystem: "Mevcut Sistem",
+        mainChallenge: "Ana Zorluk",
+        preferredCrm: "Tercih Edilen CRM",
+        budgetRange: "Bütçe Aralığı",
+        timeline: "Proje Zamanlaması",
+        message: "Ek Notlar"
+      },
+      placeholders: {
+        name: "Adınızı ve soyadınızı girin",
+        email: "E-posta adresinizi girin",
+        phone: "Telefon numaranızı girin",
+        company: "Şirket adınızı girin",
+        message: "Özel CRM ihtiyaçlarınız hakkında bize bilgi verin..."
+      },
+      options: {
+        employeeCount: [
+          "1-10 kişi",
+          "11-25 kişi",
+          "26-50 kişi",
+          "51-100 kişi",
+          "100+ kişi"
+        ],
+        currentSystem: [
+          "Excel dosyaları",
+          "Google Sheets",
+          "Kağıt kayıtlar",
+          "Başka bir CRM",
+          "Hiçbir sistem yok"
+        ],
+        mainChallenge: [
+          "Müşteri takibi",
+          "Satış süreci",
+          "Raporlama",
+          "Ekip koordinasyonu",
+          "Veri yönetimi"
+        ],
+        preferredCrm: [
+          "Zoho CRM",
+          "Bitrix24",
+          "Kararsızım",
+          "Başka bir öneri"
+        ],
+        budgetRange: [
+          "0-5.000 TL",
+          "5.000-15.000 TL",
+          "15.000-30.000 TL",
+          "30.000+ TL"
+        ],
+        timeline: [
+          "Hemen",
+          "1 ay içinde",
+          "2-3 ay içinde",
+          "6 ay içinde"
+        ]
+      },
+      submit: "Ücretsiz Danışmanlık Talep Et",
+      selectOption: "Seçin...",
+      success: {
+        title: "Teşekkürler!",
+        message: "CRM danışmanlık talebiniz başarıyla gönderildi. Uzman ekibimiz 24 saat içinde size dönüş yapacak.",
+        button: "Başka Talep Gönder"
+      },
+      validation: {
+        fillRequired: "Lütfen tüm gerekli alanları doğru şekilde doldurun",
+        acceptPrivacy: "Devam etmek için lütfen Gizlilik Politikasını kabul edin"
+      },
+      privacy: {
+        text: "nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum.",
+        link: "Gizlilik Politikası",
+        required: "Gizlilik Politikası kabulü"
+      },
+      hints: {
+        title: "Lütfen aşağıdaki zorunlu alanları tamamlayın:",
+        name: "Ad Soyad",
+        phone: "Telefon Numarası",
+        privacy: "Gizlilik Politikası kabulü"
+      }
+    },
+    en: {
+      title: "Request Free CRM Consultation",
+      description: "Let's evaluate your CRM needs",
+      labels: {
+        name: "Full Name",
+        email: "Email Address",
+        phone: "Phone Number",
+        company: "Company Name",
+        employeeCount: "Number of Employees",
+        currentSystem: "Current System",
+        mainChallenge: "Main Challenge",
+        preferredCrm: "Preferred CRM",
+        budgetRange: "Budget Range",
+        timeline: "Project Timeline",
+        message: "Additional Notes"
+      },
+      placeholders: {
+        name: "Enter your full name",
+        email: "Enter your email address",
+        phone: "Enter your phone number",
+        company: "Enter your company name",
+        message: "Tell us about your specific CRM needs..."
+      },
+      options: {
+        employeeCount: [
+          "1-10 people",
+          "11-25 people",
+          "26-50 people",
+          "51-100 people",
+          "100+ people"
+        ],
+        currentSystem: [
+          "Excel files",
+          "Google Sheets",
+          "Paper records",
+          "Another CRM",
+          "No system"
+        ],
+        mainChallenge: [
+          "Customer tracking",
+          "Sales process",
+          "Reporting",
+          "Team coordination",
+          "Data management"
+        ],
+        preferredCrm: [
+          "Zoho CRM",
+          "Bitrix24",
+          "Undecided",
+          "Other suggestion"
+        ],
+        budgetRange: [
+          "$0-2,000",
+          "$2,000-6,000",
+          "$6,000-12,000",
+          "$12,000+"
+        ],
+        timeline: [
+          "Immediately",
+          "Within 1 month",
+          "Within 2-3 months",
+          "Within 6 months"
+        ]
+      },
+      submit: "Request Free Consultation",
+      selectOption: "Select...",
+      success: {
+        title: "Thank You!",
+        message: "Your CRM consulting request has been sent successfully. Our expert team will contact you within 24 hours.",
+        button: "Send Another Request"
+      },
+      validation: {
+        fillRequired: "Please fill in all required fields correctly",
+        acceptPrivacy: "Please accept the Privacy Policy to continue"
+      },
+      privacy: {
+        text: " and consent to the processing of my personal data.",
+        link: "Privacy Policy",
+        required: "Privacy Policy acceptance"
+      },
+      hints: {
+        title: "Please complete the following required fields:",
+        name: "Full Name",
+        phone: "Phone Number",
+        privacy: "Privacy Policy acceptance"
+      }
+    }
+  };
+  
+  return translations[lang];
+};
+
+export default function CRMConsultingForm({ translations, lang, i18n }: CRMConsultingFormProps) {
+  // Detect current language
+  const currentLang = detectCurrentLanguage();
+  const formLang = (lang as 'tr' | 'en') || currentLang;
+  
+  // Get translations from various sources with fallbacks
+  const getTranslations = () => {
+    // Priority: i18n > legacy translations > defaults
+    if (i18n?.forms?.crmConsulting) {
+      return i18n.forms.crmConsulting;
+    }
+    
+    if (translations) {
+      // Convert legacy format to new format
+      return {
+        title: translations.crmConsulting.form.title,
+        labels: translations.crmConsulting.form.fields,
+        options: translations.crmConsulting.form.options,
+        submit: translations.crmConsulting.form.submit,
+        selectOption: formLang === 'en' ? 'Select...' : 'Seçin...',
+        success: {
+          title: formLang === 'en' ? 'Thank You!' : 'Teşekkürler!',
+          message: formLang === 'en'
+            ? 'Your CRM consulting request has been sent successfully. Our expert team will contact you within 24 hours.'
+            : 'CRM danışmanlık talebiniz başarıyla gönderildi. Uzman ekibimiz 24 saat içinde size dönüş yapacak.',
+          button: formLang === 'en' ? 'Send Another Request' : 'Başka Talep Gönder'
+        }
+      };
+    }
+    
+    return getDefaultTranslations(formLang);
+  };
+
+  const t = getTranslations();
+
   // Form data state
   const [formData, setFormData] = useState({
     name: '',
@@ -89,8 +327,18 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string>('');
 
-  const errorHandler = useErrorHandler(lang as 'tr' | 'en');
+  const errorHandler = useErrorHandler(formLang);
   const schema = FORM_SCHEMAS.crmConsulting;
+
+  // Analytics tracking
+  useEffect(() => {
+    // Track form start
+    trackEvent('form_start', {
+      form_type: 'crm_consulting',
+      page_language: formLang,
+      utm_parameters: getUTMParameters()
+    });
+  }, [formLang]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,8 +348,37 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
       // Clear previous errors
       setFormError('');
       
+      // Security checks first
+      const identifier = 'crm_form_submission';
+      if (!globalRateLimiter.isAllowed(identifier)) {
+        setFormError(formLang === 'en' 
+          ? 'Too many requests. Please wait before trying again.' 
+          : 'Çok fazla istek gönderdiniz. Lütfen bekleyin.'
+        );
+        return;
+      }
+
+      // Honeypot and security validation
+      const securityValidation = formSecurity.validateSubmission(formData, {
+        checkHoneypot: true,
+        honeypotField: 'website_url'
+      });
+
+      if (!securityValidation.isValid || securityValidation.isSpam) {
+        console.warn('Security validation failed', securityValidation);
+        if (securityValidation.isSpam) {
+          await honeypotUtils.simulateProcessingDelay();
+          return;
+        }
+        setSubmitError(formLang === 'en' ? 'Security validation failed' : 'Güvenlik doğrulaması başarısız');
+        return;
+      }
+
+      // Sanitize form data
+      const sanitizedData = formSecurity.sanitizeFormData(formData);
+      
       // Priority-based validation for better UX
-      const validation = validateCRMConsultingForm(formData, lang as 'tr' | 'en');
+      const validation = validateCRMConsultingForm(sanitizedData, formLang);
       
       // Priority 1: Field validation (name, email, phone, company)
       if (!validation.isValid) {
@@ -120,13 +397,12 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           }));
         });
         
-        // Show inline error message instead of alert
-        setFormError(lang === 'en' 
+        setFormError(t.validation?.fillRequired || (formLang === 'en' 
           ? 'Please fill in all required fields correctly.' 
-          : 'Lütfen tüm gerekli alanları doğru şekilde doldurun.'
+          : 'Lütfen tüm gerekli alanları doğru şekilde doldurun.')
         );
         
-        // Auto-scroll to validation hints (more detailed info)
+        // Auto-scroll to validation hints
         setTimeout(() => {
           const hintsElement = document.querySelector('[data-validation-hints]');
           if (hintsElement) {
@@ -140,14 +416,13 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
         return;
       }
 
-      // Priority 2: Privacy validation (only if all fields are valid)
+      // Priority 2: Privacy validation
       if (!formData.privacyAccepted) {
-        setFormError(lang === 'en'
+        setFormError(t.validation?.acceptPrivacy || (formLang === 'en'
           ? 'Please accept the Privacy Policy to continue.'
-          : 'Devam etmek için lütfen Gizlilik Politikasını kabul edin.'
+          : 'Devam etmek için lütfen Gizlilik Politikasını kabul edin.')
         );
         
-        // Auto-scroll to validation hints (more detailed info)
         setTimeout(() => {
           const hintsElement = document.querySelector('[data-validation-hints]');
           if (hintsElement) {
@@ -163,42 +438,33 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
       
       console.log('✅ Form validation passed');
 
-      // Security checks
-      const securityValidation = formSecurity.validateSubmission(formData, {
-        checkHoneypot: true,
-        honeypotField: 'website_url'
-      });
-
-      if (!securityValidation.isValid || securityValidation.isSpam) {
-        console.warn('Security validation failed', securityValidation);
-        // For spam, don't show error to user - just fail silently
-        if (securityValidation.isSpam) {
-          await honeypotUtils.simulateProcessingDelay();
-          return;
-        }
-        setSubmitError(lang === 'en' ? 'Security validation failed' : 'Güvenlik doğrulaması başarısız');
-        return;
-      }
-
-      // Sanitize form data
-      const sanitizedData = sanitizeFormData(formData);
-      
       // Prepare form data for submission
       const submitData = {
         ...sanitizedData,
         formType: 'crm-consulting' as const,
         pageSource: detectPageSource(),
         timestamp: new Date().toISOString(),
-        language: lang as 'tr' | 'en'
+        language: formLang,
+        utm_parameters: getUTMParameters()
       };
 
       console.log('CRM Consulting Form submitted:', submitData);
+      
+      // Track form submission
+      trackFormSubmit('crm_consulting', submitData);
       
       // Send emails
       const emailResult = await sendEmails(submitData as any);
       
       if (emailResult.success) {
         setIsSubmitted(true);
+        
+        // Track successful completion
+        trackEvent('form_complete', {
+          form_type: 'crm_consulting',
+          page_language: formLang,
+          success: true
+        });
         
         // Auto-scroll to success message
         setTimeout(() => {
@@ -227,8 +493,14 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           privacyAccepted: false
         });
       } else {
-        // Show specific error based on what failed
-        const errorMessage = lang === 'en' 
+        // Track failed submission
+        trackEvent('form_error', {
+          form_type: 'crm_consulting',
+          error_type: 'email_delivery',
+          page_language: formLang
+        });
+        
+        const errorMessage = formLang === 'en' 
           ? 'An error occurred while sending emails. Please try again.' 
           : 'Email gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
         setSubmitError(errorMessage);
@@ -237,10 +509,17 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
       
     } catch (error) {
       console.error('Form submission error:', error);
-      const errorMessage = lang === 'en' 
-        ? 'An error occurred while submitting the form. Please try again.' 
-        : 'Form gönderilirken bir hata oluştu. Lütfen tekrar deneyin.';
-      setSubmitError(errorMessage);
+      
+      // Track error
+      trackEvent('form_error', {
+        form_type: 'crm_consulting',
+        error_type: 'submission',
+        error_details: error instanceof Error ? error.message : 'Unknown error',
+        page_language: formLang
+      });
+      
+      const handledError = errorHandler.handleError(error, 'crm_consulting_form_submission');
+      setFormError(handledError.message);
     } finally {
       setIsSubmitting(false);
     }
@@ -259,7 +538,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
     // Real-time validation for this field
     const rule = schema[name as keyof typeof schema];
     if (rule) {
-      const validation = validateFieldRealTime(name, value, rule, lang as 'tr' | 'en');
+      const validation = validateFieldRealTime(name, value, rule, formLang);
       
       setFieldStates(prev => ({
         ...prev,
@@ -287,7 +566,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
     
     const rule = schema[name as keyof typeof schema];
     if (rule) {
-      const validation = validateFieldRealTime(name, value, rule, lang as 'tr' | 'en');
+      const validation = validateFieldRealTime(name, value, rule, formLang);
       
       setFieldStates(prev => ({
         ...prev,
@@ -306,20 +585,17 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
       <div className="bg-white rounded-2xl shadow-xl p-8 text-center" data-success-message>
         <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-6" />
         <h3 className="text-2xl font-bold text-secondary-900 mb-4">
-          {lang === 'en' ? 'Thank You!' : 'Teşekkürler!'}
+          {t.success?.title}
         </h3>
         <p className="text-secondary-600 mb-8">
-          {lang === 'en'
-            ? 'Your CRM consulting request has been sent successfully. Our expert team will contact you within 24 hours.'
-            : 'CRM danışmanlık talebiniz başarıyla gönderildi. Uzman ekibimiz 24 saat içinde size dönüş yapacak.'
-          }
+          {t.success?.message}
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => setIsSubmitted(false)}
             className="inline-flex items-center px-6 py-3 bg-primary-600 text-white font-medium rounded-lg hover:bg-primary-700 transition-colors"
           >
-            {lang === 'en' ? 'Send Another Request' : 'Başka Talep Gönder'}
+            {t.success?.button}
           </button>
           <a
             href={CONTACT_ACTIONS.whatsapp.url}
@@ -339,13 +615,13 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
     <div className="bg-white rounded-2xl shadow-xl p-8">
       <div className="text-center mb-8">
         <h2 className="text-3xl font-bold text-secondary-900 mb-4">
-          {translations.crmConsulting.form.title}
+          {t.title}
         </h2>
         <p className="text-secondary-600">
-          {lang === 'en' 
+          {t.description || (formLang === 'en' 
             ? 'Fill out the form below and our CRM experts will prepare a customized solution for your business.'
             : 'Aşağıdaki formu doldurun, CRM uzmanlarımız işletmeniz için özelleştirilmiş çözüm hazırlasın.'
-          }
+          )}
         </p>
       </div>
 
@@ -369,7 +645,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ValidatedField
             fieldState={fieldStates.name}
-            label={translations.crmConsulting.form.fields.name}
+            label={t.labels?.name}
             required={true}
           >
             <input
@@ -379,7 +655,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onChange={handleChange}
               onBlur={handleBlur}
               className={getFieldValidationClasses(fieldStates.name, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-              placeholder={translations.crmConsulting.form.fields.name}
+              placeholder={t.placeholders?.name}
               aria-describedby={fieldStates.name.error ? "name-error" : undefined}
               aria-invalid={fieldStates.name.isValid === false}
             />
@@ -387,7 +663,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           
           <ValidatedField
             fieldState={fieldStates.email}
-            label={translations.crmConsulting.form.fields.email}
+            label={t.labels?.email}
             required={false}
           >
             <input
@@ -397,7 +673,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onChange={handleChange}
               onBlur={handleBlur}
               className={getFieldValidationClasses(fieldStates.email, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-              placeholder={translations.crmConsulting.form.fields.email}
+              placeholder={t.placeholders?.email}
               aria-describedby={fieldStates.email.error ? "email-error" : undefined}
               aria-invalid={fieldStates.email.isValid === false}
             />
@@ -407,7 +683,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <ValidatedField
             fieldState={fieldStates.phone}
-            label={translations.crmConsulting.form.fields.phone}
+            label={t.labels?.phone}
             required={true}
           >
             <input
@@ -417,7 +693,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onChange={handleChange}
               onBlur={handleBlur}
               className={getFieldValidationClasses(fieldStates.phone, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-              placeholder={translations.crmConsulting.form.fields.phone}
+              placeholder={t.placeholders?.phone}
               aria-describedby={fieldStates.phone.error ? "phone-error" : undefined}
               aria-invalid={fieldStates.phone.isValid === false}
             />
@@ -425,7 +701,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           
           <ValidatedField
             fieldState={fieldStates.company}
-            label={translations.crmConsulting.form.fields.company}
+            label={t.labels?.company}
             required={false}
           >
             <input
@@ -435,7 +711,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onChange={handleChange}
               onBlur={handleBlur}
               className={getFieldValidationClasses(fieldStates.company, "w-full px-4 py-3 pr-12 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200")}
-              placeholder={translations.crmConsulting.form.fields.company}
+              placeholder={t.placeholders?.company}
               aria-describedby={fieldStates.company.error ? "company-error" : undefined}
               aria-invalid={fieldStates.company.isValid === false}
             />
@@ -446,7 +722,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-2">
               <Users className="w-4 h-4 inline mr-2" />
-              {translations.crmConsulting.form.fields.employeeCount}
+              {t.labels?.employeeCount}
             </label>
             <select
               name="employeeCount"
@@ -455,8 +731,8 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onBlur={handleBlur}
               className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
             >
-              <option value="">{lang === 'en' ? 'Select...' : 'Seçin...'}</option>
-              {translations.crmConsulting.form.options.employeeCount.map((option) => (
+              <option value="">{t.selectOption}</option>
+              {(t.options?.employeeCount || []).map((option: string) => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -465,7 +741,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-2">
               <Database className="w-4 h-4 inline mr-2" />
-              {translations.crmConsulting.form.fields.currentSystem}
+              {t.labels?.currentSystem}
             </label>
             <select
               name="currentSystem"
@@ -474,8 +750,8 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onBlur={handleBlur}
               className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
             >
-              <option value="">{lang === 'en' ? 'Select...' : 'Seçin...'}</option>
-              {translations.crmConsulting.form.options.currentSystem.map((option) => (
+              <option value="">{t.selectOption}</option>
+              {(t.options?.currentSystem || []).map((option: string) => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -486,7 +762,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-2">
               <Target className="w-4 h-4 inline mr-2" />
-              {translations.crmConsulting.form.fields.mainChallenge}
+              {t.labels?.mainChallenge}
             </label>
             <select
               name="mainChallenge"
@@ -495,8 +771,8 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onBlur={handleBlur}
               className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
             >
-              <option value="">{lang === 'en' ? 'Select...' : 'Seçin...'}</option>
-              {translations.crmConsulting.form.options.mainChallenge.map((option) => (
+              <option value="">{t.selectOption}</option>
+              {(t.options?.mainChallenge || []).map((option: string) => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -505,7 +781,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-2">
               <Zap className="w-4 h-4 inline mr-2" />
-              {translations.crmConsulting.form.fields.preferredCrm}
+              {t.labels?.preferredCrm}
             </label>
             <select
               name="preferredCrm"
@@ -514,8 +790,8 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onBlur={handleBlur}
               className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
             >
-              <option value="">{lang === 'en' ? 'Select...' : 'Seçin...'}</option>
-              {translations.crmConsulting.form.options.preferredCrm.map((option) => (
+              <option value="">{t.selectOption}</option>
+              {(t.options?.preferredCrm || []).map((option: string) => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -525,7 +801,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-2">
-              💰 {translations.crmConsulting.form.fields.budgetRange}
+              💰 {t.labels?.budgetRange}
             </label>
             <select
               name="budgetRange"
@@ -534,8 +810,8 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onBlur={handleBlur}
               className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
             >
-              <option value="">{lang === 'en' ? 'Select...' : 'Seçin...'}</option>
-              {translations.crmConsulting.form.options.budgetRange.map((option) => (
+              <option value="">{t.selectOption}</option>
+              {(t.options?.budgetRange || []).map((option: string) => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -544,7 +820,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
           <div>
             <label className="block text-sm font-medium text-secondary-700 mb-2">
               <Calendar className="w-4 h-4 inline mr-2" />
-              {translations.crmConsulting.form.fields.timeline}
+              {t.labels?.timeline}
             </label>
             <select
               name="timeline"
@@ -553,8 +829,8 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
               onBlur={handleBlur}
               className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
             >
-              <option value="">{lang === 'en' ? 'Select...' : 'Seçin...'}</option>
-              {translations.crmConsulting.form.options.timeline.map((option) => (
+              <option value="">{t.selectOption}</option>
+              {(t.options?.timeline || []).map((option: string) => (
                 <option key={option} value={option}>{option}</option>
               ))}
             </select>
@@ -564,7 +840,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
         <div>
           <label className="block text-sm font-medium text-secondary-700 mb-2">
             <MessageSquare className="w-4 h-4 inline mr-2" />
-            {translations.crmConsulting.form.fields.message}
+            {t.labels?.message}
           </label>
           <textarea
             name="message"
@@ -573,7 +849,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
             onChange={handleChange}
             onBlur={handleBlur}
             className="w-full px-4 py-3 border border-gray-300 bg-gray-50 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
-            placeholder={lang === 'en' ? 'Tell us about your specific CRM needs...' : 'Özel CRM ihtiyaçlarınız hakkında bize bilgi verin...'}
+            placeholder={t.placeholders?.message}
           />
         </div>
 
@@ -597,7 +873,7 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
             <Spinner size="sm" className="text-white" />
           ) : (
             <>
-              {translations.crmConsulting.form.submit}
+              {t.submit}
               <Send className="ml-2 w-5 h-5" />
             </>
           )}
@@ -609,17 +885,17 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
             {(!formData.name.trim() || !formData.phone.trim() || !formData.privacyAccepted) && (
               <div className="bg-amber-50 border border-amber-200 rounded-lg p-3" data-validation-hints>
                 <p className="text-amber-800 font-medium mb-2">
-                  {lang === 'en' ? 'Please complete the following required fields:' : 'Lütfen aşağıdaki zorunlu alanları tamamlayın:'}
+                  {t.hints?.title}
                 </p>
                 <ul className="space-y-1 text-amber-700">
                   {!formData.name.trim() && (
-                    <li>• {translations.crmConsulting.form.fields.name}</li>
+                    <li>• {t.hints?.name}</li>
                   )}
                   {!formData.phone.trim() && (
-                    <li>• {translations.crmConsulting.form.fields.phone}</li>
+                    <li>• {t.hints?.phone}</li>
                   )}
                   {!formData.privacyAccepted && (
-                    <li>• {lang === 'en' ? 'Privacy Policy acceptance' : 'Gizlilik Politikası kabulü'}</li>
+                    <li>• {t.hints?.privacy}</li>
                   )}
                 </ul>
               </div>
@@ -636,20 +912,20 @@ export default function CRMConsultingForm({ translations, lang }: CRMConsultingF
             className="w-4 h-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-500 focus:ring-2 mt-1"
           />
           <label htmlFor="privacyAccepted" className="ml-2 text-sm text-secondary-700">
-            {lang === 'en' ? (
+            {formLang === 'en' ? (
               <>
                 I have read and accept the{' '}
                 <a href={PRIVACY_LINKS.en} target="_blank" className="text-primary-600 hover:underline">
-                  Privacy Policy
+                  {t.privacy?.link || 'Privacy Policy'}
                 </a>
-                {' '}and consent to the processing of my personal data. *
+                {t.privacy?.text || ' and consent to the processing of my personal data.'} *
               </>
             ) : (
               <>
                 <a href={PRIVACY_LINKS.tr} target="_blank" className="text-primary-600 hover:underline">
-                  Gizlilik Politikası
+                  {t.privacy?.link || 'Gizlilik Politikası'}
                 </a>
-                'nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum. *
+                {t.privacy?.text || 'nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum.'} *
               </>
             )}
           </label>

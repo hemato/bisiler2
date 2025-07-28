@@ -864,5 +864,255 @@
       },
       "submit": "Ücretsiz Teklif Al"
     }
+  },
+  "forms": {
+    "common": {
+      "required": "Zorunlu alan",
+      "optional": "İsteğe bağlı",
+      "submit": "Gönder",
+      "submitting": "Gönderiliyor...",
+      "success": "Başarıyla gönderildi",
+      "error": "Bir hata oluştu",
+      "retry": "Tekrar Dene",
+      "cancel": "İptal",
+      "close": "Kapat",
+      "next": "İleri",
+      "back": "Geri",
+      "finish": "Bitir",
+      "save": "Kaydet",
+      "loading": "Yükleniyor...",
+      "selectOption": "Seçin...",
+      "pleaseWait": "Lütfen bekleyin...",
+      "processing": "İşleniyor..."
+    },
+    "validation": {
+      "required": "Bu alan zorunludur",
+      "email": "Geçerli bir e-posta adresi girin",
+      "phone": "Geçerli bir telefon numarası girin",
+      "name": "Geçerli bir isim girin (2-50 karakter)",
+      "company": "Geçerli bir şirket adı girin",
+      "minLength": "En az {min} karakter olmalıdır",
+      "maxLength": "En fazla {max} karakter olmalıdır",
+      "url": "Geçerli bir URL girin",
+      "custom": "Geçersiz değer",
+      "services": "En az bir hizmet seçmelisiniz",
+      "privacy": "Gizlilik politikasını kabul etmelisiniz",
+      "fillRequired": "Lütfen tüm gerekli alanları doğru şekilde doldurun",
+      "acceptPrivacy": "Devam etmek için lütfen Gizlilik Politikasını kabul edin"
+    },
+    "contact": {
+      "title": "İletişim Formu",
+      "description": "Bizimle iletişime geçin",
+      "labels": {
+        "name": "Ad Soyad",
+        "email": "E-posta Adresi",
+        "phone": "Telefon Numarası",
+        "company": "Şirket/Kurum Adı",
+        "services": "İlgilendiğiniz Hizmetler",
+        "message": "Mesajınız",
+        "otherService": "Diğer (Belirtin)",
+        "privacyAccepted": "Gizlilik Politikası"
+      },
+      "placeholders": {
+        "name": "Adınızı ve soyadınızı girin",
+        "email": "E-posta adresinizi girin",
+        "phone": "Telefon numaranızı girin",
+        "company": "Şirket/kurum adınızı girin",
+        "message": "Projeniz hakkında bize bilgi verin...",
+        "otherService": "İhtiyaçlarınızı açıklayın..."
+      },
+      "serviceOptions": [
+        "Web Sitesi Kurulumu",
+        "Form ve CRM Entegrasyonu",
+        "CRM Seçimi ve Kurulumu",
+        "Otomasyon Sistemleri",
+        "SEO ve Teknik İyileştirme",
+        "Teknik Danışmanlık",
+        "Diğer"
+      ],
+      "submit": "Mesaj Gönder",
+      "success": {
+        "title": "Teşekkürler!",
+        "message": "Mesajınız başarıyla gönderildi. En kısa sürede size dönüş yapacağız.",
+        "button": "Başka Mesaj Gönder"
+      },
+      "error": {
+        "submission": "Form gönderilirken bir hata oluştu. Lütfen tekrar deneyin.",
+        "email": "Email gönderilirken bir hata oluştu. Lütfen direkt bizimle iletişime geçin.",
+        "network": "İnternet bağlantı hatası. Lütfen bağlantınızı kontrol edin.",
+        "server": "Sunucu hatası. Lütfen daha sonra tekrar deneyin."
+      },
+      "privacy": {
+        "text": "nı okudum, kabul ediyorum ve kişisel verilerimin işlenmesine onay veriyorum.",
+        "link": "Gizlilik Politikası",
+        "required": "Gizlilik Politikası kabulü"
+      },
+      "hints": {
+        "title": "Lütfen aşağıdaki zorunlu alanları tamamlayın:",
+        "name": "Ad Soyad",
+        "phone": "Telefon Numarası",
+        "services": "Hizmet Seçimi",
+        "privacy": "Gizlilik Politikası kabulü"
+      }
+    },
+    "crmConsulting": {
+      "title": "CRM Danışmanlık Formu",
+      "description": "CRM ihtiyaçlarınızı değerlendirelim",
+      "labels": {
+        "name": "Ad Soyad",
+        "email": "E-posta Adresi",
+        "phone": "Telefon Numarası",
+        "company": "Şirket Adı",
+        "employeeCount": "Çalışan Sayısı",
+        "currentSystem": "Mevcut Sistem",
+        "mainChallenge": "Ana Zorluk",
+        "preferredCrm": "Tercih Edilen CRM",
+        "budgetRange": "Bütçe Aralığı",
+        "timeline": "Proje Zamanlaması",
+        "message": "Ek Notlar"
+      },
+      "placeholders": {
+        "name": "Adınızı ve soyadınızı girin",
+        "email": "E-posta adresinizi girin",
+        "phone": "Telefon numaranızı girin",
+        "company": "Şirket adınızı girin",
+        "message": "Özel CRM ihtiyaçlarınız hakkında bize bilgi verin..."
+      },
+      "options": {
+        "employeeCount": [
+          "1-10 kişi",
+          "11-25 kişi",
+          "26-50 kişi",
+          "51-100 kişi",
+          "100+ kişi"
+        ],
+        "currentSystem": [
+          "Excel dosyaları",
+          "Google Sheets",
+          "Kağıt kayıtlar",
+          "Başka bir CRM",
+          "Hiçbir sistem yok"
+        ],
+        "mainChallenge": [
+          "Müşteri takibi",
+          "Satış süreci",
+          "Raporlama",
+          "Ekip koordinasyonu",
+          "Veri yönetimi"
+        ],
+        "preferredCrm": [
+          "Zoho CRM",
+          "Bitrix24",
+          "Kararsızım",
+          "Başka bir öneri"
+        ],
+        "budgetRange": [
+          "0-5.000 TL",
+          "5.000-15.000 TL",
+          "15.000-30.000 TL",
+          "30.000+ TL"
+        ],
+        "timeline": [
+          "Hemen",
+          "1 ay içinde",
+          "2-3 ay içinde",
+          "6 ay içinde"
+        ]
+      },
+      "submit": "Ücretsiz Danışmanlık Talep Et",
+      "success": {
+        "title": "Teşekkürler!",
+        "message": "CRM danışmanlık talebiniz başarıyla gönderildi. Uzman ekibimiz 24 saat içinde size dönüş yapacak.",
+        "button": "Başka Talep Gönder"
+      },
+      "hints": {
+        "title": "Lütfen aşağıdaki zorunlu alanları tamamlayın:",
+        "name": "Ad Soyad",
+        "phone": "Telefon Numarası",
+        "privacy": "Gizlilik Politikası kabulü"
+      }
+    },
+    "websiteSetup": {
+      "title": "Web Sitesi Kurulum Formu",
+      "description": "Web sitesi ihtiyaçlarınızı değerlendirelim",
+      "labels": {
+        "name": "Ad Soyad",
+        "email": "E-posta Adresi",
+        "phone": "Telefon Numarası",
+        "company": "Şirket Adı",
+        "websiteType": "Web Sitesi Türü",
+        "currentWebsite": "Mevcut Web Sitesi",
+        "timeline": "Proje Zamanlaması",
+        "budget": "Bütçe Aralığı",
+        "message": "Ek Bilgiler"
+      },
+      "placeholders": {
+        "name": "Adınızı ve soyadınızı girin",
+        "email": "E-posta adresinizi girin",
+        "phone": "Telefon numaranızı girin",
+        "company": "Şirket adınızı girin",
+        "message": "Web sitesi hedefleriniz, tercih ettiğiniz tasarım tarzı, ihtiyaç duyduğunuz özellikler hakkında bize bilgi verin..."
+      },
+      "options": {
+        "websiteType": [
+          "Kurumsal Web Sitesi",
+          "E-ticaret Sitesi",
+          "Blog / Haber Sitesi",
+          "Portfolyo Sitesi",
+          "Landing Page",
+          "Özel Proje"
+        ],
+        "currentWebsite": [
+          "Hiç web sitem yok",
+          "Eski bir sitem var",
+          "WordPress sitesi var",
+          "Sosyal medya hesapları var",
+          "E-ticaret sitesi var"
+        ],
+        "timeline": [
+          "Hemen",
+          "1 ay içinde",
+          "2-3 ay içinde",
+          "6 ay içinde"
+        ],
+        "budget": [
+          "5.000-15.000 TL",
+          "15.000-30.000 TL",
+          "30.000-50.000 TL",
+          "50.000+ TL"
+        ]
+      },
+      "submit": "Ücretsiz Teklif Al",
+      "success": {
+        "title": "Teşekkürler!",
+        "message": "Web sitesi kurulum talebiniz başarıyla gönderildi. Tasarım ekibimiz 24 saat içinde özel teklif ile size dönüş yapacak.",
+        "button": "Başka Talep Gönder"
+      },
+      "hints": {
+        "title": "Lütfen aşağıdaki zorunlu alanları tamamlayın:",
+        "name": "Ad Soyad",
+        "phone": "Telefon Numarası",
+        "privacy": "Gizlilik Politikası kabulü"
+      }
+    },
+    "homeContact": {
+      "title": "Bugün Başlayın",
+      "description": "Aşağıdaki formu doldurun ve proje ihtiyaçlarınızı konuşalım",
+      "submit": "İletişime Geç"
+    },
+    "security": {
+      "honeypotField": "Website URL (robots için - boş bırakın)",
+      "spamDetected": "Spam algılandı",
+      "securityError": "Güvenlik doğrulaması başarısız",
+      "rateLimitExceeded": "Çok fazla istek gönderdiniz. Lütfen bekleyin."
+    },
+    "analytics": {
+      "formStart": "Form başlatıldı",
+      "formSubmit": "Form gönderildi",
+      "formComplete": "Form tamamlandı",
+      "fieldFocus": "Alan odaklandı",
+      "fieldBlur": "Alan terk edildi",
+      "validationError": "Doğrulama hatası"
+    }
   }
 }

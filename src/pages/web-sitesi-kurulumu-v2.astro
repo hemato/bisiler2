@@ -1,7 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { getLangFromUrl } from '../i18n/utils';
-import { generateServiceSchema } from '../utils/structured-data';
+import {
+  generateWebDevelopmentServiceSchema,
+  generateFAQSchema,
+  generateAggregateReviewSchema,
+  generateLandingPageSchema
+} from '../utils/structured-data';
 import WebsiteSetupForm from '../components/WebsiteSetupForm';
 import { ArrowRight, CheckCircle, TrendingUp, MessageCircle, Phone, Smartphone, Zap, Search, Shield, BarChart3, Target, Clock, Star, Award, Globe, Code, Palette } from 'lucide-react';
 import { CONTACT_ACTIONS } from '../config/contact';
@@ -11,17 +16,56 @@ const lang = getLangFromUrl(Astro.url);
 const translations = await import('../i18n/tr.json');
 const t = translations.default;
 
-const structuredData = generateServiceSchema({
-  name: t.websiteSetup.title,
-  description: t.websiteSetup.description,
-  provider: 'TechCorp',
-  offers: {
-    '@type': 'Offer',
-    price: 'varies',
-    priceCurrency: 'TRY',
-    availability: 'InStock'
+// Enhanced structured data with service-specific schemas
+const webDevServiceSchema = generateWebDevelopmentServiceSchema(lang);
+
+const faqSchema = generateFAQSchema([
+  {
+    question: "Web sitesi kurulumu ne kadar sürer?",
+    answer: "Temel web sitesi 1-2 hafta, özelleştirilmiş tasarım 2-3 hafta, e-ticaret sitesi 3-4 hafta sürmektedir. Proje kapsamına göre süre değişkenlik gösterebilir."
+  },
+  {
+    question: "Web sitesi SEO uyumlu olacak mı?",
+    answer: "Evet, tüm web sitelerimiz Google arama motoru optimizasyonu için hazırlanır. Teknik SEO, hız optimizasyonu ve mobil uyumluluk standart olarak dahildir."
+  },
+  {
+    question: "Hosting ve domain dahil mi?",
+    answer: "İlk yıl hosting ve domain bedava! Güvenli SSL sertifikası, otomatik yedekleme ve teknik destek dahildir."
+  },
+  {
+    question: "Sonradan değişiklik yapabiliyor muyum?",
+    answer: "Tabii ki! Kullanıcı dostu yönetim paneli ile kolayca içerik güncellemeleri yapabilirsiniz. Teknik destek her zaman yanınızda."
   }
-}, lang);
+], {
+  author: 'TechCorp',
+  datePublished: new Date().toISOString(),
+  mainEntity: {
+    name: t.websiteSetup.title,
+    description: t.websiteSetup.description
+  }
+});
+
+const reviewSchema = generateAggregateReviewSchema(
+  t.websiteSetup.title,
+  '4.8',
+  '89',
+  lang
+);
+
+const landingPageSchema = generateLandingPageSchema(
+  t.websiteSetup.title + ' | TechCorp - V2',
+  t.websiteSetup.description + ' Modern, hızlı ve SEO uyumlu web siteleri ile dijital varlığınızı güçlendirin.',
+  'Website Development',
+  lang
+);
+
+// Combine all schemas
+const combinedStructuredData = [
+  webDevServiceSchema,
+  faqSchema,
+  reviewSchema,
+  landingPageSchema
+];
 
 // Hreflang for SEO
 const hreflang = [
@@ -30,43 +74,129 @@ const hreflang = [
 ];
 ---
 
-<Layout 
-  title={t.websiteSetup.title}
-  description={t.websiteSetup.description}
-  structuredData={structuredData}
+<Layout
+  title={`${t.websiteSetup.title} | TechCorp V2 - Modern Web Sitesi Çözümleri`}
+  description={`${t.websiteSetup.description} Modern, hızlı ve SEO uyumlu web siteleri. ✓ Ücretsiz Hosting ✓ SSL Sertifikası ✓ Mobil Uyumlu ✓ %100 Memnuniyet Garantisi`}
+  structuredData={combinedStructuredData}
   hreflang={hreflang}
   hideFooter={true}
   isLandingPage={true}
 >
+  <!-- Enhanced SEO Meta Tags -->
+  <Fragment slot="head">
+    <!-- Open Graph optimizations -->
+    <meta property="og:title" content={`${t.websiteSetup.title} | TechCorp V2 - Modern Web Sitesi Çözümleri`} />
+    <meta property="og:description" content={`${t.websiteSetup.description} Modern, hızlı ve SEO uyumlu web siteleri ile dijital varlığınızı güçlendirin.`} />
+    <meta property="og:url" content={`${DOMAIN_CONFIG.baseUrl}/web-sitesi-kurulumu-v2`} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="tr_TR" />
+    <meta property="og:site_name" content="TechCorp" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={`${t.websiteSetup.title} | TechCorp V2`} />
+    <meta name="twitter:description" content={`${t.websiteSetup.description} Modern web sitesi çözümleri.`} />
+    
+    <!-- Enhanced SEO Meta Tags -->
+    <meta name="keywords" content="web sitesi kurulumu, web tasarım, SEO uyumlu web sitesi, e-ticaret sitesi, kurumsal web sitesi, mobil uyumlu tasarım, WordPress, web geliştirme, dijital pazarlama, online mağaza" />
+    <meta name="author" content="TechCorp" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="googlebot" content="index, follow" />
+    <link rel="canonical" href={`${DOMAIN_CONFIG.baseUrl}/web-sitesi-kurulumu-v2`} />
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="https://images.pexels.com/photos/196644/pexels-photo-196644.jpeg?auto=compress&cs=tinysrgb&w=800" as="image" />
+    <link rel="preconnect" href="https://images.pexels.com" />
+    <link rel="dns-prefetch" href="https://images.pexels.com" />
+    
+    <!-- Critical CSS for above-the-fold content -->
+    <style>
+      .hero-gradient { background: linear-gradient(135deg, #eff6ff, #f3e8ff); }
+      .trust-badge { backdrop-filter: blur(12px); }
+      .hero-cta { transform: translateZ(0); will-change: transform; }
+      .floating-metric { animation: float 6s ease-in-out infinite; }
+      @keyframes urgencyPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+      .urgency-badge { animation: urgencyPulse 2s infinite; }
+    </style>
+    
+    <!-- Conversion tracking scripts -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": `${t.websiteSetup.title} | TechCorp V2`,
+      "description": t.websiteSetup.description,
+      "url": `${DOMAIN_CONFIG.baseUrl}/web-sitesi-kurulumu-v2`,
+      "mainEntity": {
+        "@type": "Service",
+        "@id": `${DOMAIN_CONFIG.baseUrl}/web-sitesi-kurulumu-v2#service`,
+        "name": t.websiteSetup.title,
+        "provider": { "@type": "Organization", "name": "TechCorp" },
+        "hasOfferCatalog": {
+          "@type": "OfferCatalog",
+          "name": "Web Sitesi Geliştirme Hizmetleri",
+          "itemListElement": [
+            {
+              "@type": "Offer",
+              "itemOffered": { "@type": "Service", "name": "Kurumsal Web Sitesi" }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": { "@type": "Service", "name": "E-ticaret Web Sitesi" }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": { "@type": "Service", "name": "SEO Optimizasyonu" }
+            }
+          ]
+        }
+      }
+    })} />
+  </Fragment>
   <!-- Hero Section -->
-  <section class="relative bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden">
+  <section class="relative bg-gradient-to-br from-blue-50 to-purple-50 overflow-hidden hero-gradient">
     <div class="absolute inset-0 bg-grid-secondary-100 opacity-25"></div>
     <div class="absolute top-0 right-0 w-96 h-96 bg-blue-200 rounded-full opacity-20 animate-float"></div>
     <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-200 rounded-full opacity-20 animate-float" style="animation-delay: 1s;"></div>
     
-    <!-- Trust Badges -->
+    <!-- Enhanced Trust Badges -->
     <div class="absolute top-4 left-4 flex items-center gap-2 z-10">
-      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-green-700 border border-green-200">
+      <div class="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-medium text-green-700 border border-green-200 shadow-lg trust-badge">
         <Award className="w-3 h-3 inline mr-1" />
-        Google Partner
+        Google Partner Sertifikalı
       </div>
-      <div class="bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-blue-700 border border-blue-200">
+      <div class="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-medium text-blue-700 border border-blue-200 shadow-lg trust-badge">
         <Star className="w-3 h-3 inline mr-1" />
-        50+ Web Sitesi
+        89 Başarılı Proje
+      </div>
+      <div class="bg-white/95 backdrop-blur-sm px-4 py-2 rounded-full text-xs font-medium text-purple-700 border border-purple-200 shadow-lg trust-badge">
+        <Shield className="w-3 h-3 inline mr-1" />
+        SSL Güvencesi
       </div>
     </div>
     
-    <!-- Limited Time Offer Banner -->
-    <div class="absolute top-4 right-4 bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold animate-pulse z-10">
-      Sınırlı Süre: %20 İndirim
+    <!-- Enhanced Limited Time Banner -->
+    <div class="absolute top-4 right-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-full text-sm font-bold shadow-xl z-10 urgency-badge">
+      <div class="flex items-center">
+        <Clock className="w-4 h-4 mr-2" />
+        <span>Bu Ay Özel: %30 İndirim!</span>
+      </div>
+    </div>
+
+    <!-- Real-time Activity Indicator -->
+    <div class="absolute bottom-6 left-6 bg-white/95 backdrop-blur-sm px-4 py-3 rounded-xl shadow-lg z-10 animate-pulse">
+      <div class="flex items-center text-sm">
+        <div class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-ping"></div>
+        <span class="text-gray-700 font-medium">Son 24 saatte 8 işletme web sitesi siparişi verdi</span>
+      </div>
     </div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div class="animate-fade-in">
-          <div class="bg-orange-100 text-orange-800 px-4 py-2 rounded-full text-sm font-medium mb-6 inline-flex items-center">
-            <Clock className="w-4 h-4 mr-2" />
-            {t.websiteSetup.hero.urgency}
+          <div class="bg-gradient-to-r from-orange-100 to-red-100 text-orange-800 px-6 py-3 rounded-full text-sm font-bold mb-6 inline-flex items-center shadow-lg urgency-badge">
+            <Clock className="w-4 h-4 mr-2 animate-spin" />
+            <span>{t.websiteSetup.hero.urgency}</span>
+            <span class="ml-2 bg-orange-600 text-white px-2 py-1 rounded-full text-xs">ACELE!</span>
           </div>
           <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-secondary-900 mb-6 leading-tight">
             {t.websiteSetup.hero.title}
@@ -75,23 +205,57 @@ const hreflang = [
             {t.websiteSetup.hero.subtitle}
           </p>
           
-          <!-- Key Benefits -->
+          <!-- Enhanced Key Benefits -->
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-            <div class="flex items-center text-green-700 bg-green-50 p-3 rounded-lg">
-              <Zap className="w-5 h-5 mr-2" />
-              <span class="font-medium">Hızlı Teslimat</span>
+            <div class="flex items-center text-green-700 bg-gradient-to-r from-green-50 to-green-100 p-4 rounded-xl shadow-md border border-green-200 hover:scale-105 transition-transform">
+              <Zap className="w-5 h-5 mr-3 animate-bounce" />
+              <div>
+                <span class="font-bold block">Hızlı Teslimat</span>
+                <span class="text-xs text-green-600">1-2 Hafta Garanti</span>
+              </div>
             </div>
-            <div class="flex items-center text-blue-700 bg-blue-50 p-3 rounded-lg">
-              <Search className="w-5 h-5 mr-2" />
-              <span class="font-medium">SEO Optimize</span>
+            <div class="flex items-center text-blue-700 bg-gradient-to-r from-blue-50 to-blue-100 p-4 rounded-xl shadow-md border border-blue-200 hover:scale-105 transition-transform">
+              <Search className="w-5 h-5 mr-3 animate-pulse" />
+              <div>
+                <span class="font-bold block">SEO Optimize</span>
+                <span class="text-xs text-blue-600">Google İlk Sayfa</span>
+              </div>
             </div>
-            <div class="flex items-center text-purple-700 bg-purple-50 p-3 rounded-lg">
-              <Smartphone className="w-5 h-5 mr-2" />
-              <span class="font-medium">Mobil Hazır</span>
+            <div class="flex items-center text-purple-700 bg-gradient-to-r from-purple-50 to-purple-100 p-4 rounded-xl shadow-md border border-purple-200 hover:scale-105 transition-transform">
+              <Smartphone className="w-5 h-5 mr-3 animate-bounce" />
+              <div>
+                <span class="font-bold block">Mobil Hazır</span>
+                <span class="text-xs text-purple-600">Responsive Tasarım</span>
+              </div>
             </div>
-            <div class="flex items-center text-orange-700 bg-orange-50 p-3 rounded-lg">
-              <Shield className="w-5 h-5 mr-2" />
-              <span class="font-medium">Güvenli Hosting</span>
+            <div class="flex items-center text-orange-700 bg-gradient-to-r from-orange-50 to-orange-100 p-4 rounded-xl shadow-md border border-orange-200 hover:scale-105 transition-transform">
+              <Shield className="w-5 h-5 mr-3 animate-pulse" />
+              <div>
+                <span class="font-bold block">Güvenli Hosting</span>
+                <span class="text-xs text-orange-600">SSL + Yedekleme</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Countdown Timer -->
+          <div class="bg-gradient-to-r from-blue-600 to-purple-700 text-white p-4 rounded-xl mb-8 shadow-xl">
+            <div class="text-center">
+              <h3 class="text-lg font-bold mb-2">🚀 Sınırlı Süre Kampanyası</h3>
+              <p class="text-sm opacity-90 mb-3">Bu ay sonuna kadar %30 indirim + Ücretsiz hosting!</p>
+              <div id="website-countdown-timer" class="flex justify-center gap-4 text-lg font-bold">
+                <div class="bg-white/20 px-3 py-2 rounded-lg">
+                  <span id="website-days">--</span>
+                  <div class="text-xs opacity-75">Gün</div>
+                </div>
+                <div class="bg-white/20 px-3 py-2 rounded-lg">
+                  <span id="website-hours">--</span>
+                  <div class="text-xs opacity-75">Saat</div>
+                </div>
+                <div class="bg-white/20 px-3 py-2 rounded-lg">
+                  <span id="website-minutes">--</span>
+                  <div class="text-xs opacity-75">Dakika</div>
+                </div>
+              </div>
             </div>
           </div>
           
@@ -122,16 +286,25 @@ const hreflang = [
             />
             <div class="absolute inset-0 bg-gradient-to-t from-primary-600/20 to-transparent rounded-2xl"></div>
             
-            <!-- Floating Speed Metric -->
-            <div class="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-xl p-4 animate-bounce">
-              <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
-                  <Zap className="w-4 h-4 text-white" />
+            <!-- Enhanced Floating Speed Metric -->
+            <div class="absolute -bottom-6 -right-6 bg-white rounded-xl shadow-2xl p-4 floating-metric border border-green-200">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center">
+                  <Zap className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <div class="text-sm font-medium text-gray-600">Yükleme Hızı</div>
-                  <div class="text-xl font-bold text-green-600">< 3sn</div>
+                  <div class="text-sm font-medium text-gray-600">Ortalama Yükleme Hızı</div>
+                  <div class="text-2xl font-bold text-green-600">&lt; 3sn</div>
+                  <div class="text-xs text-gray-500">89 Projeden</div>
                 </div>
+              </div>
+            </div>
+
+            <!-- Additional Floating Badge -->
+            <div class="absolute -top-6 -left-6 bg-blue-600 text-white rounded-xl shadow-xl p-3 floating-metric" style="animation-delay: 1s;">
+              <div class="text-center">
+                <div class="text-lg font-bold">4.8★</div>
+                <div class="text-xs opacity-90">Müşteri Puanı</div>
               </div>
             </div>
           </div>
@@ -142,28 +315,35 @@ const hreflang = [
     </div>
   </section>
 
-  <!-- Scarcity Bar -->
-  <section class="bg-red-600 text-white py-3">
+  <!-- Enhanced Scarcity Bar -->
+  <section class="bg-gradient-to-r from-orange-600 to-orange-700 text-white py-4">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center">
-        <p class="text-sm font-medium flex items-center justify-center">
+        <p class="text-sm font-bold flex items-center justify-center animate-pulse">
           <Clock className="w-4 h-4 mr-2" />
-          Bu ay sadece <span class="font-bold mx-1">12 proje kontenjanı</span> kaldı - 
-          <span class="font-bold ml-1">Acele edin!</span>
+          🔥 Bu ay sadece <span class="font-black mx-1 text-yellow-300">5 kontenjan</span> kaldı -
+          <span class="font-black ml-1 text-yellow-300">Kaçırmayın!</span> 🔥
         </p>
       </div>
     </div>
   </section>
 
-  <!-- Social Proof Bar -->
-  <section class="bg-white border-b border-gray-200 py-6">
+  <!-- Enhanced Social Proof Bar -->
+  <section class="bg-white border-b border-gray-200 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center">
-        <p class="text-sm text-gray-600 mb-4">Başarılı işletmeler tarafından tercih ediliyor</p>
-        <div class="flex justify-center items-center gap-8 opacity-60">
-          <div class="text-2xl font-bold text-gray-400">TechFlow</div>
-          <div class="text-2xl font-bold text-gray-400">MediCare</div>
-          <div class="text-2xl font-bold text-gray-400">RetailMax</div>
+        <p class="text-sm text-gray-600 mb-6">🌟 Başarılı işletmeler tarafından tercih ediliyor</p>
+        <div class="flex justify-center items-center gap-8 opacity-80 mb-6">
+          <div class="text-2xl font-bold text-gray-400 hover:text-gray-600 transition-colors">TechFlow</div>
+          <div class="text-2xl font-bold text-gray-400 hover:text-gray-600 transition-colors">MediCare</div>
+          <div class="text-2xl font-bold text-gray-400 hover:text-gray-600 transition-colors">RetailMax</div>
+        </div>
+        <!-- Live Activity Feed -->
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+          <div class="flex items-center justify-center text-sm text-blue-700">
+            <div class="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
+            <span class="font-medium">Canlı: Son 2 saatte 5 işletme web sitesi siparişi verdi</span>
+          </div>
         </div>
       </div>
     </div>
@@ -180,7 +360,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {t.websiteSetup.problems.items.map((problem, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500" key={index}>
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-l-4 border-red-500">
             <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mb-4">
               <span class="text-red-600 text-2xl">⚠️</span>
             </div>
@@ -213,7 +393,7 @@ const hreflang = [
       
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
         {t.websiteSetup.solution.benefits.map((benefit, index) => (
-          <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl text-center group hover:scale-105 transition-transform" key={index}>
+          <div class="bg-gradient-to-br from-green-50 to-blue-50 p-6 rounded-2xl text-center group hover:scale-105 transition-transform">
             <div class="w-16 h-16 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 group-hover:bg-green-700 transition-colors">
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
@@ -263,7 +443,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {t.websiteSetup.features.items.map((feature, index) => (
-          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group" key={index}>
+          <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group">
             <div class="text-4xl mb-4 group-hover:scale-110 transition-transform">{feature.title.split(' ')[0]}</div>
             <h3 class="text-xl font-bold text-secondary-900 mb-2">
               {feature.title.substring(2)}
@@ -296,7 +476,7 @@ const hreflang = [
       <div class="relative">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
           {t.websiteSetup.portfolio.projects.map((project, index) => (
-            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden" key={index}>
+            <div class="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 group overflow-hidden">
               <div class="relative h-48 overflow-hidden">
                 <img
                   src={project.image}
@@ -314,7 +494,7 @@ const hreflang = [
                 <div class="space-y-2">
                   <h4 class="font-semibold text-secondary-900 text-sm">Elde Edilen Sonuçlar:</h4>
                   {project.results.map((result, resultIndex) => (
-                    <div class="flex items-center text-sm" key={resultIndex}>
+                    <div class="flex items-center text-sm">
                       <TrendingUp className="w-4 h-4 text-green-600 mr-2 flex-shrink-0" />
                       <span class="text-secondary-700">{result}</span>
                     </div>
@@ -358,7 +538,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {t.websiteSetup.process.steps.map((step, index) => (
-          <div class="relative" key={index}>
+          <div class="relative">
             <div class="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow border-t-4 border-blue-600 relative">
               <div class="flex items-center mb-4">
                 <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
@@ -405,7 +585,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {t.websiteSetup.packages.items.map((packageItem, index) => (
-          <div class={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${packageItem.popular ? 'border-2 border-primary-600 relative ring-4 ring-primary-100' : ''}`} key={index}>
+          <div class={`bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 ${packageItem.popular ? 'border-2 border-primary-600 relative ring-4 ring-primary-100' : ''}`}>
             {packageItem.popular && (
               <div class="absolute -top-4 left-1/2 transform -translate-x-1/2">
                 <div class="bg-primary-600 text-white px-4 py-2 rounded-full text-sm font-medium">
@@ -424,7 +604,7 @@ const hreflang = [
             </div>
             <ul class="space-y-3 mb-8">
               {packageItem.features.map((feature, featureIndex) => (
-                <li class="flex items-start" key={featureIndex}>
+                <li class="flex items-start">
                   <CheckCircle className="w-5 h-5 text-green-600 mr-3 mt-0.5 flex-shrink-0" />
                   <span class="text-secondary-700">{feature}</span>
                 </li>
@@ -466,7 +646,7 @@ const hreflang = [
       </div>
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {t.websiteSetup.testimonials.items.map((testimonial, index) => (
-          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative" key={index}>
+          <div class="bg-gradient-to-br from-blue-50 to-purple-50 p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow relative">
             <div class="absolute top-4 right-4 text-4xl text-blue-200">"</div>
             <div class="mb-6">
               <div class="flex items-center mb-4">
@@ -485,7 +665,7 @@ const hreflang = [
             <div class="space-y-2">
               <h5 class="font-semibold text-secondary-900 mb-2">Elde Edilen Sonuçlar:</h5>
               {testimonial.results.map((result, resultIndex) => (
-                <div class="flex items-center text-sm" key={resultIndex}>
+                <div class="flex items-center text-sm">
                   <TrendingUp className="w-4 h-4 text-green-600 mr-2" />
                   <span class="text-secondary-700">{result}</span>
                 </div>
@@ -545,7 +725,7 @@ const hreflang = [
   <!-- Form Section -->
   <section id="form" class="py-16 bg-secondary-50">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <WebsiteSetupForm translations={t} lang={lang} client:load />
+      <WebsiteSetupForm translations={t} i18n={translations} lang={lang} client:load />
     </div>
   </section>
 
@@ -604,3 +784,95 @@ const hreflang = [
     animation: slide-up 1s ease-out 0.3s both;
   }
 </style>
+
+<script>
+  // Countdown Timer Implementation for Website Setup
+  function initWebsiteCountdownTimer(): void {
+    const endOfMonth = new Date();
+    endOfMonth.setMonth(endOfMonth.getMonth() + 1, 0);
+    endOfMonth.setHours(23, 59, 59, 999);
+    
+    function updateCountdown(): void {
+      const now = new Date().getTime();
+      const distance = endOfMonth.getTime() - now;
+      
+      if (distance < 0) {
+        // Reset to next month if expired
+        endOfMonth.setMonth(endOfMonth.getMonth() + 1, 0);
+        return;
+      }
+      
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      
+      const daysEl = document.getElementById('website-days');
+      const hoursEl = document.getElementById('website-hours');
+      const minutesEl = document.getElementById('website-minutes');
+      
+      if (daysEl) daysEl.textContent = days.toString().padStart(2, '0');
+      if (hoursEl) hoursEl.textContent = hours.toString().padStart(2, '0');
+      if (minutesEl) minutesEl.textContent = minutes.toString().padStart(2, '0');
+    }
+    
+    updateCountdown();
+    setInterval(updateCountdown, 60000); // Update every minute
+  }
+  
+  // Conversion tracking for Website Setup
+  function trackWebsiteConversion(action: string, details: Record<string, any> = {}): void {
+    try {
+      if (typeof window !== 'undefined' && (window as any).gtag) {
+        (window as any).gtag('event', action, {
+          event_category: 'Website_Landing_V2',
+          event_label: 'Website_Setup',
+          ...details
+        });
+      }
+    } catch (error) {
+      console.log('Analytics tracking error:', error);
+    }
+  }
+  
+  // Track CTA clicks for Website Setup
+  document.addEventListener('DOMContentLoaded', function(): void {
+    initWebsiteCountdownTimer();
+    
+    // Track form submissions
+    const formLinks = document.querySelectorAll('a[href="#form"]');
+    formLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        trackWebsiteConversion('cta_click', { button_location: 'hero' });
+      });
+    });
+    
+    // Track contact method clicks
+    const whatsappLinks = document.querySelectorAll('a[href*="whatsapp"]');
+    whatsappLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        trackWebsiteConversion('contact_whatsapp');
+      });
+    });
+    
+    const phoneLinks = document.querySelectorAll('a[href^="tel:"]');
+    phoneLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        trackWebsiteConversion('contact_phone');
+      });
+    });
+    
+    // Track scroll depth
+    let maxScroll = 0;
+    window.addEventListener('scroll', () => {
+      const scrollPercent = Math.round((window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100);
+      if (scrollPercent > maxScroll) {
+        maxScroll = scrollPercent;
+        if (maxScroll >= 75 && maxScroll < 76) {
+          trackWebsiteConversion('scroll_depth_75');
+        } else if (maxScroll >= 90 && maxScroll < 91) {
+          trackWebsiteConversion('scroll_depth_90');
+        }
+      }
+    });
+  });
+</script>

@@ -1,9 +1,56 @@
 ---
+// === COMPONENT IMPORTS ===
 import Layout from '../../layouts/Layout.astro';
+import { Calendar, User, ArrowRight, Tag, Share2, Clock, Home, BookOpen, Facebook, Twitter, Linkedin } from 'lucide-react';
+
+// === I18N IMPORTS ===
 import { getLangFromUrl, getTranslations } from '../../i18n/utils';
-import { Calendar, User, ArrowRight, Tag, Share2, Clock } from 'lucide-react';
+
+// === CONFIG IMPORTS ===
 import { COMPANY_INFO } from '../../config/company';
+import { DOMAIN_CONFIG, getUrl } from '../../config/domain';
 import { getRoute } from '../../utils/routes';
+
+// === SEO OPTIMIZATION IMPORTS ===
+import { AdvancedSEOManager } from '../../utils/seo-advanced';
+import {
+  generateBreadcrumbSchema,
+  generateOrganizationSchema
+} from '../../utils/structured-data';
+import { generateOptimizedMetaDescription } from '../../utils/seo';
+
+// === PERFORMANCE OPTIMIZATION IMPORTS ===
+import { initPerformanceOptimizations, resourceLoader } from '../../utils/performance';
+
+// === SECURITY IMPORTS ===
+import { securityHeaders, xssProtection, cspUtils } from '../../utils/security';
+
+// === CONSTANTS ===
+const BLOG_POST_CONFIG = {
+  PERFORMANCE: {
+    METRICS_DELAY: 5000,
+    LAZY_LOAD_MARGIN: '50px 0px',
+    INTERSECTION_THRESHOLD: 0.15,
+    ANIMATION_DELAY: 300
+  },
+  SEO: {
+    META_DESCRIPTION: {
+      MAX_LENGTH: 160
+    },
+    ARTICLE_SCHEMA: {
+      WORD_COUNT_ESTIMATE: 150, // words per minute reading speed
+      PUBLISHER_TYPE: 'Organization'
+    }
+  },
+  SHARING: {
+    PLATFORMS: ['facebook', 'twitter', 'linkedin', 'email'],
+    TRACK_SHARES: true
+  },
+  CONTENT: {
+    READING_SPEED_WPM: 250, // average reading speed
+    RELATED_POSTS_COUNT: 3
+  }
+};
 
 export async function getStaticPaths() {
   // For now, generate static paths for demo posts
@@ -31,10 +78,81 @@ export async function getStaticPaths() {
   }));
 }
 
+// === INITIALIZATION ===
 const { slug } = Astro.params;
 const { postId } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = await getTranslations(lang);
+
+// === SECURITY CONFIGURATION ===
+const securityNonce = cspUtils.generateNonce();
+
+// === SEO CONFIGURATION ===
+const seoManager = new AdvancedSEOManager();
+
+// === HELPER FUNCTIONS ===
+function getBlogPostBreadcrumbs(lang: 'tr' | 'en', post: any) {
+  return [
+    { name: lang === 'en' ? 'Home' : 'Anasayfa', url: getRoute(lang, 'home') },
+    { name: lang === 'en' ? 'Blog' : 'Blog', url: getRoute(lang, 'blog') },
+    { name: post.title, url: `${getRoute(lang, 'blog')}/${post.slug}` }
+  ];
+}
+
+function generateArticleSchema(post: any, lang: 'tr' | 'en') {
+  const wordCount = Math.floor(post.content.replace(/<[^>]*>/g, '').split(' ').length);
+  const readingTime = Math.ceil(wordCount / BLOG_POST_CONFIG.CONTENT.READING_SPEED_WPM);
+  
+  return {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": post.title,
+    "description": post.excerpt,
+    "image": post.image,
+    "datePublished": post.date,
+    "dateModified": post.date,
+    "author": {
+      "@type": "Organization",
+      "name": post.author
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": COMPANY_INFO.name,
+      "logo": {
+        "@type": "ImageObject",
+        "url": `${DOMAIN_CONFIG.baseUrl}/logo.png`
+      }
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": getUrl(`${getRoute(lang, 'blog')}/${post.slug}`)
+    },
+    "wordCount": wordCount,
+    "timeRequired": `PT${readingTime}M`,
+    "articleSection": post.category,
+    "keywords": post.tags.join(', '),
+    "inLanguage": lang === 'en' ? 'en-US' : 'tr-TR'
+  };
+}
+
+function calculateReadingTime(content: string): string {
+  const wordCount = content.replace(/<[^>]*>/g, '').split(' ').length;
+  const readingTime = Math.ceil(wordCount / BLOG_POST_CONFIG.CONTENT.READING_SPEED_WPM);
+  return readingTime.toString();
+}
+
+function generateSocialShareUrls(post: any, lang: 'tr' | 'en') {
+  const postUrl = encodeURIComponent(getUrl(`${getRoute(lang, 'blog')}/${post.slug}`));
+  const postTitle = encodeURIComponent(post.title);
+  const postDescription = encodeURIComponent(post.excerpt);
+  
+  return {
+    facebook: `https://www.facebook.com/sharer/sharer.php?u=${postUrl}`,
+    twitter: `https://twitter.com/intent/tweet?url=${postUrl}&text=${postTitle}`,
+    linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${postUrl}`,
+    email: `mailto:?subject=${postTitle}&body=${postDescription}%20${postUrl}`
+  };
+}
 
 // Mock blog post data (will be replaced with Strapi data)
 const blogPosts = [
@@ -166,21 +284,73 @@ const blogPosts = [
   }
 ];
 
+// === POST DATA PROCESSING ===
 const post = blogPosts.find(p => p.id === postId);
 
 if (!post) {
   return Astro.redirect('/404');
 }
 
-// Related posts (mock data)
-const relatedPosts = blogPosts.filter(p => p.id !== post.id && p.category === post.category).slice(0, 3);
+// === STRUCTURED DATA GENERATION ===
+const breadcrumbs = getBlogPostBreadcrumbs(lang, post);
+const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+const organizationSchema = generateOrganizationSchema(lang);
+const articleSchema = generateArticleSchema(post, lang);
+
+// Generate WebPage Schema using AdvancedSEOManager
+const pageSchemas = seoManager.generateSchemasForPage('blog-post', {
+  page: {
+    name: post.title,
+    description: post.excerpt,
+    url: getUrl(`${getRoute(lang, 'blog')}/${post.slug}`),
+    breadcrumb: breadcrumbs
+  },
+  baseUrl: DOMAIN_CONFIG.baseUrl
+}, lang);
+
+// Combine all schemas
+const allSchemas = [
+  breadcrumbSchema,
+  organizationSchema,
+  articleSchema,
+  ...pageSchemas
+];
+
+// === CONTENT OPTIMIZATION ===
+const socialShareUrls = generateSocialShareUrls(post, lang);
+const estimatedReadingTime = calculateReadingTime(post.content);
+
+// Related posts (filtered by category)
+const relatedPosts = blogPosts
+  .filter(p => p.id !== post.id && p.category === post.category)
+  .slice(0, BLOG_POST_CONFIG.CONTENT.RELATED_POSTS_COUNT);
 ---
 
-<Layout 
+<Layout
   title={post.seoTitle || post.title}
   description={post.seoDescription || post.excerpt}
   ogImage={post.image}
 >
+  <!-- Enhanced Structured Data Schemas -->
+  {allSchemas.map((schema) => (
+    <script type="application/ld+json" set:html={JSON.stringify(schema, null, 2)} />
+  ))}
+
+  <!-- DNS Prefetching and Resource Preloading -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com" slot="head" />
+  <link rel="preconnect" href={DOMAIN_CONFIG.baseUrl} slot="head" />
+  <link rel="preload" href={getRoute(lang, 'blog')} as="document" slot="head" />
+
+  <!-- Article-specific meta tags -->
+  <meta property="article:published_time" content={post.date} slot="head" />
+  <meta property="article:author" content={post.author} slot="head" />
+  <meta property="article:section" content={post.category} slot="head" />
+  <meta property="article:tag" content={post.tags.join(', ')} slot="head" />
+
+  <!-- Security Headers via Meta Tags -->
+  <meta http-equiv="X-Content-Type-Options" content="nosniff" slot="head" />
+  <meta http-equiv="X-Frame-Options" content="DENY" slot="head" />
+  <meta http-equiv="X-XSS-Protection" content="1; mode=block" slot="head" />
   <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
     <!-- Article Header -->
     <header class="mb-8">
@@ -261,11 +431,45 @@ const relatedPosts = blogPosts.filter(p => p.id !== post.id && p.category === po
         <h3 class="text-lg font-semibold text-secondary-900">
           {lang === 'en' ? 'Share this article' : 'Bu makaleyi paylaş'}
         </h3>
-        <div class="flex items-center space-x-4">
-          <button class="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors">
+        <div class="flex items-center space-x-3">
+          <a
+            href={socialShareUrls.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 hover:scale-105"
+            data-track="share_facebook"
+          >
+            <Facebook className="w-4 h-4 mr-2" />
+            Facebook
+          </a>
+          <a
+            href={socialShareUrls.twitter}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center px-3 py-2 bg-sky-500 text-white rounded-md hover:bg-sky-600 transition-all duration-200 hover:scale-105"
+            data-track="share_twitter"
+          >
+            <Twitter className="w-4 h-4 mr-2" />
+            Twitter
+          </a>
+          <a
+            href={socialShareUrls.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="flex items-center px-3 py-2 bg-blue-700 text-white rounded-md hover:bg-blue-800 transition-all duration-200 hover:scale-105"
+            data-track="share_linkedin"
+          >
+            <Linkedin className="w-4 h-4 mr-2" />
+            LinkedIn
+          </a>
+          <a
+            href={socialShareUrls.email}
+            class="flex items-center px-3 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-all duration-200 hover:scale-105"
+            data-track="share_email"
+          >
             <Share2 className="w-4 h-4 mr-2" />
-            {lang === 'en' ? 'Share' : 'Paylaş'}
-          </button>
+            Email
+          </a>
         </div>
       </div>
     </div>
@@ -308,7 +512,7 @@ const relatedPosts = blogPosts.filter(p => p.id !== post.id && p.category === po
         </div>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
           {relatedPosts.map(relatedPost => (
-            <article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
+            <article class="related-post bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow group">
               <div class="relative overflow-hidden">
                 <img 
                   src={relatedPost.image} 
@@ -354,6 +558,186 @@ const relatedPosts = blogPosts.filter(p => p.id !== post.id && p.category === po
       </a>
     </div>
   </article>
+  <!-- Performance Monitoring and Analytics Script -->
+  <script is:inline define:vars={{
+    PERFORMANCE_CONFIG: BLOG_POST_CONFIG.PERFORMANCE,
+    securityNonce,
+    lang,
+    postTitle: post.title,
+    postCategory: post.category
+  }}>
+    // Performance Metrics Tracking for Blog Post
+    function initBlogPostPerformanceTracking() {
+      // Core Web Vitals monitoring
+      let fcpObserver, lcpObserver, clsObserver;
+      
+      // First Contentful Paint (FCP)
+      fcpObserver = new PerformanceObserver((entryList) => {
+        const fcpEntries = entryList.getEntriesByName('first-contentful-paint');
+        if (fcpEntries.length > 0) {
+          const fcp = fcpEntries[0].startTime;
+          console.log('Blog Post FCP:', fcp);
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_post_fcp', {
+              value: Math.round(fcp),
+              event_category: 'performance',
+              post_title: postTitle,
+              post_category: postCategory
+            });
+          }
+        }
+      });
+      fcpObserver.observe({ entryTypes: ['paint'] });
+
+      // Largest Contentful Paint (LCP)
+      lcpObserver = new PerformanceObserver((entryList) => {
+        const lcpEntries = entryList.getEntries();
+        if (lcpEntries.length > 0) {
+          const lcp = lcpEntries[lcpEntries.length - 1].startTime;
+          console.log('Blog Post LCP:', lcp);
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'blog_post_lcp', {
+              value: Math.round(lcp),
+              event_category: 'performance',
+              post_title: postTitle
+            });
+          }
+        }
+      });
+      lcpObserver.observe({ entryTypes: ['largest-contentful-paint'] });
+
+      // Cumulative Layout Shift (CLS)
+      let clsValue = 0;
+      clsObserver = new PerformanceObserver((entryList) => {
+        for (const entry of entryList.getEntries()) {
+          if (!entry.hadRecentInput) {
+            clsValue += entry.value;
+          }
+        }
+        console.log('Blog Post CLS:', clsValue);
+        if (typeof gtag !== 'undefined') {
+          gtag('event', 'blog_post_cls', {
+            value: Math.round(clsValue * 1000),
+            event_category: 'performance',
+            post_title: postTitle
+          });
+        }
+      });
+      clsObserver.observe({ entryTypes: ['layout-shift'] });
+
+      // Reading Progress Tracking
+      let maxScrollPercent = 0;
+      function trackReadingProgress() {
+        const article = document.querySelector('article');
+        if (!article) return;
+        
+        const scrollTop = window.pageYOffset;
+        const articleTop = article.offsetTop;
+        const articleHeight = article.offsetHeight;
+        const windowHeight = window.innerHeight;
+        
+        const scrollPercent = Math.round(
+          ((scrollTop - articleTop + windowHeight) / articleHeight) * 100
+        );
+        
+        if (scrollPercent > maxScrollPercent && scrollPercent <= 100) {
+          maxScrollPercent = scrollPercent;
+          
+          // Track reading milestones
+          if ([25, 50, 75, 100].includes(scrollPercent)) {
+            if (typeof gtag !== 'undefined') {
+              gtag('event', 'reading_progress', {
+                event_category: 'engagement',
+                event_label: `${scrollPercent}%`,
+                post_title: postTitle,
+                post_category: postCategory
+              });
+            }
+          }
+        }
+      }
+      
+      // Throttled scroll tracking
+      let scrollTimeout;
+      window.addEventListener('scroll', () => {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(trackReadingProgress, 100);
+      });
+
+      // Track social sharing interactions
+      document.addEventListener('click', (e) => {
+        const target = e.target.closest('[data-track]');
+        if (target) {
+          const action = target.dataset.track;
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'social_share', {
+              action: action,
+              event_category: 'engagement',
+              post_title: postTitle,
+              post_category: postCategory
+            });
+          }
+        }
+      });
+
+      // Track time spent on page
+      const startTime = Date.now();
+      let isActive = true;
+      
+      document.addEventListener('visibilitychange', () => {
+        isActive = !document.hidden;
+      });
+      
+      window.addEventListener('beforeunload', () => {
+        if (isActive) {
+          const timeSpent = Math.round((Date.now() - startTime) / 1000);
+          if (typeof gtag !== 'undefined') {
+            gtag('event', 'time_on_page', {
+              value: timeSpent,
+              event_category: 'engagement',
+              post_title: postTitle
+            });
+          }
+        }
+      });
+
+      // Intersection Observer for related posts
+      const relatedPosts = document.querySelectorAll('.related-post');
+      if (relatedPosts.length > 0) {
+        const relatedObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+              setTimeout(() => {
+                entry.target.classList.add('animate-in');
+              }, index * PERFORMANCE_CONFIG.ANIMATION_DELAY);
+              relatedObserver.unobserve(entry.target);
+            }
+          });
+        }, {
+          threshold: PERFORMANCE_CONFIG.INTERSECTION_THRESHOLD,
+          rootMargin: PERFORMANCE_CONFIG.LAZY_LOAD_MARGIN
+        });
+
+        relatedPosts.forEach(post => {
+          relatedObserver.observe(post);
+        });
+      }
+
+      // Cleanup observers on page unload
+      window.addEventListener('beforeunload', () => {
+        if (fcpObserver) fcpObserver.disconnect();
+        if (lcpObserver) lcpObserver.disconnect();
+        if (clsObserver) clsObserver.disconnect();
+      });
+    }
+
+    // Initialize when DOM is ready
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initBlogPostPerformanceTracking);
+    } else {
+      initBlogPostPerformanceTracking();
+    }
+  </script>
 </Layout>
 
 <style>
@@ -398,5 +782,57 @@ const relatedPosts = blogPosts.filter(p => p.id !== post.id && p.category === po
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
+  }
+  
+  /* Related posts animation */
+  .related-post {
+    opacity: 0;
+    transform: translateY(2rem);
+    transition: all 0.6s ease-out;
+  }
+  
+  .related-post.animate-in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Enhanced hover effects for social sharing */
+  a[data-track] {
+    transition: all 0.2s ease;
+  }
+  
+  a[data-track]:hover {
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Article content animations */
+  article {
+    animation: fadeInUp 0.6s ease-out;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(2rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Reading progress indicator (optional) */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6);
+    transform-origin: left;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+    z-index: 1000;
   }
 </style>
